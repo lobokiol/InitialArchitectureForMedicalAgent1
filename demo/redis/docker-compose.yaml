@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  redis:
+    # ✅ 用 Redis Stack，内置 RedisJSON / Search
+    image: redis/redis-stack:latest
+    container_name: langgraph-redis
+    ports:
+      - "6379:6379"   # Redis
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+volumes:
+  redis-data:

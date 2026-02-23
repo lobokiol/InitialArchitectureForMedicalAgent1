@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+.env
+*.md
+demo/es_milvus_DB/
+demo/.langgraph_api/
+.pytest_cache/
+*.log
