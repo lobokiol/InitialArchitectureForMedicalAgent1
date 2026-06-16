@@ -1,21 +1,57 @@
-from typing import List
+from typing import Any, List
 
-from elasticsearch import Elasticsearch
+from opensearchpy import OpenSearch
 
 from app.core import config
 from app.core.logging import logger
 from app.domain.models import RetrievedDoc
 
+_client: OpenSearch | None = None
 
-es_client = Elasticsearch(config.ES_URL, request_timeout=30)
+
+def get_search_client() -> OpenSearch:
+    """OpenSearch client (ES-compatible API, works with local OpenSearch 2.x)."""
+    global _client
+    if _client is None:
+        url = config.ES_URL.rstrip("/")
+        use_ssl = url.startswith("https")
+        _client = OpenSearch(
+            hosts=[url],
+            use_ssl=use_ssl,
+            verify_certs=False,
+            ssl_show_warn=False,
+            timeout=30,
+        )
+    return _client
+
+
+def check_opensearch() -> dict[str, Any]:
+    client = get_search_client()
+    info = client.info()
+    if hasattr(info, "body"):
+        info = info.body
+    version = info.get("version", {})
+    return {
+        "ok": True,
+        "cluster_name": info.get("cluster_name"),
+        "version": version.get("number"),
+        "distribution": version.get("distribution", "opensearch"),
+    }
+
+
+def _search_hits(res: Any) -> list:
+    if hasattr(res, "body"):
+        res = res.body
+    return res.get("hits", {}).get("hits", [])
 
 
 def _search_es_with_fallback(query: str, size: int = 5):
     """
-    简化版 ES 检索：
+    简化版 OpenSearch 检索：
     1. 先用 AND 做精确检索
     2. 如果 0 命中，再用 OR 放宽检索
     """
+    client = get_search_client()
     for operator in ("AND", "OR"):
         must = [
             {
@@ -26,24 +62,20 @@ def _search_es_with_fallback(query: str, size: int = 5):
                 }
             }
         ]
-
         body = {"query": {"bool": {"must": must}}, "size": size}
-
         try:
-            res = es_client.search(index=config.ES_INDEX_NAME, body=body)
-            hits = res.get("hits", {}).get("hits", [])
+            res = client.search(index=config.ES_INDEX_NAME, body=body)
+            hits = _search_hits(res)
             logger.info(
-                "es search with operator=%s, hits=%d",
+                "opensearch search with operator=%s, hits=%d",
                 operator,
                 len(hits),
             )
         except Exception:
-            logger.exception("ES 查询失败 (operator=%s)", operator)
+            logger.exception("OpenSearch 查询失败 (operator=%s)", operator)
             return []
-
         if hits:
             return hits
-
     return []
 
 

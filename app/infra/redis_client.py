@@ -1,12 +1,44 @@
 import redis
 from contextlib import ExitStack
-from langgraph.checkpoint.redis import RedisSaver
+from typing import Any
 
 from app.core import config
+from app.core.logging import logger
 
-redis_client = redis.Redis.from_url(config.REDIS_URI, decode_responses=True)
-
-# LangGraph checkpoint
+_redis_available = False
+redis_client: Any = None
+checkpointer: Any = None
 _stack = ExitStack()
-checkpointer = _stack.enter_context(RedisSaver.from_conn_string(config.REDIS_URI))
-checkpointer.setup()
+
+
+def _init_redis() -> None:
+    global _redis_available, redis_client, checkpointer
+
+    if config.USE_MEMORY_CHECKPOINTER:
+        from langgraph.checkpoint.memory import MemorySaver
+
+        checkpointer = MemorySaver()
+        logger.warning("USE_MEMORY_CHECKPOINTER=true：使用内存会话，重启后历史丢失")
+        return
+
+    try:
+        from langgraph.checkpoint.redis import RedisSaver
+
+        client = redis.Redis.from_url(config.REDIS_URI, decode_responses=True, socket_connect_timeout=2)
+        client.ping()
+        redis_client = client
+        checkpointer = _stack.enter_context(RedisSaver.from_conn_string(config.REDIS_URI))
+        checkpointer.setup()
+        _redis_available = True
+        logger.info("Redis checkpointer 已连接: %s", config.REDIS_URI)
+    except Exception:
+        from langgraph.checkpoint.memory import MemorySaver
+
+        logger.warning(
+            "Redis 不可用 (%s)，回退到 MemorySaver；线程元数据仍需要 Redis 或 USE_MEMORY_CHECKPOINTER=true",
+            config.REDIS_URI,
+        )
+        checkpointer = MemorySaver()
+
+
+_init_redis()

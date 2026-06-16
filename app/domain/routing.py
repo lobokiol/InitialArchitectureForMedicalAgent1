@@ -1,60 +1,62 @@
+from langchain_core.messages import HumanMessage
+
 from app.core.logging import logger
-from app.domain.models import AppState, MAX_REWRITE
+from app.domain.models import AppState
+
+
+def _is_dept_followup_reply(state: AppState) -> bool:
+    """科室反问待选：任意 HumanMessage 回复都继续消歧。"""
+    ds = state.dept_state
+    if not ds or getattr(ds, "status", None) != "asking":
+        return False
+    if not ds.last_choices:
+        return False
+    msgs = state.messages or []
+    if len(msgs) < 2:
+        return False
+    last = msgs[-1]
+    return isinstance(last, HumanMessage)
+
+
+def route_after_trim(state: AppState) -> str:
+    """多轮科室消歧：待选时跳过 decision；否则新一轮 intake。"""
+    if _is_dept_followup_reply(state):
+        logger.info(">>> route_after_trim: continue dept_disambiguation")
+        return "dept_disambiguation"
+    return "decision"
+
+
+def route_after_slot_gate(state: AppState) -> str:
+    if not state.slot_gate_passed:
+        logger.info(">>> route_after_slot_gate: reject")
+        return "reject"
+
+    ir = state.intent_result
+    route = ir.triage_route if ir else None
+    logger.info(">>> route_after_slot_gate: triage_route=%s", route)
+    if route == "disease":
+        return "disease_dept"
+    if route == "symptom":
+        return "rag_symptom_recall"
+    return "reject"
+
+
+def route_after_dept(state: AppState) -> str:
+    ds = state.dept_state
+    status = getattr(ds, "status", None) if ds else None
+    logger.info(">>> route_after_dept: status=%s locked=%s", status, state.locked_department)
+    if status == "asking":
+        return "end_ask"
+    return "answer_generate"
 
 
 def route_after_decision(state: AppState) -> str:
+    """Legacy: kept for tests; production uses route_after_slot_gate."""
     ir = state.intent_result
-    logger.info(">>> route_after_decision: intent_result=%s", ir)
-
-    if not ir:
-        logger.info("route_after_decision -> answer_generate (no intent_result)")
-        return "answer_generate"
-    
-     # 检查是否需要工具调用
-    if hasattr(ir, 'need_tool_call') and ir.need_tool_call:
-        logger.info("route_after_decision -> tool_calling")
-        return "tool_calling"
-    
-    if not ir.has_symptom and not ir.has_process:
-        logger.info("route_after_decision -> answer_generate (no symptom & no process)")
-        return "answer_generate"
-
-    logger.info("route_after_decision -> es_rag")
-    return "es_rag"
-
-
-def route_after_es(state: AppState) -> str:
-    ir = state.intent_result
-    logger.info(">>> route_after_es: intent_result=%s", ir)
-
-    if ir and ir.need_symptom_search:
-        logger.info("route_after_es -> milvus_rag (need_symptom_search=True)")
-        return "milvus_rag"
-
-    logger.info("route_after_es -> check_docs (no symptom search needed)")
-    return "check_docs"
-
-
-def route_after_docs(state: AppState) -> str:
-    r = state.relevance_result
-    ir = state.intent_result
-    logger.info(
-        ">>> route_after_docs: relevance_result=%s, rewrite_attempts=%d",
-        r,
-        state.rewrite_attempts,
-    )
-
-    if state.rewrite_attempts >= MAX_REWRITE:
-        logger.info("route_after_docs -> answer_generate (rewrite_attempts >= MAX_REWRITE)")
-        return "answer_generate"
-
-    if r and r.can_answer_overall:
-        logger.info("route_after_docs -> answer_generate (can_answer_overall=True)")
-        return "answer_generate"
-
-    if not (r and (r.need_rewrite_symptom or r.need_rewrite_process)):
-        logger.info("route_after_docs -> answer_generate (no need to rewrite)")
-        return "answer_generate"
-
-    logger.info("route_after_docs -> rewrite_question (need rewrite)")
-    return "rewrite_question"
+    route = ir.triage_route if ir else None
+    logger.info(">>> route_after_decision: %s", route)
+    if route == "disease":
+        return "disease_dept"
+    if route == "symptom":
+        return "symptom_slot"
+    return "reject"

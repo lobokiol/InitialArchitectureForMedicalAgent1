@@ -4,7 +4,6 @@ from typing import List
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 
 from app.core.logging import logger
-from app.core.llm import get_chat_llm
 from app.domain.models import AppState, RetrievedDoc
 
 
@@ -96,32 +95,85 @@ def format_history(messages: list[BaseMessage]) -> str:
     return "\n".join(lines)
 
 
+def _new_intake_prefix(state: AppState) -> str:
+    msgs = state.messages or []
+    if len(msgs) < 3:
+        return ""
+    prior_humans = [
+        m.content for m in msgs[:-1] if isinstance(m, HumanMessage) and isinstance(m.content, str)
+    ]
+    cur = (state.ner_result.query if state.ner_result else "") or ""
+    if prior_humans and cur and cur.strip() != str(prior_humans[-1]).strip():
+        return "（已按您本轮新描述重新评估）"
+    return ""
+
+
 def answer_generate_node(state: AppState) -> dict:
     logger.info(">>> Enter node: answer_generate")
-    user_query = state.messages[-1].content
+    prefix = _new_intake_prefix(state)
+    if prefix:
+        prefix = prefix + "\n"
 
-    history_block = format_history(state.messages)
+    if state.locked_department:
+        chunk = state.rag_chunk or {}
+        canonical = chunk.get("canonical_symptom") or (state.slot_table.primary_symptom if state.slot_table else "")
+        dept = state.locked_department
+        ds = state.dept_state
+        status = getattr(ds, "status", None) if ds else None
+        if dept == "急诊":
+            flag = chunk.get("emergency_flag") or {}
+            detail = flag.get("suggestion") or flag.get("condition") or "请尽快就医。"
+            full_content = (
+                f"{prefix}根据您描述的情况（{canonical}），建议尽快就诊：**急诊**。\n{detail}"
+            )
+        elif status == "fallback":
+            full_content = (
+                f"{prefix}根据您描述的症状（{canonical}），建议首选就诊：**{dept}**。"
+                "如与实际情况不符，请补充更多细节以便更准确推荐。"
+            )
+        else:
+            full_content = f"{prefix}根据您描述的症状（{canonical}），建议就诊科室：**{dept}**。"
+        return {"messages": [AIMessage(content=full_content)]}
 
-    prompt = ANSWER_PROMPT.format(
-        history_block=history_block,
-        user_query=user_query,
-        medical_block=_fmt_docs(state.medical_docs),
-        process_block=_fmt_docs(state.process_docs),
-        tool_result_block=_fmt_tool_result(state.tool_call_result),
-    )
+    ddr = state.disease_dept_result
+    if ddr and ddr.departments:
+        names = "、".join(ddr.diseases) if ddr.diseases else "您的描述"
+        dept_names: list[str] = []
+        for item in ddr.departments[:3]:
+            if isinstance(item, dict):
+                d = item.get("dept") or item.get("department") or ""
+                if d:
+                    dept_names.append(str(d))
+            elif item:
+                dept_names.append(str(item))
+        dept_str = "、".join(dept_names) if dept_names else "导诊台"
+        full_content = f"{prefix}根据您提到的「{names}」，建议就诊科室：**{dept_str}**。"
+        return {"messages": [AIMessage(content=full_content)]}
 
     logger.info(
-        "answer_generate_node: medical_docs=%d, process_docs=%d",
-        len(state.medical_docs),
-        len(state.process_docs),
+        "answer_generate_node: no locked dept / disease depts, using fixed fallback (LLM disabled)"
     )
 
-    try:
-        result = get_chat_llm().invoke([HumanMessage(content=prompt)])
-        full_content = result.content if isinstance(result, AIMessage) else getattr(result, "content", "")
-    except Exception:
-        logger.exception("answer_generate_node LLM 调用失败，返回兜底回答")
-        full_content = "抱歉，当前系统生成答案时出现了问题，请稍后再试。"
+    # Legacy Milvus/RAG Q&A — not used in production triage graph.
+    # user_query = state.messages[-1].content
+    # history_block = format_history(state.messages)
+    # prompt = ANSWER_PROMPT.format(
+    #     history_block=history_block,
+    #     user_query=user_query,
+    #     medical_block=_fmt_docs(state.medical_docs),
+    #     process_block=_fmt_docs(state.process_docs),
+    #     tool_result_block=_fmt_tool_result(state.tool_call_result),
+    # )
+    # try:
+    #     result = get_chat_llm().invoke([HumanMessage(content=prompt)])
+    #     full_content = result.content if isinstance(result, AIMessage) else getattr(result, "content", "")
+    # except Exception:
+    #     logger.exception("answer_generate_node LLM 调用失败，返回兜底回答")
+    #     full_content = "抱歉，当前系统生成答案时出现了问题，请稍后再试。"
+
+    full_content = (
+        f"{prefix}根据现有资料无法匹配导诊结果，建议先到**导诊台**咨询，或补充更具体的症状描述。"
+    )
 
     return {"messages": [AIMessage(content=full_content)]}
 

@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "description": "实体提取(NER)与三分类意图路由 Golden 用例",
+  "cases": [
+    {
+      "id": "G01_mixed_disease_symptom",
+      "query": "最近每次饭后，肚脐上面那一块儿一阵一阵绞着疼，还腹胀，是不是胃炎啊？",
+      "expect": {
+        "triage_route": "disease",
+        "diseases": ["胃炎"],
+        "symptom_candidates_contains": ["腹胀"],
+        "chief_symptom_any_of": ["肚脐上方疼痛", "绞痛", "饭后腹胀", "腹胀"]
+      }
+    },
+    {
+      "id": "G02_disease_only",
+      "query": "我有胃炎",
+      "expect": {
+        "triage_route": "disease",
+        "diseases": ["胃炎"]
+      }
+    },
+    {
+      "id": "G03_disease_alias",
+      "query": "怀疑是甲状腺功能亢进",
+      "expect": {
+        "triage_route": "disease",
+        "diseases": ["甲亢"]
+      }
+    },
+    {
+      "id": "G04_symptom_palpitation",
+      "query": "最近有点心慌手抖",
+      "expect": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom_any_of": ["心慌", "心悸"],
+        "chief_symptom_canonical": "心悸",
+        "slot_table_code": "palpitation_v1",
+        "symptom_candidates_contains": ["手抖"]
+      }
+    },
+    {
+      "id": "G05_symptom_abdominal",
+      "query": "饭后一直腹胀，没有提到病名",
+      "expect": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom_any_of": ["饭后腹胀", "腹胀"],
+        "symptom_candidates_contains": ["饭后", "腹胀"]
+      }
+    },
+    {
+      "id": "G06_symptom_weight_mood",
+      "query": "最近越吃越瘦，脾气也变得很差",
+      "expect": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom_any_of": ["越吃越瘦", "脾气差"],
+        "symptom_candidates_contains": ["越吃越瘦", "脾气差"]
+      }
+    },
+    {
+      "id": "G07_symptom_fever",
+      "query": "发热还寒战怎么办",
+      "expect": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "symptom_candidates_contains": ["发热", "寒战"]
+      }
+    },
+    {
+      "id": "G08_reject_greeting",
+      "query": "你好",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "G09_reject_process",
+      "query": "怎么预约",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "G10_reject_empty",
+      "query": "",
+      "expect": {
+        "triage_route": "reject"
+      }
+    },
+    {
+      "id": "G11_disease_with_symptom",
+      "query": "我有胃炎还腹痛",
+      "expect": {
+        "triage_route": "disease",
+        "diseases": ["胃炎"],
+        "symptom_candidates_contains": ["腹痛"]
+      }
+    },
+    {
+      "id": "G12_symptom_itch",
+      "query": "腹部瘙痒好几天了",
+      "expect": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "腹部瘙痒",
+        "symptom_candidates_contains": ["腹部瘙痒"]
+      }
+    }
+  ]
+}

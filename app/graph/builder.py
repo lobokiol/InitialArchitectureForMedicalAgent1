@@ -2,56 +2,80 @@ from langgraph.graph import StateGraph, START, END
 
 from app.domain.models import AppState
 from app.domain.routing import (
-    route_after_decision,
-    route_after_es,
-    route_after_docs,
+    route_after_dept,
+    route_after_slot_gate,
+    route_after_trim,
 )
 from app.graph.nodes.decision import decision_node
-from app.graph.nodes.es_rag import es_rag_node
-from app.graph.nodes.milvus_rag import milvus_rag_node
-from app.graph.nodes.check_docs import check_docs_node
-from app.graph.nodes.rewrite import rewrite_question
+from app.graph.nodes.disease_dept import disease_dept_node
+from app.graph.nodes.symptom_slot import symptom_slot_node
+from app.graph.nodes.reject import reject_node
 from app.graph.nodes.answer import answer_generate_node
 from app.graph.nodes.trim_history import trim_history_node
-from app.graph.nodes.tool_calling import tool_calling_node  # 新增
+from app.graph.nodes.slot_fill import slot_fill_node
+from app.graph.nodes.slot_gate import slot_gate_node
+from app.graph.nodes.rag_symptom_recall import rag_symptom_recall_node
+from app.graph.nodes.dept_disambiguation import dept_disambiguation_node
 
 
 def build_graph() -> StateGraph:
+    """
+    导诊主图（槽位门禁 + RAG 科室消歧）：
+
+    trim_history → decision → slot_fill → slot_gate
+      → disease_dept | rag_symptom_recall | reject
+    symptom: rag → dept_disambiguation → answer | END(反问)
+    """
     graph = StateGraph(AppState)
 
+    graph.add_node("trim_history", trim_history_node)
     graph.add_node("decision", decision_node)
-    graph.add_node("tool_calling", tool_calling_node)
-    graph.add_node("es_rag", es_rag_node)
-    graph.add_node("milvus_rag", milvus_rag_node)
-    graph.add_node("check_docs", check_docs_node)
-    graph.add_node("rewrite_question", rewrite_question)
+    graph.add_node("slot_fill", slot_fill_node)
+    graph.add_node("slot_gate", slot_gate_node)
+    graph.add_node("disease_dept", disease_dept_node)
+    graph.add_node("symptom_slot", symptom_slot_node)
+    graph.add_node("rag_symptom_recall", rag_symptom_recall_node)
+    graph.add_node("dept_disambiguation", dept_disambiguation_node)
+    graph.add_node("reject", reject_node)
     graph.add_node("answer_generate", answer_generate_node)
-    graph.add_node("trim_history", trim_history_node) 
+
     graph.add_edge(START, "trim_history")
-    graph.add_edge("trim_history", "decision")
+    graph.add_conditional_edges(
+        "trim_history",
+        route_after_trim,
+        {
+            "decision": "decision",
+            "dept_disambiguation": "dept_disambiguation",
+        },
+    )
 
-    graph.add_conditional_edges("decision", route_after_decision, {
-        "answer_generate": "answer_generate",
-        "es_rag": "es_rag",
-        "tool_calling": "tool_calling",
-    })
-    graph.add_edge("tool_calling", "es_rag")  # 工具调用后继续检索
-    # graph.add_edge("tool_calling", "answer_generate")   #  工具调用后生成答案
-    graph.add_conditional_edges("es_rag", route_after_es, {
-        "milvus_rag": "milvus_rag",
-        "check_docs": "check_docs",
-    })
+    graph.add_edge("decision", "slot_fill")
+    graph.add_edge("slot_fill", "slot_gate")
+    graph.add_conditional_edges(
+        "slot_gate",
+        route_after_slot_gate,
+        {
+            "disease_dept": "disease_dept",
+            "rag_symptom_recall": "rag_symptom_recall",
+            "reject": "reject",
+        },
+    )
 
-    graph.add_edge("milvus_rag", "check_docs")
+    graph.add_edge("disease_dept", "answer_generate")
+    graph.add_edge("rag_symptom_recall", "dept_disambiguation")
+    graph.add_conditional_edges(
+        "dept_disambiguation",
+        route_after_dept,
+        {
+            "answer_generate": "answer_generate",
+            "end_ask": END,
+        },
+    )
 
-    graph.add_conditional_edges("check_docs", route_after_docs, {
-        "answer_generate": "answer_generate",
-        "rewrite_question": "rewrite_question",
-    })
-
-    graph.add_edge("rewrite_question", "es_rag")
+    graph.add_edge("symptom_slot", "answer_generate")
+    graph.add_edge("reject", END)
     graph.add_edge("answer_generate", END)
-    
+
     return graph
 
 

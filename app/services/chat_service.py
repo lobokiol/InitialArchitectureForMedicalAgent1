@@ -65,6 +65,10 @@ def chat_once(
 
     intent_dict = state.intent_result.model_dump() if isinstance(state.intent_result, IntentResult) else None
 
+    ds = state.dept_state
+    awaiting = bool(ds and ds.status == "asking" and ds.last_choices)
+    dept_choices = [c.model_dump() for c in ds.last_choices] if awaiting and ds else []
+
     return {
         "user_id": user_id,
         "thread_id": thread_id,
@@ -74,6 +78,8 @@ def chat_once(
             "medical": _dump_docs(state.medical_docs),
             "process": _dump_docs(state.process_docs),
         },
+        "awaiting_dept_choice": awaiting,
+        "dept_choices": dept_choices,
     }
 
 

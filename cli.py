@@ -110,10 +110,10 @@ class ChatCLI:
                 break
             if not raw:
                 continue
+            if raw.lower() in ("exit", "quit", "/exit", "/quit"):
+                console.print("[warning]已退出[/warning]")
+                break
             if raw.startswith("/"):
-                if raw in ("/exit", "/quit"):
-                    console.print("[warning]已退出[/warning]")
-                    break
                 self._handle_command(raw)
                 continue
             self._ask_chat(raw)
@@ -300,8 +300,32 @@ class ChatCLI:
             finally:
                 progress.stop()
         self.thread_id = data.get("thread_id") or self.thread_id
+        while data.get("awaiting_dept_choice") and data.get("dept_choices"):
+            labels = [c["label"] for c in data["dept_choices"]]
+            reply = data.get("reply", "")
+            if reply:
+                console.print(Panel(Markdown(reply), title="助手", style="success"))
+            console.print(Panel("请选择症状（从下列选项中选择）", style="info"))
+            pick = Prompt.ask("您的选择", choices=labels, console=console)
+            payload = {"user_id": self.user_id, "message": pick}
+            if self.thread_id:
+                payload["thread_id"] = self.thread_id
+            try:
+                resp = self.session.post(
+                    f"{self.base_url}/chat",
+                    json=payload,
+                    timeout=self.timeout,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+            except requests.RequestException as exc:
+                console.print(Panel(f"请求失败：{exc}", style="warning"))
+                return
+            self.thread_id = data.get("thread_id") or self.thread_id
         reply = data.get("reply", "")
         console.print(Panel(Markdown(reply), title="助手", style="success"))
+        if "急诊" in reply or "建议就诊科室" in reply or "建议首选就诊" in reply:
+            console.print(Panel("已给出导诊科室建议；换症状请 /new", style="info"))
         self._render_intent(data.get("intent_result"))
         self._render_docs(data.get("used_docs", {}))
 

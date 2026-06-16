@@ -1,0 +1,1111 @@
+{
+  "version": "1.0",
+  "description": "100条导诊测试用例（症状/疾病/拒绝）",
+  "cases": [
+    {
+      "id": "D001",
+      "query": "最近我每次吃饭后，肚子都有点不舒服，偏肚脐上面那一块，一阵一阵地绞痛",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "饭后腹部不适",
+          "脐上疼痛",
+          "阵发性绞痛"
+        ]
+      }
+    },
+    {
+      "id": "D002",
+      "query": "我这两天一直头疼，尤其下午更明显，睡一觉也没好",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "头疼"
+        ]
+      }
+    },
+    {
+      "id": "D003",
+      "query": "最近咳嗽比较厉害，晚上躺下以后咳得更多",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "咳嗽",
+          "夜间加重"
+        ]
+      }
+    },
+    {
+      "id": "D004",
+      "query": "今天早上开始发烧，量了一下 38 度多，还有点怕冷",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "发烧",
+          "畏寒"
+        ]
+      }
+    },
+    {
+      "id": "D005",
+      "query": "嗓子疼了三天，咽口水的时候特别明显",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "嗓子疼",
+          "吞咽疼痛"
+        ]
+      }
+    },
+    {
+      "id": "D006",
+      "query": "这几天鼻子一直堵，还流清鼻涕",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "鼻塞",
+          "流清鼻涕"
+        ]
+      }
+    },
+    {
+      "id": "D007",
+      "query": "我胸口有点闷，走快一点就喘不上气",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "胸闷",
+          "气短"
+        ]
+      }
+    },
+    {
+      "id": "D008",
+      "query": "最近总是头晕，站起来的时候更明显",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "头晕",
+          "体位性加重"
+        ]
+      }
+    },
+    {
+      "id": "D009",
+      "query": "我眼睛红红的，还有点痒，早上起来有眼屎",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "眼红",
+          "眼痒",
+          "眼部分泌物"
+        ]
+      }
+    },
+    {
+      "id": "D010",
+      "query": "最近腰酸腰疼，坐久了起来特别不舒服",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "腰酸",
+          "腰疼"
+        ]
+      }
+    },
+    {
+      "id": "D011",
+      "query": "我右下腹一阵一阵疼，按一下也疼",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "右下腹疼痛",
+          "压痛"
+        ]
+      }
+    },
+    {
+      "id": "D012",
+      "query": "这两天拉肚子，一天跑厕所好几次",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "腹泻"
+        ]
+      }
+    },
+    {
+      "id": "D013",
+      "query": "小便的时候有刺痛感，而且老想上厕所",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "尿痛",
+          "尿频"
+        ]
+      }
+    },
+    {
+      "id": "D014",
+      "query": "我最近胃里总是反酸，吃完饭还胀",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "反酸",
+          "饭后胃胀"
+        ]
+      }
+    },
+    {
+      "id": "D015",
+      "query": "晚上总睡不着，躺下以后脑子停不下来",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "失眠"
+        ]
+      }
+    },
+    {
+      "id": "D016",
+      "query": "最近皮肤起了一片红疹，很痒，越挠越明显",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "红疹",
+          "瘙痒"
+        ]
+      }
+    },
+    {
+      "id": "D017",
+      "query": "我膝盖上下楼梯的时候疼，平时走路还好",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "膝盖疼",
+          "上下楼加重"
+        ]
+      }
+    },
+    {
+      "id": "D018",
+      "query": "牙疼了两天，晚上疼得更厉害",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "牙疼",
+          "夜间加重"
+        ]
+      }
+    },
+    {
+      "id": "D019",
+      "query": "耳朵里面疼，还有点听不清",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "耳痛",
+          "听力下降"
+        ]
+      }
+    },
+    {
+      "id": "D020",
+      "query": "最近手指发麻，尤其早上起床明显",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "手指麻木"
+        ]
+      }
+    },
+    {
+      "id": "D021",
+      "query": "我感觉心慌，心跳有时候特别快",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "心慌",
+          "心跳快"
+        ]
+      }
+    },
+    {
+      "id": "D022",
+      "query": "最近月经量特别多，而且肚子也疼",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "月经量多",
+          "腹痛"
+        ]
+      }
+    },
+    {
+      "id": "D023",
+      "query": "我脖子僵硬，低头久了后脑勺也疼",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "颈部僵硬",
+          "后脑勺疼"
+        ]
+      }
+    },
+    {
+      "id": "D024",
+      "query": "最近总觉得很累，没力气，休息了也缓不过来",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "乏力",
+          "疲劳"
+        ]
+      }
+    },
+    {
+      "id": "D025",
+      "query": "我吃东西以后总想吐，胃口也不好",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "恶心",
+          "食欲差"
+        ]
+      }
+    },
+    {
+      "id": "D026",
+      "query": "我得了感冒，应该挂哪个科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "感冒"
+        ]
+      }
+    },
+    {
+      "id": "D027",
+      "query": "高血压复查一般看什么科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "高血压"
+        ]
+      }
+    },
+    {
+      "id": "D028",
+      "query": "糖尿病要去哪个科看？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "糖尿病"
+        ]
+      }
+    },
+    {
+      "id": "D029",
+      "query": "胃炎应该挂消化科吗？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "胃炎"
+        ]
+      }
+    },
+    {
+      "id": "D030",
+      "query": "鼻炎看哪个科比较合适？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "鼻炎"
+        ]
+      }
+    },
+    {
+      "id": "D031",
+      "query": "肺炎复诊挂什么科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "肺炎"
+        ]
+      }
+    },
+    {
+      "id": "D032",
+      "query": "甲亢需要挂内分泌科吗？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "甲亢"
+        ]
+      }
+    },
+    {
+      "id": "D033",
+      "query": "痛风发作应该去哪个科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "痛风"
+        ]
+      }
+    },
+    {
+      "id": "D034",
+      "query": "湿疹要看皮肤科吗？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "湿疹"
+        ]
+      }
+    },
+    {
+      "id": "D035",
+      "query": "肾结石应该挂泌尿外科吗？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "肾结石"
+        ]
+      }
+    },
+    {
+      "id": "D036",
+      "query": "子宫肌瘤一般挂妇科还是肿瘤科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "子宫肌瘤"
+        ]
+      }
+    },
+    {
+      "id": "D037",
+      "query": "乳腺增生需要去哪个科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "乳腺增生"
+        ]
+      }
+    },
+    {
+      "id": "D038",
+      "query": "颈椎病应该挂骨科吗？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "颈椎病"
+        ]
+      }
+    },
+    {
+      "id": "D039",
+      "query": "抑郁症去医院看什么科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "抑郁症"
+        ]
+      }
+    },
+    {
+      "id": "D040",
+      "query": "冠心病复查挂哪个科？",
+      "expect": {
+        "triage_route": "disease",
+        "disease_entities": [
+          "冠心病"
+        ]
+      }
+    },
+    {
+      "id": "D041",
+      "query": "我感冒了，现在咳嗽流鼻涕，应该挂什么科？",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "咳嗽",
+          "流鼻涕"
+        ],
+        "disease_entities": [
+          "感冒"
+        ]
+      }
+    },
+    {
+      "id": "D042",
+      "query": "我有高血压，最近头晕得厉害",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "头晕"
+        ],
+        "disease_entities": [
+          "高血压"
+        ]
+      }
+    },
+    {
+      "id": "D043",
+      "query": "糖尿病患者最近脚麻，需要看哪个科？",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "脚麻"
+        ],
+        "disease_entities": [
+          "糖尿病"
+        ]
+      }
+    },
+    {
+      "id": "D044",
+      "query": "胃炎又犯了，饭后胃疼反酸",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "胃疼",
+          "反酸"
+        ],
+        "disease_entities": [
+          "胃炎"
+        ]
+      }
+    },
+    {
+      "id": "D045",
+      "query": "鼻炎最近加重了，鼻塞打喷嚏很严重",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "鼻塞",
+          "打喷嚏"
+        ],
+        "disease_entities": [
+          "鼻炎"
+        ]
+      }
+    },
+    {
+      "id": "D046",
+      "query": "肺炎好了以后还是一直咳嗽",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "咳嗽"
+        ],
+        "disease_entities": [
+          "肺炎"
+        ]
+      }
+    },
+    {
+      "id": "D047",
+      "query": "甲亢最近心慌手抖，应该去哪看？",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "心慌",
+          "手抖"
+        ],
+        "disease_entities": [
+          "甲亢"
+        ]
+      }
+    },
+    {
+      "id": "D048",
+      "query": "痛风发作了，脚趾红肿疼",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "脚趾红肿疼痛"
+        ],
+        "disease_entities": [
+          "痛风"
+        ]
+      }
+    },
+    {
+      "id": "D049",
+      "query": "湿疹很痒，还开始脱皮",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "瘙痒",
+          "脱皮"
+        ],
+        "disease_entities": [
+          "湿疹"
+        ]
+      }
+    },
+    {
+      "id": "D050",
+      "query": "肾结石发作，腰疼还有尿血",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "腰疼",
+          "尿血"
+        ],
+        "disease_entities": [
+          "肾结石"
+        ]
+      }
+    },
+    {
+      "id": "D051",
+      "query": "子宫肌瘤最近月经量变多了",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "月经量多"
+        ],
+        "disease_entities": [
+          "子宫肌瘤"
+        ]
+      }
+    },
+    {
+      "id": "D052",
+      "query": "颈椎病导致我手麻，挂什么科？",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "手麻"
+        ],
+        "disease_entities": [
+          "颈椎病"
+        ]
+      }
+    },
+    {
+      "id": "D053",
+      "query": "抑郁症最近睡不着，情绪也很低落",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "失眠",
+          "情绪低落"
+        ],
+        "disease_entities": [
+          "抑郁症"
+        ]
+      }
+    },
+    {
+      "id": "D054",
+      "query": "冠心病患者最近胸闷胸痛",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "胸闷",
+          "胸痛"
+        ],
+        "disease_entities": [
+          "冠心病"
+        ]
+      }
+    },
+    {
+      "id": "D055",
+      "query": "痔疮出血还有点疼，要挂哪个科？",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "出血",
+          "疼痛"
+        ],
+        "disease_entities": [
+          "痔疮"
+        ]
+      }
+    },
+    {
+      "id": "D056",
+      "query": "我怀疑自己是胃炎，最近饭后上腹部疼",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "饭后上腹痛"
+        ],
+        "disease_entities": [
+          "胃炎"
+        ]
+      }
+    },
+    {
+      "id": "D057",
+      "query": "可能是鼻炎，最近老是鼻塞打喷嚏",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "鼻塞",
+          "打喷嚏"
+        ],
+        "disease_entities": [
+          "鼻炎"
+        ]
+      }
+    },
+    {
+      "id": "D058",
+      "query": "我觉得像痛风，脚趾突然又红又肿",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "脚趾红肿"
+        ],
+        "disease_entities": [
+          "痛风"
+        ]
+      }
+    },
+    {
+      "id": "D059",
+      "query": "会不会是肺炎？我咳嗽发烧好几天了",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "咳嗽",
+          "发烧"
+        ],
+        "disease_entities": [
+          "肺炎"
+        ]
+      }
+    },
+    {
+      "id": "D060",
+      "query": "胸闷会不会是冠心病？",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "胸闷"
+        ],
+        "disease_entities": [
+          "冠心病"
+        ]
+      }
+    },
+    {
+      "id": "D061",
+      "query": "我不是感冒，就是最近咳嗽流鼻涕",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "咳嗽",
+          "流鼻涕"
+        ]
+      }
+    },
+    {
+      "id": "D062",
+      "query": "不是胃炎，就是吃完饭胃胀胃疼",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "饭后胃胀",
+          "胃疼"
+        ]
+      }
+    },
+    {
+      "id": "D063",
+      "query": "医生说排除了肺炎，但我还是咳嗽",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "咳嗽"
+        ]
+      }
+    },
+    {
+      "id": "D064",
+      "query": "没有发烧，就是嗓子疼、鼻塞",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "嗓子疼",
+          "鼻塞"
+        ]
+      }
+    },
+    {
+      "id": "D065",
+      "query": "不是痔疮，就是大便的时候有点疼",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "排便疼痛"
+        ]
+      }
+    },
+    {
+      "id": "D066",
+      "query": "我也说不清，就是肚子隐隐不舒服",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "腹部不适"
+        ]
+      }
+    },
+    {
+      "id": "D067",
+      "query": "最近身体很难受，浑身没劲",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "难受",
+          "乏力"
+        ]
+      }
+    },
+    {
+      "id": "D068",
+      "query": "人很虚，稍微走一会儿就累",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "虚弱",
+          "易疲劳"
+        ]
+      }
+    },
+    {
+      "id": "D069",
+      "query": "小孩这两天发烧咳嗽，晚上睡不好",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "发烧",
+          "咳嗽",
+          "睡眠差"
+        ]
+      }
+    },
+    {
+      "id": "D070",
+      "query": "孕妇肚子一阵一阵疼，需要看哪里？",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "腹痛"
+        ]
+      }
+    },
+    {
+      "id": "D071",
+      "query": "老人突然胸痛，还冒冷汗",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "胸痛",
+          "冒冷汗"
+        ]
+      }
+    },
+    {
+      "id": "D072",
+      "query": "宝宝拉肚子一天了，精神也差",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "腹泻",
+          "精神差"
+        ]
+      }
+    },
+    {
+      "id": "D073",
+      "query": "产后乳房胀痛，还有点发热",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "乳房胀痛",
+          "发热"
+        ]
+      }
+    },
+    {
+      "id": "D074",
+      "query": "孩子喘得厉害，说胸口不舒服",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "气喘",
+          "胸口不适"
+        ]
+      }
+    },
+    {
+      "id": "D075",
+      "query": "我皮肤突然起包，痒得睡不着",
+      "expect": {
+        "triage_route": "symptom",
+        "symptom_entities": [
+          "皮肤起包",
+          "瘙痒"
+        ]
+      }
+    },
+    {
+      "id": "D076",
+      "query": "儿童哮喘发作，喘得很厉害",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "喘息",
+          "气喘"
+        ],
+        "disease_entities": [
+          "哮喘"
+        ]
+      }
+    },
+    {
+      "id": "D077",
+      "query": "老人有高血压，现在头晕恶心",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "头晕",
+          "恶心"
+        ],
+        "disease_entities": [
+          "高血压"
+        ]
+      }
+    },
+    {
+      "id": "D078",
+      "query": "孕妇贫血，最近头晕乏力",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "头晕",
+          "乏力"
+        ],
+        "disease_entities": [
+          "贫血"
+        ]
+      }
+    },
+    {
+      "id": "D079",
+      "query": "小孩手足口病，嘴里有疱疹",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "口腔疱疹"
+        ],
+        "disease_entities": [
+          "手足口病"
+        ]
+      }
+    },
+    {
+      "id": "D080",
+      "query": "宝宝湿疹，脸上红红的还很痒",
+      "expect": {
+        "triage_route": "disease",
+        "symptom_entities": [
+          "皮肤发红",
+          "瘙痒"
+        ],
+        "disease_entities": [
+          "湿疹"
+        ]
+      }
+    },
+    {
+      "id": "D081",
+      "query": "你好，在吗？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D082",
+      "query": "你是谁？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D083",
+      "query": "今天天气怎么样？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D084",
+      "query": "医院几点开门？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D085",
+      "query": "我想挂号",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D086",
+      "query": "帮我推荐一个专家",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D087",
+      "query": "医保能不能报销？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D088",
+      "query": "停车场在哪里？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D089",
+      "query": "我想做体检，多少钱？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D090",
+      "query": "能不能帮我查报告？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D091",
+      "query": "我没有不舒服，就是想问问挂什么科",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D092",
+      "query": "不知道挂哪个科，你帮我看看",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D093",
+      "query": "我想预约明天上午的号",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D094",
+      "query": "医院地址在哪里？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D095",
+      "query": "能不能开病假条？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D096",
+      "query": "我想咨询一下住院流程",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D097",
+      "query": "我要退号怎么操作？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D098",
+      "query": "这个医院哪个医生比较好？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D099",
+      "query": "门诊挂号费多少钱？",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    },
+    {
+      "id": "D100",
+      "query": "我没有症状，就是想做个检查",
+      "expect": {
+        "triage_route": "reject",
+        "diseases": [],
+        "symptom_candidates_empty": true
+      }
+    }
+  ]
+}

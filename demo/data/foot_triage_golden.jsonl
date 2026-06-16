@@ -1,0 +1,118 @@
+{"id": "FT001", "subset": "A", "message": "脚后跟疼", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT002", "subset": "A", "message": "晨起足跟痛不敢着地", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT003", "subset": "A", "message": "走路脚后跟刺痛", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT004", "subset": "A", "message": "脚气怎么办", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT005", "subset": "A", "message": "脚趾缝痒脱皮", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT006", "subset": "A", "message": "脚上起水泡痒", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT007", "subset": "A", "message": "脚麻", "expect_route": "symptom", "expect_chunk_id": "RK0015", "expect_dept": "神经内科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT008", "subset": "A", "message": "双脚发麻", "expect_route": "symptom", "expect_chunk_id": "RK0015", "expect_dept": "神经内科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT009", "subset": "A", "message": "脚趾头麻踩棉花感", "expect_route": "symptom", "expect_chunk_id": "RK0015", "expect_dept": "神经内科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT010", "subset": "A", "message": "脚肿", "expect_route": "symptom", "expect_chunk_id": "RK0016", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT011", "subset": "A", "message": "两脚都肿一按一个坑", "expect_route": "symptom", "expect_chunk_id": "RK0016", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT012", "subset": "A", "message": "脚肿得穿不进鞋", "expect_route": "symptom", "expect_chunk_id": "RK0016", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT013", "subset": "A", "message": "大拇趾外翻", "expect_route": "symptom", "expect_chunk_id": "RK0017", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT014", "subset": "A", "message": "大脚骨疼", "expect_route": "symptom", "expect_chunk_id": "RK0017", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT015", "subset": "A", "message": "穿鞋大脚骨磨得红", "expect_route": "symptom", "expect_chunk_id": "RK0017", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT016", "subset": "A", "message": "脚红肿发热", "expect_route": "symptom", "expect_chunk_id": "RK0018", "expect_dept": "普外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT017", "subset": "A", "message": "脚肿起来摸上去烫", "expect_route": "symptom", "expect_chunk_id": "RK0018", "expect_dept": "普外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT018", "subset": "A", "message": "脚又红又肿越来越疼", "expect_route": "symptom", "expect_chunk_id": "RK0018", "expect_dept": "普外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT019", "subset": "A", "message": "脚臭", "expect_route": "symptom", "expect_chunk_id": "RK0019", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT020", "subset": "A", "message": "脱鞋很臭", "expect_route": "symptom", "expect_chunk_id": "RK0019", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT021", "subset": "A", "message": "脚酸臭味洗脚也不管用", "expect_route": "symptom", "expect_chunk_id": "RK0019", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT022", "subset": "A", "message": "脚底长疣走路疼", "expect_route": "symptom", "expect_chunk_id": "RK0020", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT023", "subset": "A", "message": "脚上黑点走路硌", "expect_route": "symptom", "expect_chunk_id": "RK0020", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT024", "subset": "A", "message": "跖疣表面有黑点", "expect_route": "symptom", "expect_chunk_id": "RK0020", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT025", "subset": "A", "message": "足底筋膜炎", "expect_route": "symptom", "expect_chunk_id": "RK0021", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT026", "subset": "A", "message": "早上起来脚底拉住一样疼", "expect_route": "symptom", "expect_chunk_id": "RK0021", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT027", "subset": "A", "message": "久坐站起来脚底扯着疼", "expect_route": "symptom", "expect_chunk_id": "RK0021", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT028", "subset": "A", "message": "脚背疼", "expect_route": "symptom", "expect_chunk_id": "RK0022", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT029", "subset": "A", "message": "脚面肿了碰着就疼", "expect_route": "symptom", "expect_chunk_id": "RK0022", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT030", "subset": "A", "message": "脚背扭伤走路疼", "expect_route": "symptom", "expect_chunk_id": "RK0022", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT031", "subset": "A", "message": "脚脖子肿", "expect_route": "symptom", "expect_chunk_id": "RK0001", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT032", "subset": "A", "message": "脚脖子肿，昨天扭了", "expect_route": "symptom", "expect_chunk_id": "RK0001", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT033", "subset": "A", "message": "脚踝疼", "expect_route": "symptom", "expect_chunk_id": "RK0002", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT034", "subset": "A", "message": "走路脚踝痛", "expect_route": "symptom", "expect_chunk_id": "RK0002", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT035", "subset": "A", "message": "脚上长鸡眼", "expect_route": "symptom", "expect_chunk_id": "RK0003", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT036", "subset": "A", "message": "脚底硬疙瘩走路扎脚", "expect_route": "symptom", "expect_chunk_id": "RK0003", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT037", "subset": "A", "message": "脚指甲厚发黄", "expect_route": "symptom", "expect_chunk_id": "RK0004", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT038", "subset": "A", "message": "灰指甲样改变", "expect_route": "symptom", "expect_chunk_id": "RK0004", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT039", "subset": "A", "message": "甲沟炎脚大拇指", "expect_route": "symptom", "expect_chunk_id": "RK0005", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT040", "subset": "A", "message": "脚趾甲沟红肿化脓", "expect_route": "symptom", "expect_chunk_id": "RK0005", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT041", "subset": "A", "message": "脚指甲旁边红肿疼", "expect_route": "symptom", "expect_chunk_id": "RK0006", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT042", "subset": "A", "message": "扁平足走路脚底酸", "expect_route": "symptom", "expect_chunk_id": "RK0007", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT043", "subset": "A", "message": "脚冻了红肿", "expect_route": "symptom", "expect_chunk_id": "RK0008", "expect_dept": "烧伤整形外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT044", "subset": "A", "message": "脚指头疼", "expect_route": "symptom", "expect_chunk_id": "RK0009", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT045", "subset": "A", "message": "脚出汗多袜子总是湿", "expect_route": "symptom", "expect_chunk_id": "RK0010", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT046", "subset": "A", "message": "脚冰凉发紫", "expect_route": "symptom", "expect_chunk_id": "RK0011", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT047", "subset": "A", "message": "脚踝僵硬晨僵", "expect_route": "symptom", "expect_chunk_id": "RK0012", "expect_dept": "风湿免疫科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT048", "subset": "A", "message": "脚脖子肿，不能动，皮发紫", "expect_route": "symptom", "expect_chunk_id": "RK0001", "expect_dept": "急诊", "expect_emergency": true, "tags": ["migrated"]}
+{"id": "FT049", "subset": "A", "message": "脚跟底部一支笔样痛", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FT050", "subset": "A", "message": "脚缝发白糜烂痒", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated"]}
+{"id": "FTB001", "subset": "B", "message": "脚后跟疼", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB002", "subset": "B", "message": "晨起足跟痛不敢着地", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB003", "subset": "B", "message": "走路脚后跟刺痛", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB004", "subset": "B", "message": "脚气怎么办", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB005", "subset": "B", "message": "脚趾缝痒脱皮", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB006", "subset": "B", "message": "脚上起水泡痒", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB007", "subset": "B", "message": "脚麻", "expect_route": "symptom", "expect_chunk_id": "RK0015", "expect_dept": "神经内科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB008", "subset": "B", "message": "双脚发麻", "expect_route": "symptom", "expect_chunk_id": "RK0015", "expect_dept": "神经内科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB009", "subset": "B", "message": "脚趾头麻踩棉花感", "expect_route": "symptom", "expect_chunk_id": "RK0015", "expect_dept": "神经内科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB010", "subset": "B", "message": "脚肿", "expect_route": "symptom", "expect_chunk_id": "RK0016", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB011", "subset": "B", "message": "两脚都肿一按一个坑", "expect_route": "symptom", "expect_chunk_id": "RK0016", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB012", "subset": "B", "message": "脚肿得穿不进鞋", "expect_route": "symptom", "expect_chunk_id": "RK0016", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB013", "subset": "B", "message": "大拇趾外翻", "expect_route": "symptom", "expect_chunk_id": "RK0017", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB014", "subset": "B", "message": "大脚骨疼", "expect_route": "symptom", "expect_chunk_id": "RK0017", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB015", "subset": "B", "message": "穿鞋大脚骨磨得红", "expect_route": "symptom", "expect_chunk_id": "RK0017", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB016", "subset": "B", "message": "脚红肿发热", "expect_route": "symptom", "expect_chunk_id": "RK0018", "expect_dept": "普外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB017", "subset": "B", "message": "脚肿起来摸上去烫", "expect_route": "symptom", "expect_chunk_id": "RK0018", "expect_dept": "普外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB018", "subset": "B", "message": "脚又红又肿越来越疼", "expect_route": "symptom", "expect_chunk_id": "RK0018", "expect_dept": "普外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB019", "subset": "B", "message": "脚臭", "expect_route": "symptom", "expect_chunk_id": "RK0019", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB020", "subset": "B", "message": "脱鞋很臭", "expect_route": "symptom", "expect_chunk_id": "RK0019", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB021", "subset": "B", "message": "脚酸臭味洗脚也不管用", "expect_route": "symptom", "expect_chunk_id": "RK0019", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB022", "subset": "B", "message": "脚底长疣走路疼", "expect_route": "symptom", "expect_chunk_id": "RK0020", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB023", "subset": "B", "message": "脚上黑点走路硌", "expect_route": "symptom", "expect_chunk_id": "RK0020", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB024", "subset": "B", "message": "跖疣表面有黑点", "expect_route": "symptom", "expect_chunk_id": "RK0020", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB025", "subset": "B", "message": "足底筋膜炎", "expect_route": "symptom", "expect_chunk_id": "RK0021", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB026", "subset": "B", "message": "早上起来脚底拉住一样疼", "expect_route": "symptom", "expect_chunk_id": "RK0021", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB027", "subset": "B", "message": "久坐站起来脚底扯着疼", "expect_route": "symptom", "expect_chunk_id": "RK0021", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB028", "subset": "B", "message": "脚背疼", "expect_route": "symptom", "expect_chunk_id": "RK0022", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB029", "subset": "B", "message": "脚面肿了碰着就疼", "expect_route": "symptom", "expect_chunk_id": "RK0022", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB030", "subset": "B", "message": "脚背扭伤走路疼", "expect_route": "symptom", "expect_chunk_id": "RK0022", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB031", "subset": "B", "message": "脚脖子肿", "expect_route": "symptom", "expect_chunk_id": "RK0001", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB032", "subset": "B", "message": "脚脖子肿，昨天扭了", "expect_route": "symptom", "expect_chunk_id": "RK0001", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB033", "subset": "B", "message": "脚踝疼", "expect_route": "symptom", "expect_chunk_id": "RK0002", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB034", "subset": "B", "message": "走路脚踝痛", "expect_route": "symptom", "expect_chunk_id": "RK0002", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB035", "subset": "B", "message": "脚上长鸡眼", "expect_route": "symptom", "expect_chunk_id": "RK0003", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB036", "subset": "B", "message": "脚底硬疙瘩走路扎脚", "expect_route": "symptom", "expect_chunk_id": "RK0003", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB037", "subset": "B", "message": "脚指甲厚发黄", "expect_route": "symptom", "expect_chunk_id": "RK0004", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB038", "subset": "B", "message": "灰指甲样改变", "expect_route": "symptom", "expect_chunk_id": "RK0004", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB039", "subset": "B", "message": "甲沟炎脚大拇指", "expect_route": "symptom", "expect_chunk_id": "RK0005", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB040", "subset": "B", "message": "脚趾甲沟红肿化脓", "expect_route": "symptom", "expect_chunk_id": "RK0005", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB041", "subset": "B", "message": "脚指甲旁边红肿疼", "expect_route": "symptom", "expect_chunk_id": "RK0006", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB042", "subset": "B", "message": "扁平足走路脚底酸", "expect_route": "symptom", "expect_chunk_id": "RK0007", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB043", "subset": "B", "message": "脚冻了红肿", "expect_route": "symptom", "expect_chunk_id": "RK0008", "expect_dept": "烧伤整形外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB044", "subset": "B", "message": "脚指头疼", "expect_route": "symptom", "expect_chunk_id": "RK0009", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB045", "subset": "B", "message": "脚出汗多袜子总是湿", "expect_route": "symptom", "expect_chunk_id": "RK0010", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB046", "subset": "B", "message": "脚冰凉发紫", "expect_route": "symptom", "expect_chunk_id": "RK0011", "expect_dept": "血管外科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB047", "subset": "B", "message": "脚踝僵硬晨僵", "expect_route": "symptom", "expect_chunk_id": "RK0012", "expect_dept": "风湿免疫科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB049", "subset": "B", "message": "脚跟底部一支笔样痛", "expect_route": "symptom", "expect_chunk_id": "RK0013", "expect_dept": "骨科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTB050", "subset": "B", "message": "脚缝发白糜烂痒", "expect_route": "symptom", "expect_chunk_id": "RK0014", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["migrated", "dept"]}
+{"id": "FTC001", "subset": "C", "message": "脚气怎么办", "expect_route": "disease", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["disease"]}
+{"id": "FTC002", "subset": "C", "message": "香港脚看什么科", "expect_route": "disease", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["disease"]}
+{"id": "FTC003", "subset": "C", "message": "灰指甲挂什么科", "expect_route": "disease", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["disease"]}
+{"id": "FTC004", "subset": "C", "message": "大脚趾痛风", "expect_route": "disease", "expect_dept": "风湿免疫科", "expect_emergency": false, "tags": ["disease"]}
+{"id": "FTC005", "subset": "C", "message": "脚底疣治疗", "expect_route": "disease", "expect_dept": "皮肤科", "expect_emergency": false, "tags": ["disease"]}
+{"id": "FTC006", "subset": "C", "message": "大脚骨疼", "expect_route": "disease", "expect_dept": "骨科", "expect_emergency": false, "tags": ["disease"]}
+{"id": "FTD001", "subset": "D", "message": "", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD002", "subset": "D", "message": "你好", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD003", "subset": "D", "message": "怎么挂号", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD004", "subset": "D", "message": "怎么预约", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD005", "subset": "D", "message": "今天天气怎么样", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD006", "subset": "D", "message": "帮我查报告", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD007", "subset": "D", "message": "医院几点开门", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD008", "subset": "D", "message": "谢谢", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD009", "subset": "D", "message": "在吗", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTD010", "subset": "D", "message": "请问一下", "expect_route": "reject", "expect_emergency": false, "tags": ["reject"]}
+{"id": "FTE001", "subset": "E", "message": "外伤后脚畸形不能走路", "expect_route": "symptom", "expect_dept": "急诊", "expect_emergency": true, "tags": ["emergency"]}
+{"id": "FTE002", "subset": "E", "message": "脚又红又肿越来越疼还发烧", "expect_route": "symptom", "expect_dept": "急诊", "expect_emergency": true, "tags": ["emergency"]}
+{"id": "FTE003", "subset": "E", "message": "脚脖子肿，不能动，皮发紫", "expect_route": "symptom", "expect_dept": "急诊", "expect_emergency": true, "tags": ["emergency"]}

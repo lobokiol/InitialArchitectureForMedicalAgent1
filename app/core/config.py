@@ -24,8 +24,15 @@ DASHSCOPE_API_KEY: str = _require_env("DASHSCOPE_API_KEY")
 ES_URL: str = os.getenv("ES_URL", "http://localhost:9200")
 MILVUS_URI: str = os.getenv("MILVUS_URI", "http://localhost:19530")
 REDIS_URI: str = os.getenv("REDIS_URI", "redis://localhost:6379")
+USE_MEMORY_CHECKPOINTER: bool = os.getenv("USE_MEMORY_CHECKPOINTER", "false").lower() in (
+    "1",
+    "true",
+    "yes",
+)
 
 # Index / collection defaults
+RAG_KB_INDEX: str = os.getenv("RAG_KB_INDEX", "rag_knowledge")
+DISEASE_KB_INDEX: str = os.getenv("DISEASE_KB_INDEX", "disease_kb")
 ES_INDEX_NAME: str = os.getenv("ES_INDEX_NAME", "hospital_procedures")
 MILVUS_COLLECTION: str = os.getenv("MILVUS_COLLECTION", "medical_knowledge")
 

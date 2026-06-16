@@ -1,0 +1,2561 @@
+﻿{
+  "summary": {
+    "total": 100,
+    "passed": 80,
+    "intent_accuracy": 0.97,
+    "ner_accuracy": 0.81
+  },
+  "results": [
+    {
+      "id": "D001",
+      "query": "鏈€杩戞垜姣忔鍚冮キ鍚庯紝鑲氬瓙閮芥湁鐐逛笉鑸掓湇锛屽亸鑲氳剱涓婇潰閭ｄ竴鍧楋紝涓€闃典竴闃靛湴缁炵棝",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鑲氳剱涓婃柟鐤肩棝",
+        "chief_symptom_canonical": "鑵圭棝",
+        "slot_table_code": "abdominal_pain_v1",
+        "symptom_candidates": [
+          "楗悗",
+          "鑲氳剱涓婃柟鐤肩棝",
+          "涓€闃典竴闃?,
+          "缁炵棝"
+        ],
+        "companion_symptoms": [
+          "楗悗",
+          "涓€闃典竴闃?,
+          "缁炵棝"
+        ],
+        "hints": {
+          "涓荤棁": [
+            "涓€闃典竴闃?,
+            "鑲氳剱涓婇潰",
+            "楗悗",
+            "缁炵棝"
+          ],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D002",
+      "query": "鎴戣繖涓ゅぉ涓€鐩村ご鐤硷紝灏ゅ叾涓嬪崍鏇存槑鏄撅紝鐫′竴瑙変篃娌″ソ",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "澶寸柤",
+        "chief_symptom_canonical": "澶寸柤",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "澶寸柤",
+          "涓嬪崍澶寸柤鏄庢樉",
+          "鐫′竴瑙夊ご鐤兼病濂?
+        ],
+        "companion_symptoms": [
+          "涓嬪崍澶寸柤鏄庢樉",
+          "鐫′竴瑙夊ご鐤兼病濂?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D003",
+      "query": "鏈€杩戝挸鍡芥瘮杈冨帀瀹筹紝鏅氫笂韬轰笅浠ュ悗鍜冲緱鏇村",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍜冲椊",
+        "chief_symptom_canonical": "鍜冲椊",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍜冲椊",
+          "鏅氫笂韬轰笅浠ュ悗鍜冲椊"
+        ],
+        "companion_symptoms": [
+          "鏅氫笂韬轰笅浠ュ悗鍜冲椊"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D004",
+      "query": "浠婂ぉ鏃╀笂寮€濮嬪彂鐑э紝閲忎簡涓€涓?38 搴﹀锛岃繕鏈夌偣鎬曞喎",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍙戠儳",
+        "chief_symptom_canonical": "鍙戠儳",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍙戠儳",
+          "鎬曞喎"
+        ],
+        "companion_symptoms": [
+          "鎬曞喎"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D005",
+      "query": "鍡撳瓙鐤间簡涓夊ぉ锛屽捊鍙ｆ按鐨勬椂鍊欑壒鍒槑鏄?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍡撳瓙鐤?,
+        "chief_symptom_canonical": "鍡撳瓙鐤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍡撳瓙鐤?,
+          "鍜藉彛姘存椂鐤肩棝鏄庢樉"
+        ],
+        "companion_symptoms": [
+          "鍜藉彛姘存椂鐤肩棝鏄庢樉"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D006",
+      "query": "杩欏嚑澶╅蓟瀛愪竴鐩村牭锛岃繕娴佹竻榧绘稌",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "娴佹竻榧绘稌",
+        "chief_symptom_canonical": "娴佹竻榧绘稌",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "榧诲瓙鍫?,
+          "娴佹竻榧绘稌"
+        ],
+        "companion_symptoms": [
+          "榧诲瓙鍫?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D007",
+      "query": "鎴戣兏鍙ｆ湁鐐归椃锛岃蛋蹇竴鐐瑰氨鍠樹笉涓婃皵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "璧板揩涓€鐐瑰枠涓嶄笂姘?,
+        "chief_symptom_canonical": "璧板揩涓€鐐瑰枠涓嶄笂姘?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑳稿彛闂?,
+          "璧板揩涓€鐐瑰枠涓嶄笂姘?
+        ],
+        "companion_symptoms": [
+          "鑳稿彛闂?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D008",
+      "query": "鏈€杩戞€绘槸澶存檿锛岀珯璧锋潵鐨勬椂鍊欐洿鏄庢樉",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "澶存檿",
+        "chief_symptom_canonical": "澶存檿",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "澶存檿",
+          "绔欒捣鏉ユ椂澶存檿鍔犻噸"
+        ],
+        "companion_symptoms": [
+          "绔欒捣鏉ユ椂澶存檿鍔犻噸"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D009",
+      "query": "鎴戠溂鐫涚孩绾㈢殑锛岃繕鏈夌偣鐥掞紝鏃╀笂璧锋潵鏈夌溂灞?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鐪肩孩', '鐪肩棐', '鐪奸儴鍒嗘硨鐗?], got ['鐪肩潧绾㈢孩鐨?, '鐪肩潧鐥?, '鏃╀笂璧锋潵鏈夌溂灞?, '鐪肩潧鐥?, '鏃╀笂璧锋潵鏈夌溂灞?, '鐪肩潧绾㈢孩鐨?, '鐪肩潧绾㈢孩鐨?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鐪肩潧绾㈢孩鐨?,
+        "chief_symptom_canonical": "鐪肩潧绾㈢孩鐨?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鐪肩潧绾㈢孩鐨?,
+          "鐪肩潧鐥?,
+          "鏃╀笂璧锋潵鏈夌溂灞?
+        ],
+        "companion_symptoms": [
+          "鐪肩潧鐥?,
+          "鏃╀笂璧锋潵鏈夌溂灞?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D010",
+      "query": "鏈€杩戣叞閰歌叞鐤硷紝鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇",
+        "chief_symptom_canonical": "鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑵伴吀",
+          "鑵扮柤",
+          "鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇"
+        ],
+        "companion_symptoms": [
+          "鑵伴吀",
+          "鑵扮柤"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D011",
+      "query": "鎴戝彸涓嬭吂涓€闃典竴闃电柤锛屾寜涓€涓嬩篃鐤?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鍙充笅鑵圭柤鐥?, '鍘嬬棝'], got ['鍙充笅鑵逛竴闃典竴闃电柤', '鍙充笅鑵规寜涓€涓嬩篃鐤?, '涓€闃典竴闃?, '鍙充笅鑵规寜涓€涓嬩篃鐤?, '涓€闃典竴闃?, '鍙充笅鑵逛竴闃典竴闃电柤', '鍙充笅鑵逛竴闃典竴闃电柤']"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍙充笅鑵逛竴闃典竴闃电柤",
+        "chief_symptom_canonical": "鍙充笅鑵逛竴闃典竴闃电柤",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍙充笅鑵逛竴闃典竴闃电柤",
+          "鍙充笅鑵规寜涓€涓嬩篃鐤?,
+          "涓€闃典竴闃?
+        ],
+        "companion_symptoms": [
+          "鍙充笅鑵规寜涓€涓嬩篃鐤?,
+          "涓€闃典竴闃?
+        ],
+        "hints": {
+          "涓荤棁": [
+            "涓€闃典竴闃?
+          ],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D012",
+      "query": "杩欎袱澶╂媺鑲氬瓙锛屼竴澶╄窇鍘曟墍濂藉嚑娆?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "涓€澶╄窇鍘曟墍濂藉嚑娆?,
+        "chief_symptom_canonical": "涓€澶╄窇鍘曟墍濂藉嚑娆?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鎷夎倸瀛?,
+          "涓€澶╄窇鍘曟墍濂藉嚑娆?
+        ],
+        "companion_symptoms": [
+          "鎷夎倸瀛?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D013",
+      "query": "灏忎究鐨勬椂鍊欐湁鍒虹棝鎰燂紝鑰屼笖鑰佹兂涓婂帟鎵€",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "灏忎究鍒虹棝",
+        "chief_symptom_canonical": "灏忎究鍒虹棝",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "灏忎究鍒虹棝",
+          "灏块"
+        ],
+        "companion_symptoms": [
+          "灏块"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D014",
+      "query": "鎴戞渶杩戣儍閲屾€绘槸鍙嶉吀锛屽悆瀹岄キ杩樿儉",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "楗悗鑵硅儉",
+        "chief_symptom_canonical": "鑵硅儉",
+        "slot_table_code": "abdominal_distension_v1",
+        "symptom_candidates": [
+          "鑳冮噷鍙嶉吀",
+          "楗悗鑵硅儉"
+        ],
+        "companion_symptoms": [
+          "鑳冮噷鍙嶉吀"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D015",
+      "query": "鏅氫笂鎬荤潯涓嶇潃锛岃汉涓嬩互鍚庤剳瀛愬仠涓嶄笅鏉?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['澶辩湢'], got ['鏅氫笂鎬荤潯涓嶇潃', '韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵', '鏅氫笂鎬荤潯涓嶇潃', '韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵', '韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵']"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵",
+        "chief_symptom_canonical": "韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鏅氫笂鎬荤潯涓嶇潃",
+          "韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵"
+        ],
+        "companion_symptoms": [
+          "鏅氫笂鎬荤潯涓嶇潃"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D016",
+      "query": "鏈€杩戠毊鑲よ捣浜嗕竴鐗囩孩鐤癸紝寰堢棐锛岃秺鎸犺秺鏄庢樉",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鎸犲悗绾㈢柟鍔犻噸",
+        "chief_symptom_canonical": "鎸犲悗绾㈢柟鍔犻噸",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鐨偆绾㈢柟",
+          "鐨偆鐦欑棐",
+          "鎸犲悗绾㈢柟鍔犻噸"
+        ],
+        "companion_symptoms": [
+          "鐨偆绾㈢柟",
+          "鐨偆鐦欑棐"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D017",
+      "query": "鎴戣啙鐩栦笂涓嬫ゼ姊殑鏃跺€欑柤锛屽钩鏃惰蛋璺繕濂?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鑶濈洊鐤?, '涓婁笅妤煎姞閲?], got ['鑶濈洊涓婁笅妤兼鏃剁柤鐥?, '鑶濈洊涓婁笅妤兼鏃剁柤鐥?, '鑶濈洊涓婁笅妤兼鏃剁柤鐥?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鑶濈洊涓婁笅妤兼鏃剁柤鐥?,
+        "chief_symptom_canonical": "鑶濈洊涓婁笅妤兼鏃剁柤鐥?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑶濈洊涓婁笅妤兼鏃剁柤鐥?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D018",
+      "query": "鐗欑柤浜嗕袱澶╋紝鏅氫笂鐤煎緱鏇村帀瀹?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鐗欑柤",
+        "chief_symptom_canonical": "鐗欑柤",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鐗欑柤",
+          "鏅氫笂鐗欑柤鏇村帀瀹?
+        ],
+        "companion_symptoms": [
+          "鏅氫笂鐗欑柤鏇村帀瀹?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D019",
+      "query": "鑰虫湹閲岄潰鐤硷紝杩樻湁鐐瑰惉涓嶆竻",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鑰崇棝', '鍚姏涓嬮檷'], got ['鑰虫湹閲岄潰鐤?, '鍚笉娓?, '鍚笉娓?, '鑰虫湹閲岄潰鐤?, '鑰虫湹閲岄潰鐤?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鑰虫湹閲岄潰鐤?,
+        "chief_symptom_canonical": "鑰虫湹閲岄潰鐤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑰虫湹閲岄潰鐤?,
+          "鍚笉娓?
+        ],
+        "companion_symptoms": [
+          "鍚笉娓?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D020",
+      "query": "鏈€杩戞墜鎸囧彂楹伙紝灏ゅ叾鏃╀笂璧峰簥鏄庢樉",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鎵嬫寚楹绘湪'], got ['鎵嬫寚鍙戦夯', '鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉', '鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉', '鎵嬫寚鍙戦夯', '鎵嬫寚鍙戦夯']"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鎵嬫寚鍙戦夯",
+        "chief_symptom_canonical": "鎵嬫寚鍙戦夯",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鎵嬫寚鍙戦夯",
+          "鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉"
+        ],
+        "companion_symptoms": [
+          "鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D021",
+      "query": "鎴戞劅瑙夊績鎱岋紝蹇冭烦鏈夋椂鍊欑壒鍒揩",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "蹇冩偢",
+        "chief_symptom_canonical": "蹇冩偢",
+        "slot_table_code": "palpitation_v1",
+        "symptom_candidates": [
+          "蹇冩偢"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [
+            "蹇冩厡"
+          ],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D022",
+      "query": "鏈€杩戞湀缁忛噺鐗瑰埆澶氾紝鑰屼笖鑲氬瓙涔熺柤",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鏈堢粡閲忕壒鍒",
+        "chief_symptom_canonical": "鏈堢粡閲忕壒鍒",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鏈堢粡閲忕壒鍒",
+          "鑲氬瓙鐤?
+        ],
+        "companion_symptoms": [
+          "鑲氬瓙鐤?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D023",
+      "query": "鎴戣剸瀛愬兊纭紝浣庡ご涔呬簡鍚庤剳鍕轰篃鐤?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鑴栧瓙鍍电‖",
+        "chief_symptom_canonical": "鑴栧瓙鍍电‖",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑴栧瓙鍍电‖",
+          "鍚庤剳鍕虹柤"
+        ],
+        "companion_symptoms": [
+          "鍚庤剳鍕虹柤"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D024",
+      "query": "鏈€杩戞€昏寰楀緢绱紝娌″姏姘旓紝浼戞伅浜嗕篃缂撲笉杩囨潵",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['涔忓姏', '鐤插姵'], got ['寰堢疮', '娌″姏姘?, '浼戞伅浜嗕篃缂撲笉杩囨潵', '娌″姏姘?, '浼戞伅浜嗕篃缂撲笉杩囨潵', '寰堢疮', '寰堢疮']"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "寰堢疮",
+        "chief_symptom_canonical": "寰堢疮",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "寰堢疮",
+          "娌″姏姘?,
+          "浼戞伅浜嗕篃缂撲笉杩囨潵"
+        ],
+        "companion_symptoms": [
+          "娌″姏姘?,
+          "浼戞伅浜嗕篃缂撲笉杩囨潵"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D025",
+      "query": "鎴戝悆涓滆タ浠ュ悗鎬绘兂鍚愶紝鑳冨彛涔熶笉濂?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鎭跺績', '椋熸宸?], got ['鍚冧笢瑗夸互鍚庢€绘兂鍚?, '鑳冨彛涓嶅ソ', '鑳冨彛涓嶅ソ', '鍚冧笢瑗夸互鍚庢€绘兂鍚?, '鍚冧笢瑗夸互鍚庢€绘兂鍚?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍚冧笢瑗夸互鍚庢€绘兂鍚?,
+        "chief_symptom_canonical": "鍚冧笢瑗夸互鍚庢€绘兂鍚?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍚冧笢瑗夸互鍚庢€绘兂鍚?,
+          "鑳冨彛涓嶅ソ"
+        ],
+        "companion_symptoms": [
+          "鑳冨彛涓嶅ソ"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D026",
+      "query": "鎴戝緱浜嗘劅鍐掞紝搴旇鎸傚摢涓锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鎰熷啋"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D027",
+      "query": "楂樿鍘嬪鏌ヤ竴鑸湅浠€涔堢锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "楂樿鍘?
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D028",
+      "query": "绯栧翱鐥呰鍘诲摢涓鐪嬶紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "绯栧翱鐥?
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D029",
+      "query": "鑳冪値搴旇鎸傛秷鍖栫鍚楋紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑳冪値"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": [
+            "鑳冪値"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D030",
+      "query": "榧荤値鐪嬪摢涓姣旇緝鍚堥€傦紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "榧荤値"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D031",
+      "query": "鑲虹値澶嶈瘖鎸備粈涔堢锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑲虹値"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D032",
+      "query": "鐢蹭孩闇€瑕佹寕鍐呭垎娉岀鍚楋紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鐢蹭孩"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": [
+            "鐢蹭孩"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D033",
+      "query": "鐥涢鍙戜綔搴旇鍘诲摢涓锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鐥涢"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D034",
+      "query": "婀跨柟瑕佺湅鐨偆绉戝悧锛?,
+      "passed": false,
+      "intent_ok": false,
+      "ner_ok": false,
+      "failures": [
+        "triage_route: expected 'disease', got 'symptom'",
+        "disease_entities recall 0% < 100%, missed ['婀跨柟'], got []"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "婀跨柟",
+        "chief_symptom_canonical": "婀跨柟",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "婀跨柟"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D035",
+      "query": "鑲剧粨鐭冲簲璇ユ寕娉屽翱澶栫鍚楋紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑲剧粨鐭?
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D036",
+      "query": "瀛愬鑲岀槫涓€鑸寕濡囩杩樻槸鑲跨槫绉戯紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "瀛愬鑲岀槫"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D037",
+      "query": "涔宠吅澧炵敓闇€瑕佸幓鍝釜绉戯紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "涔宠吅澧炵敓"
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D038",
+      "query": "棰堟鐥呭簲璇ユ寕楠ㄧ鍚楋紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "棰堟鐥?
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D039",
+      "query": "鎶戦儊鐥囧幓鍖婚櫌鐪嬩粈涔堢锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鎶戦儊鐥?
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D040",
+      "query": "鍐犲績鐥呭鏌ユ寕鍝釜绉戯紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鍐犲績鐥?
+        ],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D041",
+      "query": "鎴戞劅鍐掍簡锛岀幇鍦ㄥ挸鍡芥祦榧绘稌锛屽簲璇ユ寕浠€涔堢锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鎰熷啋"
+        ],
+        "chief_symptom": "鍜冲椊",
+        "chief_symptom_canonical": "鍜冲椊",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍜冲椊",
+          "娴侀蓟娑?
+        ],
+        "companion_symptoms": [
+          "娴侀蓟娑?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D042",
+      "query": "鎴戞湁楂樿鍘嬶紝鏈€杩戝ご鏅曞緱鍘夊",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "楂樿鍘?
+        ],
+        "chief_symptom": "澶存檿",
+        "chief_symptom_canonical": "澶存檿",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "澶存檿"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D043",
+      "query": "绯栧翱鐥呮偅鑰呮渶杩戣剼楹伙紝闇€瑕佺湅鍝釜绉戯紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "绯栧翱鐥?
+        ],
+        "chief_symptom": "鑴氶夯",
+        "chief_symptom_canonical": "鑴氶夯",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑴氶夯"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D044",
+      "query": "鑳冪値鍙堢姱浜嗭紝楗悗鑳冪柤鍙嶉吀",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑳冪値"
+        ],
+        "chief_symptom": "鍙嶉吀",
+        "chief_symptom_canonical": "鍙嶉吀",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "楗悗",
+          "鑳冪柤",
+          "鍙嶉吀"
+        ],
+        "companion_symptoms": [
+          "楗悗",
+          "鑳冪柤"
+        ],
+        "hints": {
+          "涓荤棁": [
+            "楗悗"
+          ],
+          "鐤剧梾": [
+            "鑳冪値"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D045",
+      "query": "榧荤値鏈€杩戝姞閲嶄簡锛岄蓟濉炴墦鍠峰殢寰堜弗閲?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "榧荤値"
+        ],
+        "chief_symptom": "鎵撳柗鍤?,
+        "chief_symptom_canonical": "鎵撳柗鍤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "榧诲",
+          "鎵撳柗鍤?
+        ],
+        "companion_symptoms": [
+          "榧诲"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D046",
+      "query": "鑲虹値濂戒簡浠ュ悗杩樻槸涓€鐩村挸鍡?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑲虹値"
+        ],
+        "chief_symptom": "鍜冲椊",
+        "chief_symptom_canonical": "鍜冲椊",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍜冲椊"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D047",
+      "query": "鐢蹭孩鏈€杩戝績鎱屾墜鎶栵紝搴旇鍘诲摢鐪嬶紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鐢蹭孩"
+        ],
+        "chief_symptom": "蹇冩偢",
+        "chief_symptom_canonical": "蹇冩偢",
+        "slot_table_code": "palpitation_v1",
+        "symptom_candidates": [
+          "蹇冩偢",
+          "鎵嬫姈"
+        ],
+        "companion_symptoms": [
+          "鎵嬫姈"
+        ],
+        "hints": {
+          "涓荤棁": [
+            "蹇冩厡",
+            "鎵嬫姈"
+          ],
+          "鐤剧梾": [
+            "鐢蹭孩"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D048",
+      "query": "鐥涢鍙戜綔浜嗭紝鑴氳毒绾㈣偪鐤?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鐥涢"
+        ],
+        "chief_symptom": "鑴氳毒绾㈣偪鐤?,
+        "chief_symptom_canonical": "鑴氳毒绾㈣偪鐤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑴氳毒绾㈣偪鐤?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D049",
+      "query": "婀跨柟寰堢棐锛岃繕寮€濮嬭劚鐨?,
+      "passed": false,
+      "intent_ok": false,
+      "ner_ok": false,
+      "failures": [
+        "triage_route: expected 'disease', got 'symptom'",
+        "disease_entities recall 0% < 100%, missed ['婀跨柟'], got []"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "寰堢棐",
+        "chief_symptom_canonical": "寰堢棐",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "寰堢棐",
+          "鑴辩毊"
+        ],
+        "companion_symptoms": [
+          "鑴辩毊"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D050",
+      "query": "鑲剧粨鐭冲彂浣滐紝鑵扮柤杩樻湁灏胯",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑲剧粨鐭?
+        ],
+        "chief_symptom": "鑵扮柤",
+        "chief_symptom_canonical": "鑵扮柤",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑵扮柤",
+          "灏胯"
+        ],
+        "companion_symptoms": [
+          "灏胯"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D051",
+      "query": "瀛愬鑲岀槫鏈€杩戞湀缁忛噺鍙樺浜?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鏈堢粡閲忓'], got ['鏈堢粡閲忓彉澶?, '鏈堢粡閲忓彉澶?, '鏈堢粡閲忓彉澶?]"
+      ],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "瀛愬鑲岀槫"
+        ],
+        "chief_symptom": "鏈堢粡閲忓彉澶?,
+        "chief_symptom_canonical": "鏈堢粡閲忓彉澶?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鏈堢粡閲忓彉澶?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D052",
+      "query": "棰堟鐥呭鑷存垜鎵嬮夯锛屾寕浠€涔堢锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "棰堟鐥?
+        ],
+        "chief_symptom": "鎵嬮夯",
+        "chief_symptom_canonical": "鎵嬮夯",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鎵嬮夯"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D053",
+      "query": "鎶戦儊鐥囨渶杩戠潯涓嶇潃锛屾儏缁篃寰堜綆钀?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鎶戦儊鐥?
+        ],
+        "chief_symptom": "鐫′笉鐫€",
+        "chief_symptom_canonical": "鐫′笉鐫€",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鐫′笉鐫€",
+          "鎯呯华浣庤惤"
+        ],
+        "companion_symptoms": [
+          "鎯呯华浣庤惤"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D054",
+      "query": "鍐犲績鐥呮偅鑰呮渶杩戣兏闂疯兏鐥?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鍐犲績鐥?
+        ],
+        "chief_symptom": "鑳哥棝",
+        "chief_symptom_canonical": "鑳哥棝",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑳搁椃",
+          "鑳哥棝"
+        ],
+        "companion_symptoms": [
+          "鑳搁椃"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D055",
+      "query": "鐥旂柈鍑鸿杩樻湁鐐圭柤锛岃鎸傚摢涓锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鐥旂柈"
+        ],
+        "chief_symptom": "鐥旂柈鍑鸿",
+        "chief_symptom_canonical": "鐥旂柈鍑鸿",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鐥旂柈鍑鸿",
+          "鐤?
+        ],
+        "companion_symptoms": [
+          "鐤?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D056",
+      "query": "鎴戞€€鐤戣嚜宸辨槸鑳冪値锛屾渶杩戦キ鍚庝笂鑵归儴鐤?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑳冪値"
+        ],
+        "chief_symptom": "鑲氳剱涓婃柟鐤肩棝",
+        "chief_symptom_canonical": "鑵圭棝",
+        "slot_table_code": "abdominal_pain_v1",
+        "symptom_candidates": [
+          "楗悗",
+          "鑲氳剱涓婃柟鐤肩棝"
+        ],
+        "companion_symptoms": [
+          "楗悗"
+        ],
+        "hints": {
+          "涓荤棁": [
+            "涓婅吂閮?,
+            "楗悗"
+          ],
+          "鐤剧梾": [
+            "鑳冪値"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D057",
+      "query": "鍙兘鏄蓟鐐庯紝鏈€杩戣€佹槸榧诲鎵撳柗鍤?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "榧荤値"
+        ],
+        "chief_symptom": "鎵撳柗鍤?,
+        "chief_symptom_canonical": "鎵撳柗鍤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "榧诲",
+          "鎵撳柗鍤?
+        ],
+        "companion_symptoms": [
+          "榧诲"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D058",
+      "query": "鎴戣寰楀儚鐥涢锛岃剼瓒剧獊鐒跺張绾㈠張鑲?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鑴氳毒绾㈣偪'], got ['鑴氳毒绐佺劧鍙堢孩鍙堣偪', '鑴氳毒绐佺劧鍙堢孩鍙堣偪', '鑴氳毒绐佺劧鍙堢孩鍙堣偪']"
+      ],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鐥涢"
+        ],
+        "chief_symptom": "鑴氳毒绐佺劧鍙堢孩鍙堣偪",
+        "chief_symptom_canonical": "鑴氳毒绐佺劧鍙堢孩鍙堣偪",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑴氳毒绐佺劧鍙堢孩鍙堣偪"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D059",
+      "query": "浼氫笉浼氭槸鑲虹値锛熸垜鍜冲椊鍙戠儳濂藉嚑澶╀簡",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑲虹値"
+        ],
+        "chief_symptom": "鍙戠儳",
+        "chief_symptom_canonical": "鍙戠儳",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍜冲椊",
+          "鍙戠儳"
+        ],
+        "companion_symptoms": [
+          "鍜冲椊"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D060",
+      "query": "鑳搁椃浼氫笉浼氭槸鍐犲績鐥咃紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鍐犲績鐥?
+        ],
+        "chief_symptom": "鑳搁椃",
+        "chief_symptom_canonical": "鑳搁椃",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑳搁椃"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D061",
+      "query": "鎴戜笉鏄劅鍐掞紝灏辨槸鏈€杩戝挸鍡芥祦榧绘稌",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "娴侀蓟娑?,
+        "chief_symptom_canonical": "娴侀蓟娑?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍜冲椊",
+          "娴侀蓟娑?
+        ],
+        "companion_symptoms": [
+          "鍜冲椊"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D062",
+      "query": "涓嶆槸鑳冪値锛屽氨鏄悆瀹岄キ鑳冭儉鑳冪柤",
+      "passed": false,
+      "intent_ok": false,
+      "ner_ok": true,
+      "failures": [
+        "triage_route: expected 'symptom', got 'disease'"
+      ],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鑳冪値"
+        ],
+        "chief_symptom": "楗悗鑳冪柤",
+        "chief_symptom_canonical": "楗悗鑳冪柤",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "楗悗鑳冭儉",
+          "楗悗鑳冪柤"
+        ],
+        "companion_symptoms": [
+          "楗悗鑳冭儉"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": [
+            "鑳冪値"
+          ]
+        }
+      }
+    },
+    {
+      "id": "D063",
+      "query": "鍖荤敓璇存帓闄や簡鑲虹値锛屼絾鎴戣繕鏄挸鍡?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍜冲椊",
+        "chief_symptom_canonical": "鍜冲椊",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍜冲椊"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D064",
+      "query": "娌℃湁鍙戠儳锛屽氨鏄棑瀛愮柤銆侀蓟濉?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍡撳瓙鐤?,
+        "chief_symptom_canonical": "鍡撳瓙鐤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍡撳瓙鐤?,
+          "榧诲"
+        ],
+        "companion_symptoms": [
+          "榧诲"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D065",
+      "query": "涓嶆槸鐥旂柈锛屽氨鏄ぇ渚跨殑鏃跺€欐湁鐐圭柤",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鎺掍究鐤肩棝'], got ['澶т究鏃剁柤鐥?, '澶т究鏃剁柤鐥?, '澶т究鏃剁柤鐥?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "澶т究鏃剁柤鐥?,
+        "chief_symptom_canonical": "澶т究鏃剁柤鐥?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "澶т究鏃剁柤鐥?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D066",
+      "query": "鎴戜篃璇翠笉娓咃紝灏辨槸鑲氬瓙闅愰殣涓嶈垝鏈?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鑵归儴涓嶉€?], got ['鑲氬瓙闅愰殣涓嶈垝鏈?, '鑲氬瓙闅愰殣涓嶈垝鏈?, '鑲氬瓙闅愰殣涓嶈垝鏈?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鑲氬瓙闅愰殣涓嶈垝鏈?,
+        "chief_symptom_canonical": "鑲氬瓙闅愰殣涓嶈垝鏈?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑲氬瓙闅愰殣涓嶈垝鏈?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D067",
+      "query": "鏈€杩戣韩浣撳緢闅惧彈锛屾祽韬病鍔?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "娴戣韩娌″姴",
+        "chief_symptom_canonical": "娴戣韩娌″姴",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "娴戣韩娌″姴"
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D068",
+      "query": "浜哄緢铏氾紝绋嶅井璧颁竴浼氬効灏辩疮",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['铏氬急', '鏄撶柌鍔?], got ['浜哄緢铏?, '绋嶅井璧颁竴浼氬効灏辩疮', '浜哄緢铏?, '绋嶅井璧颁竴浼氬効灏辩疮', '绋嶅井璧颁竴浼氬効灏辩疮']"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "绋嶅井璧颁竴浼氬効灏辩疮",
+        "chief_symptom_canonical": "绋嶅井璧颁竴浼氬効灏辩疮",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "浜哄緢铏?,
+          "绋嶅井璧颁竴浼氬効灏辩疮"
+        ],
+        "companion_symptoms": [
+          "浜哄緢铏?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D069",
+      "query": "灏忓杩欎袱澶╁彂鐑у挸鍡斤紝鏅氫笂鐫′笉濂?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍙戠儳",
+        "chief_symptom_canonical": "鍙戠儳",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍙戠儳",
+          "鍜冲椊",
+          "鐫′笉濂?
+        ],
+        "companion_symptoms": [
+          "鍜冲椊",
+          "鐫′笉濂?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D070",
+      "query": "瀛曞鑲氬瓙涓€闃典竴闃电柤锛岄渶瑕佺湅鍝噷锛?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鑵圭棝'], got ['涓€闃典竴闃?, '涓€闃典竴闃?, '涓€闃典竴闃?]"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "涓€闃典竴闃?,
+        "chief_symptom_canonical": "涓€闃典竴闃?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "涓€闃典竴闃?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [
+            "涓€闃典竴闃?
+          ],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D071",
+      "query": "鑰佷汉绐佺劧鑳哥棝锛岃繕鍐掑喎姹?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鑳哥棝",
+        "chief_symptom_canonical": "鑳哥棝",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑳哥棝",
+          "鍐掑喎姹?
+        ],
+        "companion_symptoms": [
+          "鍐掑喎姹?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D072",
+      "query": "瀹濆疂鎷夎倸瀛愪竴澶╀簡锛岀簿绁炰篃宸?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鎷夎倸瀛?,
+        "chief_symptom_canonical": "鎷夎倸瀛?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鎷夎倸瀛?,
+          "绮剧宸?
+        ],
+        "companion_symptoms": [
+          "绮剧宸?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D073",
+      "query": "浜у悗涔虫埧鑳€鐥涳紝杩樻湁鐐瑰彂鐑?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍙戠儹",
+        "chief_symptom_canonical": "鍙戠儹",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "涔虫埧鑳€鐥?,
+          "鍙戠儹"
+        ],
+        "companion_symptoms": [
+          "涔虫埧鑳€鐥?
+        ],
+        "hints": {
+          "涓荤棁": [
+            "鍙戠儹"
+          ],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D074",
+      "query": "瀛╁瓙鍠樺緱鍘夊锛岃鑳稿彛涓嶈垝鏈?,
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['姘斿枠', '鑳稿彛涓嶉€?], got ['鍠樺緱鍘夊', '鑳稿彛涓嶈垝鏈?, '鑳稿彛涓嶈垝鏈?, '鍠樺緱鍘夊', '鍠樺緱鍘夊']"
+      ],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鍠樺緱鍘夊",
+        "chief_symptom_canonical": "鍠樺緱鍘夊",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍠樺緱鍘夊",
+          "鑳稿彛涓嶈垝鏈?
+        ],
+        "companion_symptoms": [
+          "鑳稿彛涓嶈垝鏈?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D075",
+      "query": "鎴戠毊鑲ょ獊鐒惰捣鍖咃紝鐥掑緱鐫′笉鐫€",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "symptom",
+        "diseases": [],
+        "chief_symptom": "鐥掑緱鐫′笉鐫€",
+        "chief_symptom_canonical": "鐥掑緱鐫′笉鐫€",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鐨偆璧峰寘",
+          "鐨偆鐥?,
+          "鐥掑緱鐫′笉鐫€"
+        ],
+        "companion_symptoms": [
+          "鐨偆璧峰寘",
+          "鐨偆鐥?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D076",
+      "query": "鍎跨鍝枠鍙戜綔锛屽枠寰楀緢鍘夊",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鍠樻伅', '姘斿枠'], got ['鍠樺緱寰堝帀瀹?, '鍠樺緱寰堝帀瀹?, '鍠樺緱寰堝帀瀹?]"
+      ],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鍝枠"
+        ],
+        "chief_symptom": "鍠樺緱寰堝帀瀹?,
+        "chief_symptom_canonical": "鍠樺緱寰堝帀瀹?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍠樺緱寰堝帀瀹?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D077",
+      "query": "鑰佷汉鏈夐珮琛€鍘嬶紝鐜板湪澶存檿鎭跺績",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "楂樿鍘?
+        ],
+        "chief_symptom": "澶存檿",
+        "chief_symptom_canonical": "澶存檿",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "澶存檿",
+          "鎭跺績"
+        ],
+        "companion_symptoms": [
+          "鎭跺績"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D078",
+      "query": "瀛曞璐锛屾渶杩戝ご鏅曚箯鍔?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "璐"
+        ],
+        "chief_symptom": "澶存檿",
+        "chief_symptom_canonical": "澶存檿",
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "澶存檿",
+          "涔忓姏"
+        ],
+        "companion_symptoms": [
+          "涔忓姏"
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D079",
+      "query": "灏忓鎵嬭冻鍙ｇ梾锛屽槾閲屾湁鐤辩柟",
+      "passed": false,
+      "intent_ok": true,
+      "ner_ok": false,
+      "failures": [
+        "symptom_entities recall 0% < 50%, missed ['鍙ｈ厰鐤辩柟'], got ['鍢撮噷鏈夌柋鐤?, '鍢撮噷鏈夌柋鐤?, '鍢撮噷鏈夌柋鐤?]"
+      ],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "鎵嬭冻鍙ｇ梾"
+        ],
+        "chief_symptom": "鍢撮噷鏈夌柋鐤?,
+        "chief_symptom_canonical": "鍢撮噷鏈夌柋鐤?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鍢撮噷鏈夌柋鐤?
+        ],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D080",
+      "query": "瀹濆疂婀跨柟锛岃劯涓婄孩绾㈢殑杩樺緢鐥?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "disease",
+        "diseases": [
+          "婀跨柟"
+        ],
+        "chief_symptom": "鑴镐笂绾㈢孩鐨?,
+        "chief_symptom_canonical": "鑴镐笂绾㈢孩鐨?,
+        "slot_table_code": null,
+        "symptom_candidates": [
+          "鑴镐笂绾㈢孩鐨?,
+          "鐥?
+        ],
+        "companion_symptoms": [
+          "鐥?
+        ],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D081",
+      "query": "浣犲ソ锛屽湪鍚楋紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D082",
+      "query": "浣犳槸璋侊紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D083",
+      "query": "浠婂ぉ澶╂皵鎬庝箞鏍凤紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D084",
+      "query": "鍖婚櫌鍑犵偣寮€闂紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D085",
+      "query": "鎴戞兂鎸傚彿",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D086",
+      "query": "甯垜鎺ㄨ崘涓€涓笓瀹?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D087",
+      "query": "鍖讳繚鑳戒笉鑳芥姤閿€锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D088",
+      "query": "鍋滆溅鍦哄湪鍝噷锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D089",
+      "query": "鎴戞兂鍋氫綋妫€锛屽灏戦挶锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D090",
+      "query": "鑳戒笉鑳藉府鎴戞煡鎶ュ憡锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D091",
+      "query": "鎴戞病鏈変笉鑸掓湇锛屽氨鏄兂闂棶鎸備粈涔堢",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D092",
+      "query": "涓嶇煡閬撴寕鍝釜绉戯紝浣犲府鎴戠湅鐪?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D093",
+      "query": "鎴戞兂棰勭害鏄庡ぉ涓婂崍鐨勫彿",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D094",
+      "query": "鍖婚櫌鍦板潃鍦ㄥ摢閲岋紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D095",
+      "query": "鑳戒笉鑳藉紑鐥呭亣鏉★紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D096",
+      "query": "鎴戞兂鍜ㄨ涓€涓嬩綇闄㈡祦绋?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D097",
+      "query": "鎴戣閫€鍙锋€庝箞鎿嶄綔锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D098",
+      "query": "杩欎釜鍖婚櫌鍝釜鍖荤敓姣旇緝濂斤紵",
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D099",
+      "query": "闂ㄨ瘖鎸傚彿璐瑰灏戦挶锛?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    },
+    {
+      "id": "D100",
+      "query": "鎴戞病鏈夌棁鐘讹紝灏辨槸鎯冲仛涓鏌?,
+      "passed": true,
+      "intent_ok": true,
+      "ner_ok": true,
+      "failures": [],
+      "actual": {
+        "triage_route": "reject",
+        "diseases": [],
+        "chief_symptom": null,
+        "chief_symptom_canonical": null,
+        "slot_table_code": null,
+        "symptom_candidates": [],
+        "companion_symptoms": [],
+        "hints": {
+          "涓荤棁": [],
+          "鐤剧梾": []
+        }
+      }
+    }
+  ]
+}

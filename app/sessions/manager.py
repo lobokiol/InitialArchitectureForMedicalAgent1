@@ -2,12 +2,55 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from app.infra.redis_client import redis_client
-
 
 USER_CURRENT_KEY = "user:{user_id}:current_thread"
 USER_THREADS_KEY = "user:{user_id}:threads"
 THREAD_META_KEY = "thread:{thread_id}:meta"
+
+
+class InMemorySessionStore:
+    """本地开发回退：无 Redis 时使用进程内存储。"""
+
+    def __init__(self):
+        self._kv: dict[str, str] = {}
+        self._hash: dict[str, dict[str, str]] = {}
+        self._zset: dict[str, dict[str, float]] = {}
+
+    def get(self, key: str) -> Optional[str]:
+        return self._kv.get(key)
+
+    def set(self, key: str, value: str):
+        self._kv[key] = value
+
+    def exists(self, key: str) -> bool:
+        return key in self._hash or key in self._kv
+
+    def hset(self, key: str, field: str | None = None, value: str | None = None, mapping: dict | None = None):
+        store = self._hash.setdefault(key, {})
+        if mapping:
+            store.update({k: str(v) for k, v in mapping.items()})
+        if field is not None and value is not None:
+            store[field] = str(value)
+
+    def hget(self, key: str, field: str) -> Optional[str]:
+        return self._hash.get(key, {}).get(field)
+
+    def hgetall(self, key: str) -> dict[str, str]:
+        return dict(self._hash.get(key, {}))
+
+    def zadd(self, key: str, mapping: dict[str, float]):
+        z = self._zset.setdefault(key, {})
+        z.update(mapping)
+
+    def zrevrange(self, key: str, start: int, end: int) -> list[str]:
+        z = self._zset.get(key, {})
+        items = sorted(z.items(), key=lambda x: x[1], reverse=True)
+        if end == -1:
+            end = len(items) - 1
+        return [k for k, _ in items[start : end + 1]]
+
+    def zrem(self, key: str, member: str):
+        self._zset.get(key, {}).pop(member, None)
 
 
 class SessionManager:
@@ -18,8 +61,16 @@ class SessionManager:
     - 新建 / 切换 / 删除会话
     """
 
-    def __init__(self):
-        self.client = redis_client
+    def __init__(self, client=None):
+        if client is not None:
+            self.client = client
+        else:
+            from app.infra.redis_client import redis_client
+
+            if redis_client is None:
+                self.client = InMemorySessionStore()
+            else:
+                self.client = redis_client
 
     @staticmethod
     def _now_ts() -> float:

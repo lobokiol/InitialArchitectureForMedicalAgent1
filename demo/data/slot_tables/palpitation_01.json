@@ -1,0 +1,206 @@
+{
+  "code": "palpitation",
+  "version": "01",
+  "chief_symptom": "心悸",
+  "description": "患者自觉心跳异常、心跳增快或不规则的不适感，属于症状而非疾病诊断。",
+  "base_symptom_weight": {
+    "symptom": "心悸",
+    "weight": 3.0
+  },
+  "slots": [
+    {
+      "key": "age_group",
+      "label": "年龄段",
+      "type": "enum",
+      "required": false,
+      "ask_order": 0,
+      "options": [
+        "儿童(<14岁)",
+        "青少年(14-18岁)",
+        "成人(18-60岁)",
+        "老年(>60岁)",
+        "不确定"
+      ],
+      "routing_rules": [
+        {"when": "儿童(<14岁)", "dept_boost": {"小儿内科": 0.25}},
+        {"when": "老年(>60岁)", "dept_boost": {"心内科": 0.10}}
+      ],
+      "prompt": "患者多大年纪？"
+    },
+    {
+      "key": "rhythm_type",
+      "label": "心悸类型",
+      "type": "enum",
+      "required": true,
+      "ask_order": 1,
+      "options": [
+        "心跳加快",
+        "心跳不齐",
+        "漏跳感",
+        "早搏感",
+        "不确定"
+      ],
+      "aliases": {
+        "心跳快": "心跳加快",
+        "心跳加速": "心跳加快",
+        "心律不齐": "心跳不齐",
+        "心跳不齐": "心跳不齐",
+        "扑通扑通跳": "心跳加快",
+        "心扑通扑通跳": "心跳加快",
+        "心咚咚跳": "心跳加快",
+        "心突突跳": "心跳加快",
+        "能听见心跳": "心跳加快",
+        "心跳声大": "心跳加快",
+        "早搏": "早搏感"
+      },
+      "kg_map": [
+        {"symptom": "心动过速", "weight": 1.5, "when": "心跳加快"},
+        {"symptom": "心律失常", "weight": 1.5, "when": "心跳不齐"},
+        {"symptom": "心悸", "weight": 1.0, "when": "漏跳感"},
+        {"symptom": "心悸", "weight": 1.0, "when": "早搏感"}
+      ],
+      "routing_rules": [
+        {"when": "心跳不齐", "dept_boost": {"心内科": 0.15}},
+        {"when": "漏跳感", "dept_boost": {"心内科": 0.10}}
+      ],
+      "prompt": "您的心慌主要是心跳偏快、心跳不齐，还是有漏跳、早搏的感觉？"
+    },
+    {
+      "key": "trigger",
+      "label": "诱发因素",
+      "type": "enum",
+      "required": true,
+      "ask_order": 2,
+      "options": [
+        "活动后",
+        "静息时",
+        "情绪激动",
+        "夜间",
+        "无明显诱因",
+        "不确定"
+      ],
+      "aliases": {
+        "运动后": "活动后",
+        "走路后": "活动后",
+        "躺着": "静息时",
+        "休息时也": "静息时",
+        "安静时": "静息时",
+        "紧张时": "情绪激动",
+        "焦虑时": "情绪激动",
+        "晚上": "夜间",
+        "睡前": "夜间"
+      },
+      "routing_rules": [
+        {"when": "活动后", "dept_boost": {"心内科": 0.10}},
+        {"when": "静息时", "dept_boost": {"心内科": 0.15, "内分泌科": 0.05}},
+        {"when": "夜间", "dept_boost": {"心内科": 0.10}}
+      ],
+      "prompt": "这种心慌一般在什么情况下出现？活动后、安静时，还是情绪激动时？"
+    },
+    {
+      "key": "duration",
+      "label": "持续时间",
+      "type": "enum",
+      "required": false,
+      "ask_order": 3,
+      "options": [
+        "首次出现",
+        "1周内",
+        "1周至1月",
+        "超过1月",
+        "反复发作",
+        "不确定"
+      ],
+      "routing_rules": [
+        {"when": "首次出现", "dept_boost": {"急诊科": 0.05}},
+        {"when": "反复发作", "dept_boost": {"心内科": 0.10}}
+      ],
+      "prompt": "这种情况持续多久了？是最近才出现，还是反复有一段时间了？"
+    },
+    {
+      "key": "companion",
+      "label": "伴随症状",
+      "type": "multi_enum",
+      "required": false,
+      "ask_order": 4,
+      "options": [
+        "胸闷",
+        "胸痛",
+        "头晕",
+        "气短",
+        "呼吸困难",
+        "晕厥",
+        "恶心",
+        "手抖",
+        "消瘦",
+        "乏力",
+        "无"
+      ],
+      "kg_map": [
+        {"symptom": "胸闷", "weight": 2.0},
+        {"symptom": "胸痛", "weight": 2.0},
+        {"symptom": "头晕", "weight": 1.5},
+        {"symptom": "气短", "weight": 1.5},
+        {"symptom": "呼吸困难", "weight": 2.0},
+        {"symptom": "晕厥", "weight": 2.0},
+        {"symptom": "乏力", "weight": 1.0},
+        {"symptom": "恶心", "weight": 1.0}
+      ],
+      "routing_rules": [
+        {"when": "胸痛", "dept_boost": {"心内科": 0.20, "急诊科": 0.10}},
+        {"when": "胸闷", "dept_boost": {"心内科": 0.15}},
+        {"when": "晕厥", "dept_boost": {"心内科": 0.15, "急诊科": 0.15}},
+        {"when": "头晕", "dept_boost": {"神经内科": 0.15}},
+        {"when": "恶心", "dept_boost": {"神经内科": 0.10}},
+        {"when": "手抖", "dept_boost": {"内分泌科": 0.20}},
+        {"when": "消瘦", "dept_boost": {"内分泌科": 0.20}}
+      ],
+      "combo_rules": [
+        {
+          "when_all": ["头晕", "恶心"],
+          "dept_boost": {"神经内科": 0.25, "心内科": 0.10},
+          "note": "心慌伴头晕恶心，需排除前庭及心脑血管因素"
+        },
+        {
+          "when_all": ["手抖", "消瘦"],
+          "dept_boost": {"内分泌科": 0.30}
+        }
+      ],
+      "prompt": "除了心慌，还有没有胸闷、胸痛、头晕、气短等其他不适？"
+    },
+    {
+      "key": "severity",
+      "label": "严重程度",
+      "type": "enum",
+      "required": false,
+      "ask_order": 5,
+      "options": [
+        "轻微，不影响生活",
+        "中等，偶尔影响活动",
+        "严重，明显影响日常",
+        "不确定"
+      ],
+      "routing_rules": [
+        {"when": "严重，明显影响日常", "dept_boost": {"心内科": 0.10, "急诊科": 0.05}}
+      ],
+      "prompt": "这种心慌对您的日常生活影响大吗？"
+    }
+  ],
+  "red_flags": [
+    {
+      "when_any": ["胸痛", "晕厥", "呼吸困难"],
+      "action": "suggest_er",
+      "message": "心悸伴胸痛、晕厥或呼吸困难，建议尽快就医，必要时挂急诊科。"
+    },
+    {
+      "when_all": ["心跳不齐", "胸闷"],
+      "action": "suggest_er",
+      "message": "心跳不齐伴胸闷，建议尽快到心内科或急诊评估。"
+    }
+  ],
+  "default_departments": [
+    {"dept": "心内科", "weight": 1.0},
+    {"dept": "神经内科", "weight": 0.3},
+    {"dept": "内分泌科", "weight": 0.2}
+  ]
+}

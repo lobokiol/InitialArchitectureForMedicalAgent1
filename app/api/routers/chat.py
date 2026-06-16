@@ -4,6 +4,7 @@ import asyncio
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+from app.domain.dept_disambiguation import DeptChoice
 from app.domain.models import IntentResult, RetrievedDoc
 from app.services import chat_service
 
@@ -25,6 +26,8 @@ class ChatResponse(BaseModel):
     reply: str
     intent_result: Optional[IntentResult] = None
     used_docs: UsedDocs
+    awaiting_dept_choice: bool = False
+    dept_choices: List[DeptChoice] = []
 
 
 router = APIRouter(prefix="/chat", tags=["chat"])

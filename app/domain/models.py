@@ -7,6 +7,29 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator
 from app.core import config
 from typing import List, Optional, Literal, Annotated, Any
 
+class DiseaseDeptResult(BaseModel):
+    """疾病链输出：疾病 → 推荐科室。"""
+
+    diseases: list[str] = Field(default_factory=list)
+    departments: list[dict] = Field(default_factory=list)
+    route: Literal["disease"] = "disease"
+
+    model_config = ConfigDict(extra="ignore")
+
+
+class SymptomSlotResult(BaseModel):
+    """症状链入口输出：主症 + 槽位表代号。"""
+
+    route: Literal["symptom"] = "symptom"
+    chief_symptom: str | None = None
+    chief_symptom_canonical: str | None = None
+    slot_table_code: str | None = None
+    symptom_candidates: list[str] = Field(default_factory=list)
+    companion_symptoms: list[str] = Field(default_factory=list)
+
+    model_config = ConfigDict(extra="ignore")
+
+
 class IntentResult(BaseModel):
     '''
     解析用户意图的结果 # LLM 返回的 JSON 会自动转换为 IntentResult 对象
@@ -31,6 +54,7 @@ class IntentResult(BaseModel):
     need_symptom_search: bool = False
     need_process_search: bool = False
     need_tool_call: bool = False  # 新增
+    triage_route: Literal["disease", "symptom", "reject"] | None = None
     model_config = ConfigDict(extra="ignore")
 
 
@@ -59,14 +83,21 @@ class AppState(BaseModel):
     '''应用状态，在图中流转，包含整个对话的上下文信息'''
     messages: Annotated[list[BaseMessage], add_messages] = Field(default_factory=list)
     intent_result: Optional[IntentResult] = None
+    ner_result: Optional[Any] = None  # NERExtractResult，避免循环 import
+    disease_dept_result: Optional[DiseaseDeptResult] = None
+    symptom_slot_result: Optional[SymptomSlotResult] = None
     medical_docs: List[RetrievedDoc] = Field(default_factory=list)
     process_docs: List[RetrievedDoc] = Field(default_factory=list)
     relevance_result: Optional[RelevanceResult] = None
     rewrite_attempts: int = 0
     need_tool_call: bool = False  # 新增
     tool_call_result: Any = None  # 新增
-
-    
+    slot_table: Optional[Any] = None
+    slot_gate_passed: bool = False
+    rag_chunk_id: str | None = None
+    rag_chunk: dict | None = None
+    dept_state: Optional[Any] = None
+    locked_department: str | None = None
 
     @field_validator("medical_docs", mode="before")
     @classmethod
