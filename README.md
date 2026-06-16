@@ -67,36 +67,127 @@ demo.py                    # 早期 demo / CLI 版本（保留作参考）
 
 ## 核心架构概览
 
-- 接口层（`app/api`）
-  - `POST /chat`：单轮对话入口，输入 `user_id` / `thread_id` / `message`，返回回复文本、意图识别结果、参考文档等。
-  - `GET /threads` / `POST /threads` / `DELETE /threads/{id}` / `GET /threads/current` / `POST /threads/switch`：多会话管理。
-  - `POST /users` / `GET /users/{user_id}`：用户元数据管理。
-  - `GET /healthz`：健康检查。
-- 服务层（`app/services`）
-  - `chat_service.chat_once`：封装一次对话请求，负责准备 LangGraph 输入、调用状态机、抽取回复。
-- 领域层（`app/domain`）
-  - `AppState`：对话状态（消息、意图、检索文档、重写次数等）。
-  - `IntentResult` / `RetrievedDoc` / `RelevanceResult` 等领域模型。
-  - `routing.py`：根据意图与检索结果决定状态机下一跳。
-- 图编排层（`app/graph`）
-  - `builder.py`：使用 LangGraph `StateGraph` 定义状态机节点和边。
-  - `nodes/*`：
-    - `decision.py`：意图识别（症状 / 流程 / 混合 / 非医疗）。
-    - `es_rag.py`：流程文档检索（Elasticsearch）。
-    - `milvus_rag.py`：症状向量检索（Milvus）。
-    - `check_docs.py`：检索结果评估，决定是否需要重写 Query。
-    - `rewrite.py`：问题重写，控制重写次数避免死循环。
-    - `answer.py`：综合上下文与文档生成最终答案。
-    - `trim_history.py`：根据阈值裁剪对话历史。
-- 基础设施层（`app/infra`）
-  - Redis：会话状态 & LangGraph Checkpoint & 用户/会话元数据。
-  - Elasticsearch：流程/制度类文档检索。
-  - Milvus：医疗知识 / 症状库向量检索。
-  - DashScope：Chat & Embedding 模型。
-- 会话管理（`app/sessions`）
-  - 基于 Redis 管理 `user_id` / `thread_id` 关系、会话标题、创建时间、最近活跃时间、删除标记等。
+### 系统分层
 
-更多细节可以参考 `项目总结.md` 中的架构图与说明。
+```mermaid
+flowchart TB
+    subgraph Client["客户端"]
+        CLI["cli.py（Rich CLI）"]
+    end
+
+    subgraph API["FastAPI 接口层"]
+        Chat["POST /chat"]
+        Threads["/threads 会话管理"]
+        Users["/users 用户元数据"]
+        Health["/healthz · /ready"]
+    end
+
+    subgraph Service["服务层"]
+        CS["ChatService"]
+        SM["SessionManager"]
+    end
+
+    subgraph Graph["LangGraph 导诊主图"]
+        LG["StateGraph + Checkpointer"]
+    end
+
+    subgraph Data["数据与检索"]
+        OS[("OpenSearch<br/>rag_knowledge · disease_kb")]
+        Redis[("Redis / MemorySaver<br/>会话 · Checkpoint")]
+        Milvus[("Milvus（可选）<br/>向量库")]
+    end
+
+    subgraph LLM["DashScope（OpenAI 兼容）"]
+        ChatModel["Chat：deepseek-v4-flash / qwen-plus"]
+        Embed["Embedding：text-embedding-v2"]
+    end
+
+    CLI --> Chat
+    CLI --> Threads
+    Chat --> CS
+    Threads --> SM
+    CS --> LG
+    SM --> Redis
+    LG --> Redis
+    LG --> OS
+    LG --> Milvus
+    LG --> ChatModel
+    OS --> Embed
+    Milvus --> Embed
+    Health --> LG
+    Health --> OS
+```
+
+### LangGraph 导诊主图
+
+当前生产主图（`app/graph/builder.py`）采用 **槽位门禁 + OpenSearch RAG + 科室消歧** 流程：
+
+```mermaid
+flowchart TD
+    START((START)) --> trim_history
+
+    trim_history -->|新 intake| decision
+    trim_history -->|科室待选回复| dept_disambiguation
+
+    decision["decision<br/>NER 实体抽取 + 三分类路由"]
+    slot_fill["slot_fill<br/>槽位填充（性别/年龄/主症等）"]
+    slot_gate["slot_gate<br/>槽位门禁"]
+    disease_dept["disease_dept<br/>疾病 → 科室"]
+    rag["rag_symptom_recall<br/>OpenSearch 关键词/语义召回"]
+    dept["dept_disambiguation<br/>科室打分 + LLM 反问/解析"]
+    answer["answer_generate<br/>模板/LLM 生成回复"]
+    reject["reject<br/>拒答"]
+
+    decision --> slot_fill --> slot_gate
+
+    slot_gate -->|槽位未通过| reject
+    slot_gate -->|triage_route=disease| disease_dept
+    slot_gate -->|triage_route=symptom| rag
+
+    disease_dept --> answer
+    rag --> dept
+
+    dept -->|status=asking| END((END 反问))
+    dept -->|科室已锁定| answer
+
+    reject --> END
+    answer --> END
+```
+
+**路由说明：**
+
+| 阶段 | 节点 | 作用 |
+|------|------|------|
+| 历史裁剪 | `trim_history` | 超长对话裁剪；若处于科室待选则直接进入消歧 |
+| 意图识别 | `decision` | LLM NER 抽取症状/疾病，规则路由 `disease` / `symptom` / `reject` |
+| 槽位 | `slot_fill` → `slot_gate` | 补齐导诊必填槽位，未通过则拒答 |
+| 疾病链 | `disease_dept` | 疾病知识库查科室，模板生成回复 |
+| 症状链 | `rag_symptom_recall` → `dept_disambiguation` | OpenSearch 混合检索候选科室，多轮消歧后锁定 |
+| 回复 | `answer_generate` | 综合锁定科室与上下文输出导诊建议 |
+
+### 各层职责
+
+- **接口层（`app/api`）**
+  - `POST /chat`：单轮对话入口，输入 `user_id` / `thread_id` / `message`，返回回复、意图、参考文档等。
+  - `GET/POST/DELETE /threads`：多会话管理。
+  - `POST/GET /users`：用户元数据。
+  - `GET /healthz`、`GET /ready`：健康检查（含 LangGraph + OpenSearch）。
+- **服务层（`app/services`）**
+  - `ChatService`：衔接 API 与 LangGraph，管理 Checkpoint 与线程状态。
+- **图编排层（`app/graph`）**
+  - `builder.py`：编译导诊主图（见上图）。
+  - `nodes/*`：`decision`、`slot_fill`、`slot_gate`、`rag_symptom_recall`、`dept_disambiguation`、`disease_dept`、`answer_generate` 等。
+- **NER / 导诊规则（`app/ner`、`app/triage`）**
+  - 实体抽取、三分类路由、科室打分、消歧反问、会话状态重置。
+- **基础设施层（`app/infra`）**
+  - **OpenSearch**（`opensearch-py`）：`rag_knowledge` 症状召回、`disease_kb` 疾病科室。
+  - **Redis**：会话元数据 + LangGraph Checkpoint（不可用时可回退 `MemorySaver`）。
+  - **Milvus**：可选向量检索通道（demo 保留，主图当前以 OpenSearch 为主）。
+  - **DashScope**：Chat + Embedding 模型（`app/core/llm.py`）。
+- **会话管理（`app/sessions`）**
+  - 基于 Redis 管理 `user_id` / `thread_id`、标题、活跃时间等。
+
+本地一键启动：`.\start-dev.ps1`（配置见 `scripts/dev-services.config.ps1`）。
 
 ---
 
