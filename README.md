@@ -187,8 +187,6 @@ flowchart TD
 - **会话管理（`app/sessions`）**
   - 基于 Redis 管理 `user_id` / `thread_id`、标题、活跃时间等。
 
-本地一键启动：`.\start-dev.ps1`（配置见 `scripts/dev-services.config.ps1`）。
-
 ---
 
 ## 环境依赖
@@ -247,76 +245,154 @@ CLI 相关：
 
 ---
 
-## 本地开发与运行（含 RAG 入库）
+## 一键启动（Windows 本地开发）
+
+项目提供 **OpenSearch + FastAPI/LangGraph** 的一键拉起脚本，适合日常改代码后快速验证。
+
+### 前置准备（首次）
+
+| 项 | 说明 |
+|----|------|
+| **Python 3.11** | 推荐用 [uv](https://docs.astral.sh/uv/) 管理虚拟环境 |
+| **OpenSearch 2.19** | 解压到 `esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1`（路径可在配置中改） |
+| **DashScope API Key** | 复制 `.env.example` → `.env`，填入 `DASHSCOPE_API_KEY` |
+| **Redis** | 可选；无 Docker 时设 `USE_MEMORY_CHECKPOINTER=true`（会话存内存，重启丢失） |
+
+```powershell
+cd D:\InitialArchitectureForMedicalAgent1
+
+# 1. Python 环境（首次）
+uv venv --python 3.11
+uv pip install -r requirements.txt
+
+# 2. 环境变量
+copy .env.example .env
+# 编辑 .env：DASHSCOPE_API_KEY、CHAT_MODEL_NAME 等
+
+# 3. OpenSearch 入库（首次 / 数据变更后）
+$env:PYTHONPATH = "."
+.\.venv\Scripts\python.exe demo\opensearch_rag_kb.py --no-embed   # 仅关键词
+# .\.venv\Scripts\python.exe demo\opensearch_rag_kb.py            # 含向量混合检索
+```
+
+### 常用命令
+
+在项目根目录执行：
+
+```powershell
+# 启动 OpenSearch + API，并自动健康检查
+.\start-dev.ps1
+
+# 或双击 / cmd
+start-dev.cmd
+
+# 只看状态
+.\start-dev.ps1 -Action status
+
+# 只跑验证（OpenSearch、/ready、rag_knowledge 文档数）
+.\start-dev.ps1 -Action verify
+
+# 启动但不验证（更快）
+.\start-dev.ps1 -Action start -SkipVerify
+
+# 停止 API / OpenSearch
+.\start-dev.ps1 -Action stop
+```
+
+启动成功后：
+
+| 入口 | 地址 |
+|------|------|
+| API 文档 | http://127.0.0.1:8000/docs |
+| 健康检查 | http://127.0.0.1:8000/healthz |
+| 就绪检查 | http://127.0.0.1:8000/ready |
+| OpenSearch | http://127.0.0.1:9200 |
+| CLI 对话 | `.\.venv\Scripts\python.exe cli.py` |
+
+### 配置与日志
+
+改路径、端口、验证项只需编辑 **`scripts/dev-services.config.ps1`**：
+
+```powershell
+# 示例：开启 Dashboards、改 API 端口、打开 Chat 冒烟测试
+Dashboards.Enabled = $true
+Api.Port = 8000
+Verify.ChatSmoke = $false   # true 会调 LLM，消耗额度
+```
+
+| 配置块 | 作用 |
+|--------|------|
+| `OpenSearch` | 本地 zip 路径、`Url`、启动等待秒数 |
+| `Api` | FastAPI 地址/端口、是否 `--reload` |
+| `Verify` | 启动后检查 OpenSearch、`/ready`、索引文档数等 |
+| `Logs.Dir` | 服务日志目录（默认 `logs/`） |
+
+日志文件：`logs/opensearch.log`、`logs/api.log`。
+
+### 前台调试 API（热重载）
+
+后台一键启动适合联调；改代码时建议前台跑 API：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\start-api.ps1
+```
+
+等价于 `uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`，日志直接打在终端。
+
+### 可选：Docker 启动 Redis
+
+```powershell
+docker compose -f demo/docker-compose.local.yml up -d redis
+```
+
+`.env` 中设置 `REDIS_URI=redis://localhost:6379`、`USE_MEMORY_CHECKPOINTER=false` 后重启 API。
+
+更完整的 Windows 部署说明见 [`docs/DEPLOY_WINDOWS.md`](docs/DEPLOY_WINDOWS.md)。
+
+---
+
+## 本地开发与运行（手动分步）
+
+若不使用一键脚本，可按以下步骤操作。
 
 ### 0. 前置准备
-- Python 3.10+
-- Docker / Docker Compose（用于 Redis + Elasticsearch + Milvus）
-- `.env` 中设置 `DASHSCOPE_API_KEY`
 
-### 1. 启动基础设施
-```bash
-# Redis（含 RedisJSON/RedisSearch）
-cd demo/redis
-docker-compose up -d
+- Python 3.11+（推荐 uv + `.venv`）
+- OpenSearch 2.x（或兼容 ES API 的检索服务）
+- DashScope API Key
+- Redis / Milvus 为可选项
 
-# Elasticsearch + Milvus（单机，内置 Etcd/MinIO）
-cd ../es_milvus_DB
-docker-compose up -d
+### 1. 安装依赖
+
+```powershell
+uv venv --python 3.11
+uv pip install -r requirements.txt
 ```
 
-### 2. 安装依赖
-```bash
-pip install -r requirements.txt
+### 2. RAG 数据入库（OpenSearch）
+
+```powershell
+$env:PYTHONPATH = "."
+.\.venv\Scripts\python.exe demo\opensearch_rag_kb.py
+.\.venv\Scripts\python.exe demo\opensearch_disease_kb.py
 ```
 
-（如仅跑入库脚本，可按需安装 `elasticsearch`、`langchain-milvus`、`pymilvus`、`langchain-openai`、`python-dotenv`。）
+数据文件：`demo/data/rag_knowledge.jsonl`、`demo/data/disease_kb.jsonl`。
 
-### 3. RAG 数据入库
-- ES（流程/制度文档）：
-  ```bash
-  cd demo
-  # 数据：demo/data/es医院导诊指南_clean.json
-  pip install elasticsearch python-dotenv
-  python es.py   # 索引为空时自动创建 hospital_procedures 并写入
-  ```
-  如需调整 ES 地址/索引/数据文件，修改 `demo/es.py` 顶部的 `ES_URL`、`INDEX_NAME`、`DATA_PATH`。
+### 3. 启动后端
 
-- Milvus（症状问诊向量库）：
-  ```bash
-  cd demo
-  # 数据：demo/data/milvus数据.txt（id/raw_question/safe_answer/departments/tags/source）
-  pip install langchain-openai langchain-milvus pymilvus python-dotenv
-  export DASHSCOPE_API_KEY=your_key
-  python milvus.py   # 增量入库，仅写入新增业务 id
-  ```
-  如需调整 Milvus 地址/集合/索引参数，修改脚本顶部 `MILVUS_URI`、`MILVUS_COLLECTION`、`DATA_PATH`。
-
-> 数据清洗：原始问答需先用 LLM 改写成安全回答 `safe_answer`、推荐科室 `departments`、症状标签 `tags`（见 `demo/项目设计.md`），再执行入库脚本。
-
-### 4. 启动后端服务
-```bash
-uvicorn app.main:app --reload
-```
-生产环境可使用多 worker 模式：
-```bash
-uvicorn app.main:app --workers 4 --host 0.0.0.0 --port 8000
+```powershell
+$env:PYTHONPATH = "."
+.\.venv\Scripts\uvicorn.exe app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-### 5. 运行 CLI 前端
-```bash
-python cli.py
+### 4. 运行 CLI
+
+```powershell
+.\.venv\Scripts\python.exe cli.py
 ```
-CLI 会完成健康检查、用户初始化和当前会话获取，普通文本发送到 `/chat`，斜杠命令用于管理会话/用户。
 
 常用命令：`/help`、`/threads`、`/new`、`/switch`、`/delete`、`/user`、`/exit`。
-
-可通过环境变量覆盖 CLI 连接信息：
-```bash
-export BACKEND_BASE_URL=http://localhost:8000
-export BACKEND_TIMEOUT=120
-python cli.py
-```
 
 ---
 
