@@ -7,6 +7,7 @@ __pycache__/
 !README.md
 !docs/
 !docs/**
+demo/data/CM3KG/
 demo/es_milvus_DB/
 demo/.langgraph_api/
 .pytest_cache/
