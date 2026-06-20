@@ -1,4 +1,4 @@
-﻿{
+{
   "summary": {
     "total": 100,
     "passed": 80,
@@ -8,7 +8,7 @@
   "results": [
     {
       "id": "D001",
-      "query": "鏈€杩戞垜姣忔鍚冮キ鍚庯紝鑲氬瓙閮芥湁鐐逛笉鑸掓湇锛屽亸鑲氳剱涓婇潰閭ｄ竴鍧楋紝涓€闃典竴闃靛湴缁炵棝",
+      "query": "最近我每次吃饭后，肚子都有点不舒服，偏肚脐上面那一块，一阵一阵地绞痛",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -16,34 +16,34 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鑲氳剱涓婃柟鐤肩棝",
-        "chief_symptom_canonical": "鑵圭棝",
+        "chief_symptom": "肚脐上方疼痛",
+        "chief_symptom_canonical": "腹痛",
         "slot_table_code": "abdominal_pain_v1",
         "symptom_candidates": [
-          "楗悗",
-          "鑲氳剱涓婃柟鐤肩棝",
-          "涓€闃典竴闃?,
-          "缁炵棝"
+          "饐",
+          "肚脐上方疼痛",
+          "阵一",
+          "绞痛"
         ],
         "companion_symptoms": [
-          "楗悗",
-          "涓€闃典竴闃?,
-          "缁炵棝"
+          "饐",
+          "阵一",
+          "绞痛"
         ],
         "hints": {
-          "涓荤棁": [
-            "涓€闃典竴闃?,
-            "鑲氳剱涓婇潰",
-            "楗悗",
-            "缁炵棝"
+          "主症": [
+            "阵一",
+            "肚脐上面",
+            "饐",
+            "绞痛"
           ],
-          "鐤剧梾": []
+          "疾病": []
         }
       }
     },
     {
       "id": "D002",
-      "query": "鎴戣繖涓ゅぉ涓€鐩村ご鐤硷紝灏ゅ叾涓嬪崍鏇存槑鏄撅紝鐫′竴瑙変篃娌″ソ",
+      "query": "我这两天一直头疼，尤其下午更明显，睡一觉也没好",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -51,27 +51,27 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "澶寸柤",
-        "chief_symptom_canonical": "澶寸柤",
+        "chief_symptom": "头疼",
+        "chief_symptom_canonical": "头疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "澶寸柤",
-          "涓嬪崍澶寸柤鏄庢樉",
-          "鐫′竴瑙夊ご鐤兼病濂?
+          "头疼",
+          "下午头疼明显",
+          "睡一觉头疼没"
         ],
         "companion_symptoms": [
-          "涓嬪崍澶寸柤鏄庢樉",
-          "鐫′竴瑙夊ご鐤兼病濂?
+          "下午头疼明显",
+          "睡一觉头疼没"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D003",
-      "query": "鏈€杩戝挸鍡芥瘮杈冨帀瀹筹紝鏅氫笂韬轰笅浠ュ悗鍜冲緱鏇村",
+      "query": "最近咳嗽比较厉害，晚上躺下以后咳得更多",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -79,25 +79,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍜冲椊",
-        "chief_symptom_canonical": "鍜冲椊",
+        "chief_symptom": "咳嗽",
+        "chief_symptom_canonical": "咳嗽",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍜冲椊",
-          "鏅氫笂韬轰笅浠ュ悗鍜冲椊"
+          "咳嗽",
+          "晚上躺下以后咳嗽"
         ],
         "companion_symptoms": [
-          "鏅氫笂韬轰笅浠ュ悗鍜冲椊"
+          "晚上躺下以后咳嗽"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D004",
-      "query": "浠婂ぉ鏃╀笂寮€濮嬪彂鐑э紝閲忎簡涓€涓?38 搴﹀锛岃繕鏈夌偣鎬曞喎",
+      "query": "今天早上开始发烧，量了一下 38 度多，还有点怕冷",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -105,25 +105,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍙戠儳",
-        "chief_symptom_canonical": "鍙戠儳",
+        "chief_symptom": "发烧",
+        "chief_symptom_canonical": "发烧",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍙戠儳",
-          "鎬曞喎"
+          "发烧",
+          "怕冷"
         ],
         "companion_symptoms": [
-          "鎬曞喎"
+          "怕冷"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D005",
-      "query": "鍡撳瓙鐤间簡涓夊ぉ锛屽捊鍙ｆ按鐨勬椂鍊欑壒鍒槑鏄?,
+      "query": "嗓子疼了三天，咽口水的时候特别明显",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -131,25 +131,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍡撳瓙鐤?,
-        "chief_symptom_canonical": "鍡撳瓙鐤?,
+        "chief_symptom": "嗓子",
+        "chief_symptom_canonical": "嗓子",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍡撳瓙鐤?,
-          "鍜藉彛姘存椂鐤肩棝鏄庢樉"
+          "嗓子",
+          "咽口水时疼痛明显"
         ],
         "companion_symptoms": [
-          "鍜藉彛姘存椂鐤肩棝鏄庢樉"
+          "咽口水时疼痛明显"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D006",
-      "query": "杩欏嚑澶╅蓟瀛愪竴鐩村牭锛岃繕娴佹竻榧绘稌",
+      "query": "这几天鼻子一直堵，还流清鼻涕",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -157,25 +157,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "娴佹竻榧绘稌",
-        "chief_symptom_canonical": "娴佹竻榧绘稌",
+        "chief_symptom": "流清鼻涕",
+        "chief_symptom_canonical": "流清鼻涕",
         "slot_table_code": null,
         "symptom_candidates": [
-          "榧诲瓙鍫?,
-          "娴佹竻榧绘稌"
+          "鼻子",
+          "流清鼻涕"
         ],
         "companion_symptoms": [
-          "榧诲瓙鍫?
+          "鼻子"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D007",
-      "query": "鎴戣兏鍙ｆ湁鐐归椃锛岃蛋蹇竴鐐瑰氨鍠樹笉涓婃皵",
+      "query": "我胸口有点闷，走快一点就喘不上气",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -183,25 +183,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "璧板揩涓€鐐瑰枠涓嶄笂姘?,
-        "chief_symptom_canonical": "璧板揩涓€鐐瑰枠涓嶄笂姘?,
+        "chief_symptom": "走快点喘不上",
+        "chief_symptom_canonical": "走快点喘不上",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑳稿彛闂?,
-          "璧板揩涓€鐐瑰枠涓嶄笂姘?
+          "胸口",
+          "走快点喘不上"
         ],
         "companion_symptoms": [
-          "鑳稿彛闂?
+          "胸口"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D008",
-      "query": "鏈€杩戞€绘槸澶存檿锛岀珯璧锋潵鐨勬椂鍊欐洿鏄庢樉",
+      "query": "最近总是头晕，站起来的时候更明显",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -209,55 +209,55 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "澶存檿",
-        "chief_symptom_canonical": "澶存檿",
+        "chief_symptom": "头晕",
+        "chief_symptom_canonical": "头晕",
         "slot_table_code": null,
         "symptom_candidates": [
-          "澶存檿",
-          "绔欒捣鏉ユ椂澶存檿鍔犻噸"
+          "头晕",
+          "站起来时头晕加重"
         ],
         "companion_symptoms": [
-          "绔欒捣鏉ユ椂澶存檿鍔犻噸"
+          "站起来时头晕加重"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D009",
-      "query": "鎴戠溂鐫涚孩绾㈢殑锛岃繕鏈夌偣鐥掞紝鏃╀笂璧锋潵鏈夌溂灞?,
+      "query": "我眼睛红红的，还有点痒，早上起来有眼屎",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鐪肩孩', '鐪肩棐', '鐪奸儴鍒嗘硨鐗?], got ['鐪肩潧绾㈢孩鐨?, '鐪肩潧鐥?, '鏃╀笂璧锋潵鏈夌溂灞?, '鐪肩潧鐥?, '鏃╀笂璧锋潵鏈夌溂灞?, '鐪肩潧绾㈢孩鐨?, '鐪肩潧绾㈢孩鐨?]"
+        "symptom_entities recall 0% < 50%, missed ['眼红', '眼痒', '眼部分泌?], got ['眼睛红红?, '眼睛?, '早上起来有眼?, '眼睛?, '早上起来有眼?, '眼睛红红?, '眼睛红红?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鐪肩潧绾㈢孩鐨?,
-        "chief_symptom_canonical": "鐪肩潧绾㈢孩鐨?,
+        "chief_symptom": "眼睛红红",
+        "chief_symptom_canonical": "眼睛红红",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鐪肩潧绾㈢孩鐨?,
-          "鐪肩潧鐥?,
-          "鏃╀笂璧锋潵鏈夌溂灞?
+          "眼睛红红",
+          "眼睛",
+          "早上起来有眼"
         ],
         "companion_symptoms": [
-          "鐪肩潧鐥?,
-          "鏃╀笂璧锋潵鏈夌溂灞?
+          "眼睛",
+          "早上起来有眼"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D010",
-      "query": "鏈€杩戣叞閰歌叞鐤硷紝鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇",
+      "query": "最近腰酸腰疼，坐久了起来特别不舒服",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -265,59 +265,59 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇",
-        "chief_symptom_canonical": "鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇",
+        "chief_symptom": "坐久了起来特券舒服",
+        "chief_symptom_canonical": "坐久了起来特券舒服",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑵伴吀",
-          "鑵扮柤",
-          "鍧愪箙浜嗚捣鏉ョ壒鍒笉鑸掓湇"
+          "腰酸",
+          "腰疼",
+          "坐久了起来特券舒服"
         ],
         "companion_symptoms": [
-          "鑵伴吀",
-          "鑵扮柤"
+          "腰酸",
+          "腰疼"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D011",
-      "query": "鎴戝彸涓嬭吂涓€闃典竴闃电柤锛屾寜涓€涓嬩篃鐤?,
+      "query": "我右下腹一阵一阵疼，按一下也疼",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鍙充笅鑵圭柤鐥?, '鍘嬬棝'], got ['鍙充笅鑵逛竴闃典竴闃电柤', '鍙充笅鑵规寜涓€涓嬩篃鐤?, '涓€闃典竴闃?, '鍙充笅鑵规寜涓€涓嬩篃鐤?, '涓€闃典竴闃?, '鍙充笅鑵逛竴闃典竴闃电柤', '鍙充笅鑵逛竴闃典竴闃电柤']"
+        "symptom_entities recall 0% < 50%, missed ['右下腹疼?, '压痛'], got ['右下腹一阵一阵疼', '右下腹按下也?, '阵一?, '右下腹按下也?, '阵一?, '右下腹一阵一阵疼', '右下腹一阵一阵疼']"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍙充笅鑵逛竴闃典竴闃电柤",
-        "chief_symptom_canonical": "鍙充笅鑵逛竴闃典竴闃电柤",
+        "chief_symptom": "右下腹一阵一阵疼",
+        "chief_symptom_canonical": "右下腹一阵一阵疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍙充笅鑵逛竴闃典竴闃电柤",
-          "鍙充笅鑵规寜涓€涓嬩篃鐤?,
-          "涓€闃典竴闃?
+          "右下腹一阵一阵疼",
+          "右下腹按下也",
+          "阵一"
         ],
         "companion_symptoms": [
-          "鍙充笅鑵规寜涓€涓嬩篃鐤?,
-          "涓€闃典竴闃?
+          "右下腹按下也",
+          "阵一"
         ],
         "hints": {
-          "涓荤棁": [
-            "涓€闃典竴闃?
+          "主症": [
+            "阵一"
           ],
-          "鐤剧梾": []
+          "疾病": []
         }
       }
     },
     {
       "id": "D012",
-      "query": "杩欎袱澶╂媺鑲氬瓙锛屼竴澶╄窇鍘曟墍濂藉嚑娆?,
+      "query": "这两天拉肚子，一天跑厕所好几次",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -325,25 +325,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "涓€澶╄窇鍘曟墍濂藉嚑娆?,
-        "chief_symptom_canonical": "涓€澶╄窇鍘曟墍濂藉嚑娆?,
+        "chief_symptom": "天跑厕所好几",
+        "chief_symptom_canonical": "天跑厕所好几",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鎷夎倸瀛?,
-          "涓€澶╄窇鍘曟墍濂藉嚑娆?
+          "拉肚",
+          "天跑厕所好几"
         ],
         "companion_symptoms": [
-          "鎷夎倸瀛?
+          "拉肚"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D013",
-      "query": "灏忎究鐨勬椂鍊欐湁鍒虹棝鎰燂紝鑰屼笖鑰佹兂涓婂帟鎵€",
+      "query": "小便的时候有刺痛感，而且老想上厕所",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -351,25 +351,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "灏忎究鍒虹棝",
-        "chief_symptom_canonical": "灏忎究鍒虹棝",
+        "chief_symptom": "小便刺痛",
+        "chief_symptom_canonical": "小便刺痛",
         "slot_table_code": null,
         "symptom_candidates": [
-          "灏忎究鍒虹棝",
-          "灏块"
+          "小便刺痛",
+          "尿"
         ],
         "companion_symptoms": [
-          "灏块"
+          "尿"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D014",
-      "query": "鎴戞渶杩戣儍閲屾€绘槸鍙嶉吀锛屽悆瀹岄キ杩樿儉",
+      "query": "我最近胃里总是反酸，吃完饭还胀",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -377,53 +377,53 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "楗悗鑵硅儉",
-        "chief_symptom_canonical": "鑵硅儉",
+        "chief_symptom": "饐腹胀",
+        "chief_symptom_canonical": "腹胀",
         "slot_table_code": "abdominal_distension_v1",
         "symptom_candidates": [
-          "鑳冮噷鍙嶉吀",
-          "楗悗鑵硅儉"
+          "胃里反酸",
+          "饐腹胀"
         ],
         "companion_symptoms": [
-          "鑳冮噷鍙嶉吀"
+          "胃里反酸"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D015",
-      "query": "鏅氫笂鎬荤潯涓嶇潃锛岃汉涓嬩互鍚庤剳瀛愬仠涓嶄笅鏉?,
+      "query": "晚上总睡不着，躺下以后脑子停不下来",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['澶辩湢'], got ['鏅氫笂鎬荤潯涓嶇潃', '韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵', '鏅氫笂鎬荤潯涓嶇潃', '韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵', '韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵']"
+        "symptom_entities recall 0% < 50%, missed ['失眠'], got ['晚上总睡不着', '躺下以后脑子停不下来', '晚上总睡不着', '躺下以后脑子停不下来', '躺下以后脑子停不下来']"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵",
-        "chief_symptom_canonical": "韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵",
+        "chief_symptom": "躺下以后脑子停不下来",
+        "chief_symptom_canonical": "躺下以后脑子停不下来",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鏅氫笂鎬荤潯涓嶇潃",
-          "韬轰笅浠ュ悗鑴戝瓙鍋滀笉涓嬫潵"
+          "晚上总睡不着",
+          "躺下以后脑子停不下来"
         ],
         "companion_symptoms": [
-          "鏅氫笂鎬荤潯涓嶇潃"
+          "晚上总睡不着"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D016",
-      "query": "鏈€杩戠毊鑲よ捣浜嗕竴鐗囩孩鐤癸紝寰堢棐锛岃秺鎸犺秺鏄庢樉",
+      "query": "最近皮肤起了一片红疹，很痒，越挠越明显",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -431,52 +431,52 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鎸犲悗绾㈢柟鍔犻噸",
-        "chief_symptom_canonical": "鎸犲悗绾㈢柟鍔犻噸",
+        "chief_symptom": "挠后红疹加重",
+        "chief_symptom_canonical": "挠后红疹加重",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鐨偆绾㈢柟",
-          "鐨偆鐦欑棐",
-          "鎸犲悗绾㈢柟鍔犻噸"
+          "皂红疹",
+          "皂瘙痒",
+          "挠后红疹加重"
         ],
         "companion_symptoms": [
-          "鐨偆绾㈢柟",
-          "鐨偆鐦欑棐"
+          "皂红疹",
+          "皂瘙痒"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D017",
-      "query": "鎴戣啙鐩栦笂涓嬫ゼ姊殑鏃跺€欑柤锛屽钩鏃惰蛋璺繕濂?,
+      "query": "我膝盖上下楼梯的时候疼，平时走路还好",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鑶濈洊鐤?, '涓婁笅妤煎姞閲?], got ['鑶濈洊涓婁笅妤兼鏃剁柤鐥?, '鑶濈洊涓婁笅妤兼鏃剁柤鐥?, '鑶濈洊涓婁笅妤兼鏃剁柤鐥?]"
+        "symptom_entities recall 0% < 50%, missed ['膝盖?, '上下楼加?], got ['膝盖上下楼时疼?, '膝盖上下楼时疼?, '膝盖上下楼时疼?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鑶濈洊涓婁笅妤兼鏃剁柤鐥?,
-        "chief_symptom_canonical": "鑶濈洊涓婁笅妤兼鏃剁柤鐥?,
+        "chief_symptom": "膝盖上下楼时疼",
+        "chief_symptom_canonical": "膝盖上下楼时疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑶濈洊涓婁笅妤兼鏃剁柤鐥?
+          "膝盖上下楼时疼"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D018",
-      "query": "鐗欑柤浜嗕袱澶╋紝鏅氫笂鐤煎緱鏇村帀瀹?,
+      "query": "牙疼了两天，晚上疼得更厉害",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -484,81 +484,81 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鐗欑柤",
-        "chief_symptom_canonical": "鐗欑柤",
+        "chief_symptom": "牙疼",
+        "chief_symptom_canonical": "牙疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鐗欑柤",
-          "鏅氫笂鐗欑柤鏇村帀瀹?
+          "牙疼",
+          "晚上牙疼更厉"
         ],
         "companion_symptoms": [
-          "鏅氫笂鐗欑柤鏇村帀瀹?
+          "晚上牙疼更厉"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D019",
-      "query": "鑰虫湹閲岄潰鐤硷紝杩樻湁鐐瑰惉涓嶆竻",
+      "query": "耳朵里面疼，还有点听不清",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鑰崇棝', '鍚姏涓嬮檷'], got ['鑰虫湹閲岄潰鐤?, '鍚笉娓?, '鍚笉娓?, '鑰虫湹閲岄潰鐤?, '鑰虫湹閲岄潰鐤?]"
+        "symptom_entities recall 0% < 50%, missed ['耳痛', '吊下降'], got ['耳朵里面?, '吸?, '吸?, '耳朵里面?, '耳朵里面?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鑰虫湹閲岄潰鐤?,
-        "chief_symptom_canonical": "鑰虫湹閲岄潰鐤?,
+        "chief_symptom": "耳朵里面",
+        "chief_symptom_canonical": "耳朵里面",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑰虫湹閲岄潰鐤?,
-          "鍚笉娓?
+          "耳朵里面",
+          "吸"
         ],
         "companion_symptoms": [
-          "鍚笉娓?
+          "吸"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D020",
-      "query": "鏈€杩戞墜鎸囧彂楹伙紝灏ゅ叾鏃╀笂璧峰簥鏄庢樉",
+      "query": "最近手指发麻，尤其早上起床明显",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鎵嬫寚楹绘湪'], got ['鎵嬫寚鍙戦夯', '鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉', '鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉', '鎵嬫寚鍙戦夯', '鎵嬫寚鍙戦夯']"
+        "symptom_entities recall 0% < 50%, missed ['手指麻木'], got ['手指发麻', '早上起床手指发麻明显', '早上起床手指发麻明显', '手指发麻', '手指发麻']"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鎵嬫寚鍙戦夯",
-        "chief_symptom_canonical": "鎵嬫寚鍙戦夯",
+        "chief_symptom": "手指发麻",
+        "chief_symptom_canonical": "手指发麻",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鎵嬫寚鍙戦夯",
-          "鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉"
+          "手指发麻",
+          "早上起床手指发麻明显"
         ],
         "companion_symptoms": [
-          "鏃╀笂璧峰簥鎵嬫寚鍙戦夯鏄庢樉"
+          "早上起床手指发麻明显"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D021",
-      "query": "鎴戞劅瑙夊績鎱岋紝蹇冭烦鏈夋椂鍊欑壒鍒揩",
+      "query": "我感觉心慌，心跳有时候特别快",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -566,24 +566,24 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "蹇冩偢",
-        "chief_symptom_canonical": "蹇冩偢",
+        "chief_symptom": "心悸",
+        "chief_symptom_canonical": "心悸",
         "slot_table_code": "palpitation_v1",
         "symptom_candidates": [
-          "蹇冩偢"
+          "心悸"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [
-            "蹇冩厡"
+          "主症": [
+            "心慌"
           ],
-          "鐤剧梾": []
+          "疾病": []
         }
       }
     },
     {
       "id": "D022",
-      "query": "鏈€杩戞湀缁忛噺鐗瑰埆澶氾紝鑰屼笖鑲氬瓙涔熺柤",
+      "query": "最近月经量特别多，而且肚子也疼",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -591,25 +591,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鏈堢粡閲忕壒鍒",
-        "chief_symptom_canonical": "鏈堢粡閲忕壒鍒",
+        "chief_symptom": "月经量特",
+        "chief_symptom_canonical": "月经量特",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鏈堢粡閲忕壒鍒",
-          "鑲氬瓙鐤?
+          "月经量特",
+          "肚子"
         ],
         "companion_symptoms": [
-          "鑲氬瓙鐤?
+          "肚子"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D023",
-      "query": "鎴戣剸瀛愬兊纭紝浣庡ご涔呬簡鍚庤剳鍕轰篃鐤?,
+      "query": "我脖子僵硬，低头久了后脑勺也疼",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -617,83 +617,83 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鑴栧瓙鍍电‖",
-        "chief_symptom_canonical": "鑴栧瓙鍍电‖",
+        "chief_symptom": "脖子僵硬",
+        "chief_symptom_canonical": "脖子僵硬",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑴栧瓙鍍电‖",
-          "鍚庤剳鍕虹柤"
+          "脖子僵硬",
+          "后脑勺疼"
         ],
         "companion_symptoms": [
-          "鍚庤剳鍕虹柤"
+          "后脑勺疼"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D024",
-      "query": "鏈€杩戞€昏寰楀緢绱紝娌″姏姘旓紝浼戞伅浜嗕篃缂撲笉杩囨潵",
+      "query": "最近总觉得很累，没力气，休息了也缓不过来",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['涔忓姏', '鐤插姵'], got ['寰堢疮', '娌″姏姘?, '浼戞伅浜嗕篃缂撲笉杩囨潵', '娌″姏姘?, '浼戞伅浜嗕篃缂撲笉杩囨潵', '寰堢疮', '寰堢疮']"
+        "symptom_entities recall 0% < 50%, missed ['乏力', '疲劳'], got ['很累', '没力?, '休息了也缓不过来', '没力?, '休息了也缓不过来', '很累', '很累']"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "寰堢疮",
-        "chief_symptom_canonical": "寰堢疮",
+        "chief_symptom": "很累",
+        "chief_symptom_canonical": "很累",
         "slot_table_code": null,
         "symptom_candidates": [
-          "寰堢疮",
-          "娌″姏姘?,
-          "浼戞伅浜嗕篃缂撲笉杩囨潵"
+          "很累",
+          "没力",
+          "休息了也缓不过来"
         ],
         "companion_symptoms": [
-          "娌″姏姘?,
-          "浼戞伅浜嗕篃缂撲笉杩囨潵"
+          "没力",
+          "休息了也缓不过来"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D025",
-      "query": "鎴戝悆涓滆タ浠ュ悗鎬绘兂鍚愶紝鑳冨彛涔熶笉濂?,
+      "query": "我吃东西以后总想吐，胃口也不好",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鎭跺績', '椋熸宸?], got ['鍚冧笢瑗夸互鍚庢€绘兂鍚?, '鑳冨彛涓嶅ソ', '鑳冨彛涓嶅ソ', '鍚冧笢瑗夸互鍚庢€绘兂鍚?, '鍚冧笢瑗夸互鍚庢€绘兂鍚?]"
+        "symptom_entities recall 0% < 50%, missed ['恶心', '食?], got ['吃东西以后想?, '胃口不好', '胃口不好', '吃东西以后想?, '吃东西以后想?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍚冧笢瑗夸互鍚庢€绘兂鍚?,
-        "chief_symptom_canonical": "鍚冧笢瑗夸互鍚庢€绘兂鍚?,
+        "chief_symptom": "吃东西以后想",
+        "chief_symptom_canonical": "吃东西以后想",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍚冧笢瑗夸互鍚庢€绘兂鍚?,
-          "鑳冨彛涓嶅ソ"
+          "吃东西以后想",
+          "胃口不好"
         ],
         "companion_symptoms": [
-          "鑳冨彛涓嶅ソ"
+          "胃口不好"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D026",
-      "query": "鎴戝緱浜嗘劅鍐掞紝搴旇鎸傚摢涓锛?,
+      "query": "我得了感冒，应该挂哪个科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -701,7 +701,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鎰熷啋"
+          "感冒"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -709,14 +709,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D027",
-      "query": "楂樿鍘嬪鏌ヤ竴鑸湅浠€涔堢锛?,
+      "query": "高血压复查一般看什么科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -724,7 +724,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "楂樿鍘?
+          "高"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -732,14 +732,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D028",
-      "query": "绯栧翱鐥呰鍘诲摢涓鐪嬶紵",
+      "query": "糖尿病要去哪个科看？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -747,7 +747,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "绯栧翱鐥?
+          "糖尿"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -755,14 +755,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D029",
-      "query": "鑳冪値搴旇鎸傛秷鍖栫鍚楋紵",
+      "query": "胃炎应该挂消化科吗？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -770,7 +770,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑳冪値"
+          "胃炎"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -778,16 +778,16 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": [
-            "鑳冪値"
+          "主症": [],
+          "疾病": [
+            "胃炎"
           ]
         }
       }
     },
     {
       "id": "D030",
-      "query": "榧荤値鐪嬪摢涓姣旇緝鍚堥€傦紵",
+      "query": "鼻炎看哪个科比较合适？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -795,7 +795,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "榧荤値"
+          "鼻炎"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -803,14 +803,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D031",
-      "query": "鑲虹値澶嶈瘖鎸備粈涔堢锛?,
+      "query": "肺炎复诊挂什么科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -818,7 +818,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑲虹値"
+          "肺炎"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -826,14 +826,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D032",
-      "query": "鐢蹭孩闇€瑕佹寕鍐呭垎娉岀鍚楋紵",
+      "query": "甲亢需要挂内分泌科吗？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -841,7 +841,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鐢蹭孩"
+          "甲亢"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -849,16 +849,16 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": [
-            "鐢蹭孩"
+          "主症": [],
+          "疾病": [
+            "甲亢"
           ]
         }
       }
     },
     {
       "id": "D033",
-      "query": "鐥涢鍙戜綔搴旇鍘诲摢涓锛?,
+      "query": "痛风发作应该去哪个科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -866,7 +866,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鐥涢"
+          "痛"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -874,40 +874,40 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D034",
-      "query": "婀跨柟瑕佺湅鐨偆绉戝悧锛?,
+      "query": "湿疹要看皮肤科吗？",
       "passed": false,
       "intent_ok": false,
       "ner_ok": false,
       "failures": [
         "triage_route: expected 'disease', got 'symptom'",
-        "disease_entities recall 0% < 100%, missed ['婀跨柟'], got []"
+        "disease_entities recall 0% < 100%, missed ['湿疹'], got []"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "婀跨柟",
-        "chief_symptom_canonical": "婀跨柟",
+        "chief_symptom": "湿疹",
+        "chief_symptom_canonical": "湿疹",
         "slot_table_code": null,
         "symptom_candidates": [
-          "婀跨柟"
+          "湿疹"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D035",
-      "query": "鑲剧粨鐭冲簲璇ユ寕娉屽翱澶栫鍚楋紵",
+      "query": "肾结石应该挂泌尿外科吗？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -915,7 +915,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑲剧粨鐭?
+          "肾结"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -923,14 +923,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D036",
-      "query": "瀛愬鑲岀槫涓€鑸寕濡囩杩樻槸鑲跨槫绉戯紵",
+      "query": "子宫肌瘤一般挂妇科还是肿瘤科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -938,7 +938,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "瀛愬鑲岀槫"
+          "子肌瘤"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -946,14 +946,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D037",
-      "query": "涔宠吅澧炵敓闇€瑕佸幓鍝釜绉戯紵",
+      "query": "乳腺增生需要去哪个科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -961,7 +961,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "涔宠吅澧炵敓"
+          "乳腺增生"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -969,14 +969,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D038",
-      "query": "棰堟鐥呭簲璇ユ寕楠ㄧ鍚楋紵",
+      "query": "颈椎病应该挂骨科吗？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -984,7 +984,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "棰堟鐥?
+          "颈"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -992,14 +992,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D039",
-      "query": "鎶戦儊鐥囧幓鍖婚櫌鐪嬩粈涔堢锛?,
+      "query": "抑郁症去医院看什么科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1007,7 +1007,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鎶戦儊鐥?
+          "抑郁"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -1015,14 +1015,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D040",
-      "query": "鍐犲績鐥呭鏌ユ寕鍝釜绉戯紵",
+      "query": "冠心病复查挂哪个科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1030,7 +1030,7 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鍐犲績鐥?
+          "冠心"
         ],
         "chief_symptom": null,
         "chief_symptom_canonical": null,
@@ -1038,14 +1038,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D041",
-      "query": "鎴戞劅鍐掍簡锛岀幇鍦ㄥ挸鍡芥祦榧绘稌锛屽簲璇ユ寕浠€涔堢锛?,
+      "query": "我感冒了，现在咳嗽流鼻涕，应该挂什么科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1053,27 +1053,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鎰熷啋"
+          "感冒"
         ],
-        "chief_symptom": "鍜冲椊",
-        "chief_symptom_canonical": "鍜冲椊",
+        "chief_symptom": "咳嗽",
+        "chief_symptom_canonical": "咳嗽",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍜冲椊",
-          "娴侀蓟娑?
+          "咳嗽",
+          "流鼻"
         ],
         "companion_symptoms": [
-          "娴侀蓟娑?
+          "流鼻"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D042",
-      "query": "鎴戞湁楂樿鍘嬶紝鏈€杩戝ご鏅曞緱鍘夊",
+      "query": "我有高血压，最近头晕得厉害",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1081,24 +1081,24 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "楂樿鍘?
+          "高"
         ],
-        "chief_symptom": "澶存檿",
-        "chief_symptom_canonical": "澶存檿",
+        "chief_symptom": "头晕",
+        "chief_symptom_canonical": "头晕",
         "slot_table_code": null,
         "symptom_candidates": [
-          "澶存檿"
+          "头晕"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D043",
-      "query": "绯栧翱鐥呮偅鑰呮渶杩戣剼楹伙紝闇€瑕佺湅鍝釜绉戯紵",
+      "query": "糖尿病患者最近脚麻，需要看哪个科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1106,24 +1106,24 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "绯栧翱鐥?
+          "糖尿"
         ],
-        "chief_symptom": "鑴氶夯",
-        "chief_symptom_canonical": "鑴氶夯",
+        "chief_symptom": "脚麻",
+        "chief_symptom_canonical": "脚麻",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑴氶夯"
+          "脚麻"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D044",
-      "query": "鑳冪値鍙堢姱浜嗭紝楗悗鑳冪柤鍙嶉吀",
+      "query": "胃炎又犯了，饭后胃疼反酸",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1131,33 +1131,33 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑳冪値"
+          "胃炎"
         ],
-        "chief_symptom": "鍙嶉吀",
-        "chief_symptom_canonical": "鍙嶉吀",
+        "chief_symptom": "反酸",
+        "chief_symptom_canonical": "反酸",
         "slot_table_code": null,
         "symptom_candidates": [
-          "楗悗",
-          "鑳冪柤",
-          "鍙嶉吀"
+          "饐",
+          "胃疼",
+          "反酸"
         ],
         "companion_symptoms": [
-          "楗悗",
-          "鑳冪柤"
+          "饐",
+          "胃疼"
         ],
         "hints": {
-          "涓荤棁": [
-            "楗悗"
+          "主症": [
+            "饐"
           ],
-          "鐤剧梾": [
-            "鑳冪値"
+          "疾病": [
+            "胃炎"
           ]
         }
       }
     },
     {
       "id": "D045",
-      "query": "榧荤値鏈€杩戝姞閲嶄簡锛岄蓟濉炴墦鍠峰殢寰堜弗閲?,
+      "query": "鼻炎最近加重了，鼻塞打喷嚏很严重",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1165,27 +1165,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "榧荤値"
+          "鼻炎"
         ],
-        "chief_symptom": "鎵撳柗鍤?,
-        "chief_symptom_canonical": "鎵撳柗鍤?,
+        "chief_symptom": "打喷",
+        "chief_symptom_canonical": "打喷",
         "slot_table_code": null,
         "symptom_candidates": [
-          "榧诲",
-          "鎵撳柗鍤?
+          "鼻",
+          "打喷"
         ],
         "companion_symptoms": [
-          "榧诲"
+          "鼻"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D046",
-      "query": "鑲虹値濂戒簡浠ュ悗杩樻槸涓€鐩村挸鍡?,
+      "query": "肺炎好了以后还是一直咳嗽",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1193,24 +1193,24 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑲虹値"
+          "肺炎"
         ],
-        "chief_symptom": "鍜冲椊",
-        "chief_symptom_canonical": "鍜冲椊",
+        "chief_symptom": "咳嗽",
+        "chief_symptom_canonical": "咳嗽",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍜冲椊"
+          "咳嗽"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D047",
-      "query": "鐢蹭孩鏈€杩戝績鎱屾墜鎶栵紝搴旇鍘诲摢鐪嬶紵",
+      "query": "甲亢最近心慌手抖，应该去哪看？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1218,32 +1218,32 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鐢蹭孩"
+          "甲亢"
         ],
-        "chief_symptom": "蹇冩偢",
-        "chief_symptom_canonical": "蹇冩偢",
+        "chief_symptom": "心悸",
+        "chief_symptom_canonical": "心悸",
         "slot_table_code": "palpitation_v1",
         "symptom_candidates": [
-          "蹇冩偢",
-          "鎵嬫姈"
+          "心悸",
+          "手抖"
         ],
         "companion_symptoms": [
-          "鎵嬫姈"
+          "手抖"
         ],
         "hints": {
-          "涓荤棁": [
-            "蹇冩厡",
-            "鎵嬫姈"
+          "主症": [
+            "心慌",
+            "手抖"
           ],
-          "鐤剧梾": [
-            "鐢蹭孩"
+          "疾病": [
+            "甲亢"
           ]
         }
       }
     },
     {
       "id": "D048",
-      "query": "鐥涢鍙戜綔浜嗭紝鑴氳毒绾㈣偪鐤?,
+      "query": "痛风发作了，脚趾红肿疼",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1251,53 +1251,53 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鐥涢"
+          "痛"
         ],
-        "chief_symptom": "鑴氳毒绾㈣偪鐤?,
-        "chief_symptom_canonical": "鑴氳毒绾㈣偪鐤?,
+        "chief_symptom": "脚趾红肿",
+        "chief_symptom_canonical": "脚趾红肿",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑴氳毒绾㈣偪鐤?
+          "脚趾红肿"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D049",
-      "query": "婀跨柟寰堢棐锛岃繕寮€濮嬭劚鐨?,
+      "query": "湿疹很痒，还开始脱皮",
       "passed": false,
       "intent_ok": false,
       "ner_ok": false,
       "failures": [
         "triage_route: expected 'disease', got 'symptom'",
-        "disease_entities recall 0% < 100%, missed ['婀跨柟'], got []"
+        "disease_entities recall 0% < 100%, missed ['湿疹'], got []"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "寰堢棐",
-        "chief_symptom_canonical": "寰堢棐",
+        "chief_symptom": "很痒",
+        "chief_symptom_canonical": "很痒",
         "slot_table_code": null,
         "symptom_candidates": [
-          "寰堢棐",
-          "鑴辩毊"
+          "很痒",
+          "脱皮"
         ],
         "companion_symptoms": [
-          "鑴辩毊"
+          "脱皮"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D050",
-      "query": "鑲剧粨鐭冲彂浣滐紝鑵扮柤杩樻湁灏胯",
+      "query": "肾结石发作，腰疼还有尿血",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1305,54 +1305,54 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑲剧粨鐭?
+          "肾结"
         ],
-        "chief_symptom": "鑵扮柤",
-        "chief_symptom_canonical": "鑵扮柤",
+        "chief_symptom": "腰疼",
+        "chief_symptom_canonical": "腰疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑵扮柤",
-          "灏胯"
+          "腰疼",
+          "尿"
         ],
         "companion_symptoms": [
-          "灏胯"
+          "尿"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D051",
-      "query": "瀛愬鑲岀槫鏈€杩戞湀缁忛噺鍙樺浜?,
+      "query": "子宫肌瘤最近月经量变多了",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鏈堢粡閲忓'], got ['鏈堢粡閲忓彉澶?, '鏈堢粡閲忓彉澶?, '鏈堢粡閲忓彉澶?]"
+        "symptom_entities recall 0% < 50%, missed ['月经量'], got ['月经量变?, '月经量变?, '月经量变?]"
       ],
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "瀛愬鑲岀槫"
+          "子肌瘤"
         ],
-        "chief_symptom": "鏈堢粡閲忓彉澶?,
-        "chief_symptom_canonical": "鏈堢粡閲忓彉澶?,
+        "chief_symptom": "月经量变",
+        "chief_symptom_canonical": "月经量变",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鏈堢粡閲忓彉澶?
+          "月经量变"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D052",
-      "query": "棰堟鐥呭鑷存垜鎵嬮夯锛屾寕浠€涔堢锛?,
+      "query": "颈椎病导致我手麻，挂什么科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1360,24 +1360,24 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "棰堟鐥?
+          "颈"
         ],
-        "chief_symptom": "鎵嬮夯",
-        "chief_symptom_canonical": "鎵嬮夯",
+        "chief_symptom": "手麻",
+        "chief_symptom_canonical": "手麻",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鎵嬮夯"
+          "手麻"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D053",
-      "query": "鎶戦儊鐥囨渶杩戠潯涓嶇潃锛屾儏缁篃寰堜綆钀?,
+      "query": "抑郁症最近睡不着，情绪也很低落",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1385,27 +1385,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鎶戦儊鐥?
+          "抑郁"
         ],
-        "chief_symptom": "鐫′笉鐫€",
-        "chief_symptom_canonical": "鐫′笉鐫€",
+        "chief_symptom": "睡不",
+        "chief_symptom_canonical": "睡不",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鐫′笉鐫€",
-          "鎯呯华浣庤惤"
+          "睡不",
+          "情绪低落"
         ],
         "companion_symptoms": [
-          "鎯呯华浣庤惤"
+          "情绪低落"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D054",
-      "query": "鍐犲績鐥呮偅鑰呮渶杩戣兏闂疯兏鐥?,
+      "query": "冠心病患者最近胸闷胸痛",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1413,27 +1413,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鍐犲績鐥?
+          "冠心"
         ],
-        "chief_symptom": "鑳哥棝",
-        "chief_symptom_canonical": "鑳哥棝",
+        "chief_symptom": "胸痛",
+        "chief_symptom_canonical": "胸痛",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑳搁椃",
-          "鑳哥棝"
+          "胸闷",
+          "胸痛"
         ],
         "companion_symptoms": [
-          "鑳搁椃"
+          "胸闷"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D055",
-      "query": "鐥旂柈鍑鸿杩樻湁鐐圭柤锛岃鎸傚摢涓锛?,
+      "query": "痔疮出血还有点疼，要挂哪个科？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1441,27 +1441,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鐥旂柈"
+          "痔疮"
         ],
-        "chief_symptom": "鐥旂柈鍑鸿",
-        "chief_symptom_canonical": "鐥旂柈鍑鸿",
+        "chief_symptom": "痔疮出",
+        "chief_symptom_canonical": "痔疮出",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鐥旂柈鍑鸿",
-          "鐤?
+          "痔疮出",
+          ""
         ],
         "companion_symptoms": [
-          "鐤?
+          ""
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D056",
-      "query": "鎴戞€€鐤戣嚜宸辨槸鑳冪値锛屾渶杩戦キ鍚庝笂鑵归儴鐤?,
+      "query": "我怀疑自己是胃炎，最近饭后上腹部疼",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1469,32 +1469,32 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑳冪値"
+          "胃炎"
         ],
-        "chief_symptom": "鑲氳剱涓婃柟鐤肩棝",
-        "chief_symptom_canonical": "鑵圭棝",
+        "chief_symptom": "肚脐上方疼痛",
+        "chief_symptom_canonical": "腹痛",
         "slot_table_code": "abdominal_pain_v1",
         "symptom_candidates": [
-          "楗悗",
-          "鑲氳剱涓婃柟鐤肩棝"
+          "饐",
+          "肚脐上方疼痛"
         ],
         "companion_symptoms": [
-          "楗悗"
+          "饐"
         ],
         "hints": {
-          "涓荤棁": [
-            "涓婅吂閮?,
-            "楗悗"
+          "主症": [
+            "上腹",
+            "饐"
           ],
-          "鐤剧梾": [
-            "鑳冪値"
+          "疾病": [
+            "胃炎"
           ]
         }
       }
     },
     {
       "id": "D057",
-      "query": "鍙兘鏄蓟鐐庯紝鏈€杩戣€佹槸榧诲鎵撳柗鍤?,
+      "query": "可能是鼻炎，最近老是鼻塞打喷嚏",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1502,54 +1502,54 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "榧荤値"
+          "鼻炎"
         ],
-        "chief_symptom": "鎵撳柗鍤?,
-        "chief_symptom_canonical": "鎵撳柗鍤?,
+        "chief_symptom": "打喷",
+        "chief_symptom_canonical": "打喷",
         "slot_table_code": null,
         "symptom_candidates": [
-          "榧诲",
-          "鎵撳柗鍤?
+          "鼻",
+          "打喷"
         ],
         "companion_symptoms": [
-          "榧诲"
+          "鼻"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D058",
-      "query": "鎴戣寰楀儚鐥涢锛岃剼瓒剧獊鐒跺張绾㈠張鑲?,
+      "query": "我觉得像痛风，脚趾突然又红又肿",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鑴氳毒绾㈣偪'], got ['鑴氳毒绐佺劧鍙堢孩鍙堣偪', '鑴氳毒绐佺劧鍙堢孩鍙堣偪', '鑴氳毒绐佺劧鍙堢孩鍙堣偪']"
+        "symptom_entities recall 0% < 50%, missed ['脚趾红肿'], got ['脚趾突然又红又肿', '脚趾突然又红又肿', '脚趾突然又红又肿']"
       ],
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鐥涢"
+          "痛"
         ],
-        "chief_symptom": "鑴氳毒绐佺劧鍙堢孩鍙堣偪",
-        "chief_symptom_canonical": "鑴氳毒绐佺劧鍙堢孩鍙堣偪",
+        "chief_symptom": "脚趾突然又红又肿",
+        "chief_symptom_canonical": "脚趾突然又红又肿",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑴氳毒绐佺劧鍙堢孩鍙堣偪"
+          "脚趾突然又红又肿"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D059",
-      "query": "浼氫笉浼氭槸鑲虹値锛熸垜鍜冲椊鍙戠儳濂藉嚑澶╀簡",
+      "query": "会不会是肺炎？我咳嗽发烧好几天了",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1557,27 +1557,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑲虹値"
+          "肺炎"
         ],
-        "chief_symptom": "鍙戠儳",
-        "chief_symptom_canonical": "鍙戠儳",
+        "chief_symptom": "发烧",
+        "chief_symptom_canonical": "发烧",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍜冲椊",
-          "鍙戠儳"
+          "咳嗽",
+          "发烧"
         ],
         "companion_symptoms": [
-          "鍜冲椊"
+          "咳嗽"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D060",
-      "query": "鑳搁椃浼氫笉浼氭槸鍐犲績鐥咃紵",
+      "query": "胸闷会不会是冠心病？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1585,24 +1585,24 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鍐犲績鐥?
+          "冠心"
         ],
-        "chief_symptom": "鑳搁椃",
-        "chief_symptom_canonical": "鑳搁椃",
+        "chief_symptom": "胸闷",
+        "chief_symptom_canonical": "胸闷",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑳搁椃"
+          "胸闷"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D061",
-      "query": "鎴戜笉鏄劅鍐掞紝灏辨槸鏈€杩戝挸鍡芥祦榧绘稌",
+      "query": "我不是感冒，就是最近咳嗽流鼻涕",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1610,25 +1610,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "娴侀蓟娑?,
-        "chief_symptom_canonical": "娴侀蓟娑?,
+        "chief_symptom": "流鼻",
+        "chief_symptom_canonical": "流鼻",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍜冲椊",
-          "娴侀蓟娑?
+          "咳嗽",
+          "流鼻"
         ],
         "companion_symptoms": [
-          "鍜冲椊"
+          "咳嗽"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D062",
-      "query": "涓嶆槸鑳冪値锛屽氨鏄悆瀹岄キ鑳冭儉鑳冪柤",
+      "query": "不是胃炎，就是吃完饭胃胀胃疼",
       "passed": false,
       "intent_ok": false,
       "ner_ok": true,
@@ -1638,29 +1638,29 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鑳冪値"
+          "胃炎"
         ],
-        "chief_symptom": "楗悗鑳冪柤",
-        "chief_symptom_canonical": "楗悗鑳冪柤",
+        "chief_symptom": "饐胃疼",
+        "chief_symptom_canonical": "饐胃疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "楗悗鑳冭儉",
-          "楗悗鑳冪柤"
+          "饐胃胀",
+          "饐胃疼"
         ],
         "companion_symptoms": [
-          "楗悗鑳冭儉"
+          "饐胃胀"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": [
-            "鑳冪値"
+          "主症": [],
+          "疾病": [
+            "胃炎"
           ]
         }
       }
     },
     {
       "id": "D063",
-      "query": "鍖荤敓璇存帓闄や簡鑲虹値锛屼絾鎴戣繕鏄挸鍡?,
+      "query": "医生说排除了肺炎，但我还是咳嗽",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1668,22 +1668,22 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍜冲椊",
-        "chief_symptom_canonical": "鍜冲椊",
+        "chief_symptom": "咳嗽",
+        "chief_symptom_canonical": "咳嗽",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍜冲椊"
+          "咳嗽"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D064",
-      "query": "娌℃湁鍙戠儳锛屽氨鏄棑瀛愮柤銆侀蓟濉?,
+      "query": "没有发烧，就是嗓子疼、鼻塞",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1691,75 +1691,75 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍡撳瓙鐤?,
-        "chief_symptom_canonical": "鍡撳瓙鐤?,
+        "chief_symptom": "嗓子",
+        "chief_symptom_canonical": "嗓子",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍡撳瓙鐤?,
-          "榧诲"
+          "嗓子",
+          "鼻"
         ],
         "companion_symptoms": [
-          "榧诲"
+          "鼻"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D065",
-      "query": "涓嶆槸鐥旂柈锛屽氨鏄ぇ渚跨殑鏃跺€欐湁鐐圭柤",
+      "query": "不是痔疮，就是大便的时候有点疼",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鎺掍究鐤肩棝'], got ['澶т究鏃剁柤鐥?, '澶т究鏃剁柤鐥?, '澶т究鏃剁柤鐥?]"
+        "symptom_entities recall 0% < 50%, missed ['排便疼痛'], got ['大便时疼?, '大便时疼?, '大便时疼?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "澶т究鏃剁柤鐥?,
-        "chief_symptom_canonical": "澶т究鏃剁柤鐥?,
+        "chief_symptom": "大便时疼",
+        "chief_symptom_canonical": "大便时疼",
         "slot_table_code": null,
         "symptom_candidates": [
-          "澶т究鏃剁柤鐥?
+          "大便时疼"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D066",
-      "query": "鎴戜篃璇翠笉娓咃紝灏辨槸鑲氬瓙闅愰殣涓嶈垝鏈?,
+      "query": "我也说不清，就是肚子隐隐不舒服",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鑵归儴涓嶉€?], got ['鑲氬瓙闅愰殣涓嶈垝鏈?, '鑲氬瓙闅愰殣涓嶈垝鏈?, '鑲氬瓙闅愰殣涓嶈垝鏈?]"
+        "symptom_entities recall 0% < 50%, missed ['腹部不?], got ['肚子隐隐不舒?, '肚子隐隐不舒?, '肚子隐隐不舒?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鑲氬瓙闅愰殣涓嶈垝鏈?,
-        "chief_symptom_canonical": "鑲氬瓙闅愰殣涓嶈垝鏈?,
+        "chief_symptom": "肚子隐隐不舒",
+        "chief_symptom_canonical": "肚子隐隐不舒",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑲氬瓙闅愰殣涓嶈垝鏈?
+          "肚子隐隐不舒"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D067",
-      "query": "鏈€杩戣韩浣撳緢闅惧彈锛屾祽韬病鍔?,
+      "query": "最近身体很难受，浑身没劲",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1767,50 +1767,50 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "娴戣韩娌″姴",
-        "chief_symptom_canonical": "娴戣韩娌″姴",
+        "chief_symptom": "浑身没劲",
+        "chief_symptom_canonical": "浑身没劲",
         "slot_table_code": null,
         "symptom_candidates": [
-          "娴戣韩娌″姴"
+          "浑身没劲"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D068",
-      "query": "浜哄緢铏氾紝绋嶅井璧颁竴浼氬効灏辩疮",
+      "query": "人很虚，稍微走一会儿就累",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['铏氬急', '鏄撶柌鍔?], got ['浜哄緢铏?, '绋嶅井璧颁竴浼氬効灏辩疮', '浜哄緢铏?, '绋嶅井璧颁竴浼氬効灏辩疮', '绋嶅井璧颁竴浼氬効灏辩疮']"
+        "symptom_entities recall 0% < 50%, missed ['虚弱', '易疲?], got ['人很?, '稍微走一会儿就累', '人很?, '稍微走一会儿就累', '稍微走一会儿就累']"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "绋嶅井璧颁竴浼氬効灏辩疮",
-        "chief_symptom_canonical": "绋嶅井璧颁竴浼氬効灏辩疮",
+        "chief_symptom": "稍微走一会儿就累",
+        "chief_symptom_canonical": "稍微走一会儿就累",
         "slot_table_code": null,
         "symptom_candidates": [
-          "浜哄緢铏?,
-          "绋嶅井璧颁竴浼氬効灏辩疮"
+          "人很",
+          "稍微走一会儿就累"
         ],
         "companion_symptoms": [
-          "浜哄緢铏?
+          "人很"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D069",
-      "query": "灏忓杩欎袱澶╁彂鐑у挸鍡斤紝鏅氫笂鐫′笉濂?,
+      "query": "小孩这两天发烧咳嗽，晚上睡不好",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1818,54 +1818,54 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍙戠儳",
-        "chief_symptom_canonical": "鍙戠儳",
+        "chief_symptom": "发烧",
+        "chief_symptom_canonical": "发烧",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍙戠儳",
-          "鍜冲椊",
-          "鐫′笉濂?
+          "发烧",
+          "咳嗽",
+          "睡不"
         ],
         "companion_symptoms": [
-          "鍜冲椊",
-          "鐫′笉濂?
+          "咳嗽",
+          "睡不"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D070",
-      "query": "瀛曞鑲氬瓙涓€闃典竴闃电柤锛岄渶瑕佺湅鍝噷锛?,
+      "query": "孕妇肚子一阵一阵疼，需要看哪里？",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鑵圭棝'], got ['涓€闃典竴闃?, '涓€闃典竴闃?, '涓€闃典竴闃?]"
+        "symptom_entities recall 0% < 50%, missed ['腹痛'], got ['阵一?, '阵一?, '阵一?]"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "涓€闃典竴闃?,
-        "chief_symptom_canonical": "涓€闃典竴闃?,
+        "chief_symptom": "阵一",
+        "chief_symptom_canonical": "阵一",
         "slot_table_code": null,
         "symptom_candidates": [
-          "涓€闃典竴闃?
+          "阵一"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [
-            "涓€闃典竴闃?
+          "主症": [
+            "阵一"
           ],
-          "鐤剧梾": []
+          "疾病": []
         }
       }
     },
     {
       "id": "D071",
-      "query": "鑰佷汉绐佺劧鑳哥棝锛岃繕鍐掑喎姹?,
+      "query": "老人突然胸痛，还冒冷汗",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1873,25 +1873,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鑳哥棝",
-        "chief_symptom_canonical": "鑳哥棝",
+        "chief_symptom": "胸痛",
+        "chief_symptom_canonical": "胸痛",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑳哥棝",
-          "鍐掑喎姹?
+          "胸痛",
+          "冒冷"
         ],
         "companion_symptoms": [
-          "鍐掑喎姹?
+          "冒冷"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D072",
-      "query": "瀹濆疂鎷夎倸瀛愪竴澶╀簡锛岀簿绁炰篃宸?,
+      "query": "宝宝拉肚子一天了，精神也差",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1899,25 +1899,25 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鎷夎倸瀛?,
-        "chief_symptom_canonical": "鎷夎倸瀛?,
+        "chief_symptom": "拉肚",
+        "chief_symptom_canonical": "拉肚",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鎷夎倸瀛?,
-          "绮剧宸?
+          "拉肚",
+          "精"
         ],
         "companion_symptoms": [
-          "绮剧宸?
+          "精"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D073",
-      "query": "浜у悗涔虫埧鑳€鐥涳紝杩樻湁鐐瑰彂鐑?,
+      "query": "产后乳房胀痛，还有点发热",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1925,55 +1925,55 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍙戠儹",
-        "chief_symptom_canonical": "鍙戠儹",
+        "chief_symptom": "发热",
+        "chief_symptom_canonical": "发热",
         "slot_table_code": null,
         "symptom_candidates": [
-          "涔虫埧鑳€鐥?,
-          "鍙戠儹"
+          "乳房",
+          "发热"
         ],
         "companion_symptoms": [
-          "涔虫埧鑳€鐥?
+          "乳房"
         ],
         "hints": {
-          "涓荤棁": [
-            "鍙戠儹"
+          "主症": [
+            "发热"
           ],
-          "鐤剧梾": []
+          "疾病": []
         }
       }
     },
     {
       "id": "D074",
-      "query": "瀛╁瓙鍠樺緱鍘夊锛岃鑳稿彛涓嶈垝鏈?,
+      "query": "孩子喘得厉害，说胸口不舒服",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['姘斿枠', '鑳稿彛涓嶉€?], got ['鍠樺緱鍘夊', '鑳稿彛涓嶈垝鏈?, '鑳稿彛涓嶈垝鏈?, '鍠樺緱鍘夊', '鍠樺緱鍘夊']"
+        "symptom_entities recall 0% < 50%, missed ['气喘', '胸口不?], got ['喘得厉', '胸口不舒?, '胸口不舒?, '喘得厉', '喘得厉']"
       ],
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鍠樺緱鍘夊",
-        "chief_symptom_canonical": "鍠樺緱鍘夊",
+        "chief_symptom": "喘得厉",
+        "chief_symptom_canonical": "喘得厉",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍠樺緱鍘夊",
-          "鑳稿彛涓嶈垝鏈?
+          "喘得厉",
+          "胸口不舒"
         ],
         "companion_symptoms": [
-          "鑳稿彛涓嶈垝鏈?
+          "胸口不舒"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D075",
-      "query": "鎴戠毊鑲ょ獊鐒惰捣鍖咃紝鐥掑緱鐫′笉鐫€",
+      "query": "我皮肤突然起包，痒得睡不着",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -1981,54 +1981,54 @@
       "actual": {
         "triage_route": "symptom",
         "diseases": [],
-        "chief_symptom": "鐥掑緱鐫′笉鐫€",
-        "chief_symptom_canonical": "鐥掑緱鐫′笉鐫€",
+        "chief_symptom": "痒得睡不",
+        "chief_symptom_canonical": "痒得睡不",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鐨偆璧峰寘",
-          "鐨偆鐥?,
-          "鐥掑緱鐫′笉鐫€"
+          "皂起包",
+          "皂",
+          "痒得睡不"
         ],
         "companion_symptoms": [
-          "鐨偆璧峰寘",
-          "鐨偆鐥?
+          "皂起包",
+          "皂"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D076",
-      "query": "鍎跨鍝枠鍙戜綔锛屽枠寰楀緢鍘夊",
+      "query": "儿童哮喘发作，喘得很厉害",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鍠樻伅', '姘斿枠'], got ['鍠樺緱寰堝帀瀹?, '鍠樺緱寰堝帀瀹?, '鍠樺緱寰堝帀瀹?]"
+        "symptom_entities recall 0% < 50%, missed ['喘息', '气喘'], got ['喘得很厉?, '喘得很厉?, '喘得很厉?]"
       ],
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鍝枠"
+          "哖"
         ],
-        "chief_symptom": "鍠樺緱寰堝帀瀹?,
-        "chief_symptom_canonical": "鍠樺緱寰堝帀瀹?,
+        "chief_symptom": "喘得很厉",
+        "chief_symptom_canonical": "喘得很厉",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍠樺緱寰堝帀瀹?
+          "喘得很厉"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D077",
-      "query": "鑰佷汉鏈夐珮琛€鍘嬶紝鐜板湪澶存檿鎭跺績",
+      "query": "老人有高血压，现在头晕恶心",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2036,27 +2036,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "楂樿鍘?
+          "高"
         ],
-        "chief_symptom": "澶存檿",
-        "chief_symptom_canonical": "澶存檿",
+        "chief_symptom": "头晕",
+        "chief_symptom_canonical": "头晕",
         "slot_table_code": null,
         "symptom_candidates": [
-          "澶存檿",
-          "鎭跺績"
+          "头晕",
+          "恶心"
         ],
         "companion_symptoms": [
-          "鎭跺績"
+          "恶心"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D078",
-      "query": "瀛曞璐锛屾渶杩戝ご鏅曚箯鍔?,
+      "query": "孕妇贫血，最近头晕乏力",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2064,54 +2064,54 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "璐"
+          ""
         ],
-        "chief_symptom": "澶存檿",
-        "chief_symptom_canonical": "澶存檿",
+        "chief_symptom": "头晕",
+        "chief_symptom_canonical": "头晕",
         "slot_table_code": null,
         "symptom_candidates": [
-          "澶存檿",
-          "涔忓姏"
+          "头晕",
+          "乏力"
         ],
         "companion_symptoms": [
-          "涔忓姏"
+          "乏力"
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D079",
-      "query": "灏忓鎵嬭冻鍙ｇ梾锛屽槾閲屾湁鐤辩柟",
+      "query": "小孩手足口病，嘴里有疱疹",
       "passed": false,
       "intent_ok": true,
       "ner_ok": false,
       "failures": [
-        "symptom_entities recall 0% < 50%, missed ['鍙ｈ厰鐤辩柟'], got ['鍢撮噷鏈夌柋鐤?, '鍢撮噷鏈夌柋鐤?, '鍢撮噷鏈夌柋鐤?]"
+        "symptom_entities recall 0% < 50%, missed ['口腔疱疹'], got ['嘴里有疱?, '嘴里有疱?, '嘴里有疱?]"
       ],
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "鎵嬭冻鍙ｇ梾"
+          "手足口病"
         ],
-        "chief_symptom": "鍢撮噷鏈夌柋鐤?,
-        "chief_symptom_canonical": "鍢撮噷鏈夌柋鐤?,
+        "chief_symptom": "嘴里有疱",
+        "chief_symptom_canonical": "嘴里有疱",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鍢撮噷鏈夌柋鐤?
+          "嘴里有疱"
         ],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D080",
-      "query": "瀹濆疂婀跨柟锛岃劯涓婄孩绾㈢殑杩樺緢鐥?,
+      "query": "宝宝湿疹，脸上红红的还很痒",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2119,27 +2119,27 @@
       "actual": {
         "triage_route": "disease",
         "diseases": [
-          "婀跨柟"
+          "湿疹"
         ],
-        "chief_symptom": "鑴镐笂绾㈢孩鐨?,
-        "chief_symptom_canonical": "鑴镐笂绾㈢孩鐨?,
+        "chief_symptom": "脸上红红",
+        "chief_symptom_canonical": "脸上红红",
         "slot_table_code": null,
         "symptom_candidates": [
-          "鑴镐笂绾㈢孩鐨?,
-          "鐥?
+          "脸上红红",
+          ""
         ],
         "companion_symptoms": [
-          "鐥?
+          ""
         ],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D081",
-      "query": "浣犲ソ锛屽湪鍚楋紵",
+      "query": "你好，在吗？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2153,14 +2153,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D082",
-      "query": "浣犳槸璋侊紵",
+      "query": "你是谁？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2174,14 +2174,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D083",
-      "query": "浠婂ぉ澶╂皵鎬庝箞鏍凤紵",
+      "query": "今天天气怎么样？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2195,14 +2195,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D084",
-      "query": "鍖婚櫌鍑犵偣寮€闂紵",
+      "query": "医院几点开门？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2216,14 +2216,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D085",
-      "query": "鎴戞兂鎸傚彿",
+      "query": "我想挂号",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2237,14 +2237,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D086",
-      "query": "甯垜鎺ㄨ崘涓€涓笓瀹?,
+      "query": "帮我推荐一个专家",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2258,14 +2258,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D087",
-      "query": "鍖讳繚鑳戒笉鑳芥姤閿€锛?,
+      "query": "医保能不能报销？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2279,14 +2279,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D088",
-      "query": "鍋滆溅鍦哄湪鍝噷锛?,
+      "query": "停车场在哪里？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2300,14 +2300,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D089",
-      "query": "鎴戞兂鍋氫綋妫€锛屽灏戦挶锛?,
+      "query": "我想做体检，多少钱？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2321,14 +2321,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D090",
-      "query": "鑳戒笉鑳藉府鎴戞煡鎶ュ憡锛?,
+      "query": "能不能帮我查报告？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2342,14 +2342,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D091",
-      "query": "鎴戞病鏈変笉鑸掓湇锛屽氨鏄兂闂棶鎸備粈涔堢",
+      "query": "我没有不舒服，就是想问问挂什么科",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2363,14 +2363,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D092",
-      "query": "涓嶇煡閬撴寕鍝釜绉戯紝浣犲府鎴戠湅鐪?,
+      "query": "不知道挂哪个科，你帮我看看",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2384,14 +2384,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D093",
-      "query": "鎴戞兂棰勭害鏄庡ぉ涓婂崍鐨勫彿",
+      "query": "我想预约明天上午的号",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2405,14 +2405,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D094",
-      "query": "鍖婚櫌鍦板潃鍦ㄥ摢閲岋紵",
+      "query": "医院地址在哪里？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2426,14 +2426,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D095",
-      "query": "鑳戒笉鑳藉紑鐥呭亣鏉★紵",
+      "query": "能不能开病假条？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2447,14 +2447,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D096",
-      "query": "鎴戞兂鍜ㄨ涓€涓嬩綇闄㈡祦绋?,
+      "query": "我想咨询一下住院流程",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2468,14 +2468,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D097",
-      "query": "鎴戣閫€鍙锋€庝箞鎿嶄綔锛?,
+      "query": "我要退号怎么操作？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2489,14 +2489,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D098",
-      "query": "杩欎釜鍖婚櫌鍝釜鍖荤敓姣旇緝濂斤紵",
+      "query": "这个医院哪个医生比较好？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2510,14 +2510,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D099",
-      "query": "闂ㄨ瘖鎸傚彿璐瑰灏戦挶锛?,
+      "query": "门诊挂号费多少钱？",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2531,14 +2531,14 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     },
     {
       "id": "D100",
-      "query": "鎴戞病鏈夌棁鐘讹紝灏辨槸鎯冲仛涓鏌?,
+      "query": "我没有症状，就是想做个检查",
       "passed": true,
       "intent_ok": true,
       "ner_ok": true,
@@ -2552,8 +2552,8 @@
         "symptom_candidates": [],
         "companion_symptoms": [],
         "hints": {
-          "涓荤棁": [],
-          "鐤剧梾": []
+          "主症": [],
+          "疾病": []
         }
       }
     }

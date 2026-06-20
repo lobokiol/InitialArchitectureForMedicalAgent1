@@ -1,0 +1,319 @@
+#!/usr/bin/env python3
+"""
+Agent Search CLI
+
+命令行工具，用于快速搜索
+"""
+import argparse
+import asyncio
+import contextlib
+import io
+import json
+import os
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(__file__))
+
+
+def print_results(result: dict, verbose: bool = False):
+    """打印搜索结果"""
+    print("\n" + "=" * 70)
+    print(f"🔍 Query: {result['query']}")
+    print(f"   Variants: {', '.join(result['search_queries'])}")
+    print(f"   Sources: {', '.join(result['sources_used'])}")
+    print(f"   Total: {result['total_found']} | Unique: {result['unique_count']} | Returned: {result['results_returned']}")
+    print("=" * 70)
+
+    status_summary = result.get("status_summary")
+    if status_summary:
+        print(f"📌 Summary as of {status_summary.get('as_of_date', 'N/A')}")
+        for line in status_summary.get("highlights", []):
+            print(f"   - {line}")
+        print("-" * 70)
+
+    for item in result['results']:
+        print(f"\n🏆 #{item['rank']} {item['title']}")
+        print(f"   📎 {item['url']}")
+        print(f"   📊 Quality: {item['quality_score']:.2f} | Source: {item['source']} | Content: {item.get('content_source', 'N/A')}")
+
+        if verbose:
+            print(f"   🔍 Breakdown: {item.get('quality_breakdown', {})}")
+
+        # 打印内容预览
+        content = item.get('content', '')
+        if content:
+            preview = content[:200].replace('\n', ' ')
+            print(f"   📝 {preview}...")
+
+    print("\n" + "=" * 70)
+
+
+def print_cache_stats():
+    """打印缓存统计"""
+    from smart_cache import get_smart_cache
+
+    cache = get_smart_cache()
+    stats = cache.get_stats()
+
+    print("\n" + "=" * 70)
+    print("💾 Cache Statistics")
+    print("=" * 70)
+    print(f"   Total entries: {stats['total_entries']}")
+    print(f"   Active: {stats['active_entries']}")
+    print(f"   Expired: {stats['expired_entries']}")
+    print(f"   Total hits: {stats['total_hits']}")
+    print(f"   Size: {stats['db_size_mb']} MB")
+    print(f"   Path: {stats['cache_dir']}")
+    print(f"   Vector search: {'✅ enabled' if stats.get('vector_search_enabled') else '❌ disabled'}")
+    if stats.get('vector_search_enabled'):
+        print(f"   Vector entries: {stats.get('vector_entries', 0)}")
+    print("=" * 70)
+
+
+def print_recent_cache(limit: int = 10):
+    """打印最近的缓存"""
+    from smart_cache import get_smart_cache
+
+    cache = get_smart_cache()
+    recent = cache.list_recent(limit)
+
+    print("\n" + "=" * 70)
+    print(f"🕐 Recent {limit} cache entries")
+    print("=" * 70)
+
+    for i, item in enumerate(recent, 1):
+        print(f"\n{i}. {item['query']}")
+        print(f"   Accessed: {item['access_count']} | Hits: {item['hit_count']}")
+        print(f"   Last access: {time.strftime('%Y-%m-%d %H:%M', time.localtime(item['last_access']))}")
+
+    print("\n" + "=" * 70)
+
+
+def print_usage_stats():
+    """打印本月 API 使用统计"""
+    from smart_cache import get_smart_cache
+
+    cache = get_smart_cache()
+    stats = cache.get_provider_usage_stats()
+    limits = cache.get_provider_free_limits()
+
+    print("\n" + "=" * 70)
+    print("📊 Monthly API Usage")
+    print("=" * 70)
+    if not stats:
+        print("   No records yet")
+    else:
+        for item in stats:
+            provider = item["provider"]
+            used = item["request_count"]
+            limit = limits.get(provider)
+            ratio = (used / limit) if limit else 0.0
+            limit_text = f"{used}/{limit} ({ratio:.0%})" if limit else str(used)
+            print(f"   {provider}: {limit_text} | OK: {item['success_count']} | Err: {item['error_count']}")
+    print("=" * 70)
+
+
+def print_usage_warnings(log_stream):
+    """打印本月额度预警"""
+    from smart_cache import get_smart_cache
+
+    warnings = get_smart_cache().get_provider_warnings()
+    for item in warnings:
+        prefix = "⚠️" if item["level"] == "warning" else "🚨"
+        print(
+            f"{prefix} {item['provider']} used {item['request_count']}/{item['free_limit']} "
+            f"({item['usage_ratio']:.0%})",
+            file=log_stream
+        )
+
+
+async def main():
+    parser = argparse.ArgumentParser(
+        description="Agent Search - 智能 Agent 搜索工具",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+示例:
+  %(prog)s "Python 异步编程"
+  %(prog)s "Claude 3.5 新功能" --mode deep --max-results 15
+  %(prog)s "AI 编程助手" --no-expand --verbose
+  %(prog)s --cache-stats
+  %(prog)s --cache-clear
+        """
+    )
+
+    parser.add_argument(
+        "query",
+        nargs="?",
+        help="搜索查询"
+    )
+
+    parser.add_argument(
+        "-n", "--max-results",
+        type=int,
+        default=10,
+        help="最大返回结果数 (默认: 10)"
+    )
+
+    parser.add_argument(
+        "-m", "--mode",
+        choices=["quick", "standard", "deep"],
+        default="standard",
+        help="搜索模式 (默认: standard)"
+    )
+
+    parser.add_argument(
+        "-s", "--source",
+        choices=["auto", "ddgs"],
+        default="auto",
+        help="搜索源 (auto: 多源搜索+DDGS兜底, ddgs: 仅用DuckDuckGo) (默认: auto)"
+    )
+
+    parser.add_argument(
+        "--no-expand",
+        action="store_true",
+        help="不扩展查询"
+    )
+
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="显示详细信息"
+    )
+
+    parser.add_argument(
+        "-o", "--output",
+        help="输出到 JSON 文件"
+    )
+
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="将结构化 JSON 输出到 stdout"
+    )
+
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="不使用缓存"
+    )
+
+    # 缓存管理命令
+    parser.add_argument(
+        "--cache-stats",
+        action="store_true",
+        help="查看缓存统计"
+    )
+
+    parser.add_argument(
+        "--cache-clear",
+        action="store_true",
+        help="清空所有缓存"
+    )
+
+    parser.add_argument(
+        "--cache-recent",
+        type=int,
+        metavar="N",
+        help="显示最近 N 条缓存记录"
+    )
+
+    parser.add_argument(
+        "--usage-stats",
+        action="store_true",
+        help="显示本月各搜索 API 的使用统计"
+    )
+
+    args = parser.parse_args()
+
+    # 缓存管理命令
+    if args.cache_stats:
+        print_cache_stats()
+        return
+
+    if args.cache_clear:
+        from smart_cache import get_smart_cache
+
+        cache = get_smart_cache()
+        cache.clear()
+        print("✅ Cache cleared")
+        return
+
+    if args.cache_recent:
+        import time
+        print_recent_cache(args.cache_recent)
+        return
+
+    if args.usage_stats:
+        print_usage_stats()
+        return
+
+    # 搜索命令
+    if not args.query:
+        parser.print_help()
+        sys.exit(1)
+
+    # 检查 API Key
+    from config import get_config
+
+    config = get_config()
+    exa_key = config.get('exa_api_key')
+    brave_key = config.get('brave_api_key')
+    tavily_key = config.get('tavily_api_key')
+
+    log_stream = sys.stderr if args.json else sys.stdout
+
+    if args.source == "auto" and not exa_key and not brave_key and not tavily_key:
+        print("ℹ️  No API keys configured, using DDGS (DuckDuckGo)", file=log_stream)
+        print("   Set TAVILY_API_KEY etc. for better multi-source results", file=log_stream)
+        print(file=log_stream)
+
+    print(f"🚀 Searching: {args.query}", file=log_stream)
+    print(
+        f"   Config: mode={args.mode}, max_results={args.max_results}, "
+        f"source={args.source}, expand={not args.no_expand}, cache={not args.no_cache}",
+        file=log_stream
+    )
+    print_usage_warnings(log_stream)
+
+    try:
+        from agent_search import search
+
+        if args.json:
+            with contextlib.redirect_stdout(io.StringIO()):
+                result = await search(
+                    query=args.query,
+                    max_results=args.max_results,
+                    mode=args.mode,
+                    expand=not args.no_expand,
+                    use_cache=not args.no_cache,
+                    source=args.source,
+                )
+        else:
+            result = await search(
+                query=args.query,
+                max_results=args.max_results,
+                mode=args.mode,
+                expand=not args.no_expand,
+                use_cache=not args.no_cache,
+                source=args.source,
+            )
+
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        else:
+            print_results(result, verbose=args.verbose)
+
+        # 输出到文件
+        if args.output:
+            with open(args.output, 'w', encoding='utf-8') as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
+            print(f"\n💾 Saved to: {args.output}", file=log_stream)
+
+    except Exception as e:
+        print(f"\n❌ Search failed: {e}", file=log_stream)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

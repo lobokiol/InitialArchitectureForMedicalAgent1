@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "agent-search": {
+      "source": "haiyuan-ai/agent-skills",
+      "sourceType": "github",
+      "skillPath": "agent-search/SKILL.md",
+      "computedHash": "3aded7c8e8bbbe01300d52637b33187cff7cb193684e2e692451780a9828b601"
+    }
+  }
+}
