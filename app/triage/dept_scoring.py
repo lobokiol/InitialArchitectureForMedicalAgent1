@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.core.logging import logger
+
 MARGIN = 2.0
 LOCK_THRESHOLD = 6.0
 
@@ -142,15 +144,41 @@ _NEGATION = ("都没有", "没有", "不是", "无", "否")
 _AFFIRM_TRAUMA = ("摔过", "扭过", "扭伤", "外伤", "摔了", "扭了")
 
 
-def apply_negation_boosts(scores: dict[str, float], reply: str) -> dict[str, float]:
+def _get_highest_priority_dept(depts: list[dict]) -> str | None:
+    """Return department with smallest priority number (highest priority)."""
+    if not depts:
+        return None
+    sorted_depts = sorted(depts, key=lambda x: int(x.get("priority") or 99))
+    return sorted_depts[0].get("department") if sorted_depts else None
+
+
+def apply_negation_boosts(
+    scores: dict[str, float], reply: str, depts: list[dict] | None = None
+) -> dict[str, float]:
     s = dict(scores)
     r = reply.strip()
     if not r:
         return s
     if any(n in r for n in _NEGATION):
-        s["骨科"] = s.get("骨科", 0) - 2.0
-        s["风湿免疫科"] = s.get("风湿免疫科", 0) + 2.0
-        s["血管外科"] = s.get("血管外科", 0) + 1.0
+        # 用户选择"都没有"时，选择优先级最高的科室
+        if depts:
+            highest_priority_dept = _get_highest_priority_dept(depts)
+            if highest_priority_dept and highest_priority_dept in s:
+                # 给最高优先级科室加足够大的分数，确保胜出
+                s[highest_priority_dept] = s.get(highest_priority_dept, 0) + 10.0
+                logger.info(
+                    "negation_boost: user selected '%s', boosting highest priority dept %s",
+                    r,
+                    highest_priority_dept,
+                )
+            elif highest_priority_dept:
+                # 如果不在scores中，初始化一个高分数
+                s[highest_priority_dept] = 10.0
+        else:
+            # 兼容旧逻辑：没有depts时维持原有行为（扣分其他科室）
+            s["骨科"] = s.get("骨科", 0) - 2.0
+            s["风湿免疫科"] = s.get("风湿免疫科", 0) + 2.0
+            s["血管外科"] = s.get("血管外科", 0) + 1.0
     elif any(a in r for a in _AFFIRM_TRAUMA):
         s["骨科"] = s.get("骨科", 0) + 2.0
     return s

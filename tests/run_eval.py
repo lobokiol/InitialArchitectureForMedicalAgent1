@@ -353,6 +353,12 @@ def main() -> int:
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     parser.add_argument("--id", dest="case_id", default=None, help="只跑单个用例")
     parser.add_argument("--json", action="store_true", help="输出 JSON 结果")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="将 JSON 结果写入文件（UTF-8，避免 Windows 重定向编码问题）",
+    )
     parser.add_argument("--skip-decision-node", action="store_true", help="跳过 decision_node 二次调用")
     parser.add_argument("--brief", action="store_true", help="仅输出失败用例详情")
     parser.add_argument(
@@ -379,7 +385,7 @@ def main() -> int:
                 result.failures.append("decision_node triage_route mismatch")
                 result.passed = False
 
-    if args.json:
+    if args.json or args.output:
         payload = {
             "summary": {
                 "total": len(results),
@@ -402,7 +408,12 @@ def main() -> int:
         }
         if skipped:
             payload["skipped"] = skipped
-        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        rendered = json.dumps(payload, ensure_ascii=False, indent=2)
+        if args.output:
+            args.output.write_text(rendered + "\n", encoding="utf-8")
+            print(f"Wrote JSON report to {args.output}")
+        else:
+            print(rendered)
     else:
         print_report(results, decision_checks, brief=args.brief, skipped=skipped or None)
 

@@ -117,7 +117,7 @@ def dept_disambiguation_node(state: AppState) -> dict:
             )
             return _locked_patch(explicit_dept, scores, margin, current_round, depts, "locked")
     if reply and choice_boosts is not None and not choice_boosts:
-        scores = apply_negation_boosts(scores, reply)
+        scores = apply_negation_boosts(scores, reply, depts)
     locked, dept, margin = try_lock_department(scores)
 
     if locked and dept:

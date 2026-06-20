@@ -25,15 +25,34 @@ def test_trauma_locks_orthopedics() -> None:
 
 
 def test_negation_boosts_rheum() -> None:
+    """Legacy behavior: without depts param, boosts rheum over ortho."""
     scores = {"骨科": 5.0, "风湿免疫科": 3.0, "血管外科": 2.0}
     out = apply_negation_boosts(scores, "都没有")
     assert out["风湿免疫科"] > out["骨科"]
-    print("[OK] negation -> 风湿免疫科 up")
+    print("[OK] negation (legacy) -> 风湿免疫科 up")
+
+
+def test_negation_with_depts_selects_highest_priority() -> None:
+    """New behavior: with depts param, selects highest priority dept."""
+    scores = score_departments(RK0001_DEPTS, "脚脖子肿")
+    # Before negation: should NOT be locked (margin < 2.0)
+    locked, _, margin = try_lock_department(scores)
+    assert not locked, f"Should need disambiguation, scores={scores}"
+    
+    # Apply negation boost with depts
+    out = apply_negation_boosts(scores, "都没有", RK0001_DEPTS)
+    
+    # Should now be locked to 骨科 (priority 1)
+    locked, dept, margin = try_lock_department(out)
+    assert locked and dept == "骨科", f"Expected 骨科, got {dept}, scores={out}"
+    assert out["骨科"] > 10.0, f"骨科 should have high score, got {out['骨科']}"
+    print("[OK] negation with depts -> highest priority (骨科)")
 
 
 def main() -> None:
     test_trauma_locks_orthopedics()
     test_negation_boosts_rheum()
+    test_negation_with_depts_selects_highest_priority()
 
 
 if __name__ == "__main__":
