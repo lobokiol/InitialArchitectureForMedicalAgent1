@@ -1,6 +1,10 @@
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Root
 $env:PYTHONPATH = "."
+# DashScope / 本地 OpenSearch 直连，避免 SOCKS 代理导致 LLM/embedding 失败
+$env:HTTP_PROXY = ""
+$env:HTTPS_PROXY = ""
+$env:ALL_PROXY = ""
 
 $Uv = "$env:USERPROFILE\.local\bin\uv.exe"
 $Python = "$Root\.venv\Scripts\python.exe"

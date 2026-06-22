@@ -41,4 +41,24 @@ def _init_redis() -> None:
         checkpointer = MemorySaver()
 
 
+def check_redis() -> dict[str, Any]:
+    """Redis readiness for /ready (optional when USE_MEMORY_CHECKPOINTER=true)."""
+    if config.USE_MEMORY_CHECKPOINTER:
+        return {"ok": True, "mode": "memory", "required": False}
+
+    if redis_client is None:
+        return {
+            "ok": False,
+            "mode": "memory_fallback",
+            "required": True,
+            "error": f"Redis unreachable at {config.REDIS_URI}",
+        }
+
+    try:
+        redis_client.ping()
+        return {"ok": True, "mode": "redis", "required": True}
+    except Exception as exc:
+        return {"ok": False, "mode": "redis", "required": True, "error": str(exc)}
+
+
 _init_redis()

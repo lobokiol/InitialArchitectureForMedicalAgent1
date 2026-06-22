@@ -18,6 +18,22 @@
         WaitSeconds = 120
     }
 
+    # Redis（Docker：LangGraph checkpoint + 会话元数据）
+    Redis = @{
+        Enabled     = $true
+        ComposeFile = 'demo\redis\docker-compose.yaml'
+        Uri         = 'redis://127.0.0.1:6379'
+        Port        = 6379
+        WaitSeconds = 30
+    }
+
+    # Triage 导诊记录（SQLite 单文件，无需独立进程）
+    TriageDb = @{
+        Enabled     = $true
+        Path        = 'data\triage_sessions.db'
+        InitOnStart = $true
+    }
+
     # FastAPI + LangGraph（uv / .venv）
     Api = @{
         Enabled = $true
@@ -35,6 +51,8 @@
     # 启动后验证项（可在命令行用 -SkipVerify 跳过）
     Verify = @{
         OpenSearch     = $true
+        Redis          = $true
+        TriageDb       = $true
         ReadyEndpoint  = $true
         RagIndexCount  = $true
         RagIndexName   = 'rag_knowledge'

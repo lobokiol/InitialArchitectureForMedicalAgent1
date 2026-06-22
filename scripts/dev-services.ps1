@@ -115,6 +115,78 @@ function Start-BackgroundBat([string]$Name, [string]$WorkDir, [string]$BatRelati
     return $false
 }
 
+function Start-Redis {
+    if (-not $Cfg.Redis.Enabled) { return $true }
+    $port = [int]$Cfg.Redis.Port
+    if (Test-PortListening $port) {
+        Write-Ok "Redis 已在运行 (端口 $port)"
+        return $true
+    }
+    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
+        Write-Warn "未检测到 Docker，无法启动 Redis。可设 USE_MEMORY_CHECKPOINTER=true 或安装 Docker Desktop"
+        return $false
+    }
+    $compose = Join-Path $Root $Cfg.Redis.ComposeFile
+    if (-not (Test-Path $compose)) {
+        Write-Warn "Redis compose 不存在: $compose"
+        return $false
+    }
+    Write-Step "启动 Redis (docker compose) -> 端口 $port"
+    docker compose -f $compose up -d 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warn "docker compose up 失败，请确认 Docker Desktop 已运行"
+        return $false
+    }
+    $deadline = (Get-Date).AddSeconds([int]$Cfg.Redis.WaitSeconds)
+    while ((Get-Date) -lt $deadline) {
+        if (Test-PortListening $port) {
+            Write-Ok "Redis 已就绪"
+            return $true
+        }
+        Start-Sleep -Seconds 2
+    }
+    Write-Warn "Redis 在 $($Cfg.Redis.WaitSeconds)s 内未就绪"
+    return $false
+}
+
+function Stop-Redis {
+    if (-not $Cfg.Redis.Enabled) { return }
+    $port = [int]$Cfg.Redis.Port
+    if (Get-Command docker -ErrorAction SilentlyContinue) {
+        $compose = Join-Path $Root $Cfg.Redis.ComposeFile
+        if (Test-Path $compose) {
+            docker compose -f $compose stop 2>&1 | Out-Null
+            Write-Host "  已停止 Redis (docker compose)"
+            return
+        }
+    }
+    Stop-Port $port 'Redis'
+}
+
+function Init-TriageDb {
+    if (-not $Cfg.TriageDb.Enabled) { return $true }
+    if (-not $Cfg.TriageDb.InitOnStart) { return $true }
+    Ensure-Venv
+    $dbPath = Join-Path $Root $Cfg.TriageDb.Path
+    Write-Step "初始化 Triage SQLite -> $($Cfg.TriageDb.Path)"
+    $env:PYTHONPATH = '.'
+    $py = @"
+from pathlib import Path
+from app.infra.triage_session_store import TriageSessionStore
+p = r'$dbPath'
+Path(p).parent.mkdir(parents=True, exist_ok=True)
+TriageSessionStore(p).init_schema()
+print(p)
+"@
+    & $Python -c $py
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warn "Triage SQLite 初始化失败"
+        return $false
+    }
+    Write-Ok "Triage SQLite 已就绪"
+    return $true
+}
+
 function Start-Api {
     $port = [int]$Cfg.Api.Port
     if (-not $Cfg.Api.Enabled) { return $true }
@@ -126,7 +198,7 @@ function Start-Api {
     $log = Join-Path $LogDir 'api.log'
     $reloadArg = if ($Cfg.Api.Reload) { '--reload' } else { '' }
     Write-Step "启动 API -> http://$($Cfg.Api.Host):$port (日志: $log)"
-    $cmd = 'set PYTHONPATH=. & cd /d "' + $Root + '" & "' + $Uvicorn + '" app.main:app --host ' + $Cfg.Api.Host + ' --port ' + $port + ' ' + $reloadArg + ' >> "' + $log + '" 2>&1'
+    $cmd = 'set PYTHONPATH=. & set HTTP_PROXY= & set HTTPS_PROXY= & set ALL_PROXY= & cd /d "' + $Root + '" & "' + $Uvicorn + '" app.main:app --host ' + $Cfg.Api.Host + ' --port ' + $port + ' ' + $reloadArg + ' >> "' + $log + '" 2>&1'
     Start-Process -FilePath 'cmd.exe' -ArgumentList '/c', $cmd -WorkingDirectory $Root -WindowStyle Hidden | Out-Null
     if (Wait-HttpOk "http://$($Cfg.Api.Host):$port/healthz" 60 'API') {
         Write-Ok "API 已就绪"
@@ -139,6 +211,56 @@ function Start-Api {
 function Invoke-Verify {
     $ok = $true
     $osPort = Get-PortFromUrl $Cfg.OpenSearch.Url
+
+    if ($Cfg.Verify.Redis -and $Cfg.Redis.Enabled) {
+        Write-Step "验证 Redis $($Cfg.Redis.Uri)"
+        Ensure-Venv
+        $env:PYTHONPATH = '.'
+        $uri = $Cfg.Redis.Uri
+        $py = "import redis; redis.Redis.from_url('$uri', socket_connect_timeout=3).ping()"
+        try {
+            & $Python -c $py | Out-Null
+            if ($LASTEXITCODE -eq 0) {
+                Write-Ok 'Redis PING OK'
+            } else {
+                Write-Err 'Redis PING 失败'
+                $ok = $false
+            }
+        } catch {
+            Write-Err 'Redis 不可达'
+            $ok = $false
+        }
+    }
+
+    if ($Cfg.Verify.TriageDb -and $Cfg.TriageDb.Enabled) {
+        $dbPath = Join-Path $Root $Cfg.TriageDb.Path
+        Write-Step "验证 Triage SQLite $dbPath"
+        if (-not (Test-Path $dbPath)) {
+            Write-Err 'Triage SQLite 文件不存在'
+            $ok = $false
+        } else {
+            Ensure-Venv
+            $env:PYTHONPATH = '.'
+            $py = @"
+import sqlite3
+c = sqlite3.connect(r'$dbPath')
+n = c.execute('SELECT COUNT(*) FROM triage_sessions').fetchone()[0]
+print(n)
+"@
+            try {
+                $count = & $Python -c $py
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Ok "triage_sessions 表可读，当前 $count 条记录"
+                } else {
+                    Write-Err 'Triage SQLite 表不可读'
+                    $ok = $false
+                }
+            } catch {
+                Write-Err 'Triage SQLite 验证失败'
+                $ok = $false
+            }
+        }
+    }
 
     if ($Cfg.Verify.OpenSearch -and $Cfg.OpenSearch.Enabled) {
         Write-Step "验证 OpenSearch $($Cfg.OpenSearch.Url)"
@@ -157,7 +279,7 @@ function Invoke-Verify {
         try {
             $ready = Invoke-RestMethod -Uri $readyUrl -TimeoutSec 30
             if ($ready.status -eq 'ok') {
-                Write-Ok "LangGraph=$($ready.langgraph.ok) OpenSearch=$($ready.opensearch.ok)"
+                Write-Ok "LangGraph=$($ready.langgraph.ok) OpenSearch=$($ready.opensearch.ok) Redis=$($ready.redis.ok) TriageDb=$($ready.triage_db.ok)"
             } else {
                 Write-Warn "ready status=$($ready.status): $($ready | ConvertTo-Json -Compress)"
                 $ok = $false
@@ -223,6 +345,7 @@ function Invoke-Verify {
 function Show-Status {
     Write-Step '服务状态'
     $items = @(
+        @{ Name = 'Redis'; Enabled = $Cfg.Redis.Enabled; Port = [int]$Cfg.Redis.Port; Url = $Cfg.Redis.Uri }
         @{ Name = 'OpenSearch'; Enabled = $Cfg.OpenSearch.Enabled; Port = (Get-PortFromUrl $Cfg.OpenSearch.Url); Url = $Cfg.OpenSearch.Url }
         @{ Name = 'Dashboards'; Enabled = $Cfg.Dashboards.Enabled; Port = (Get-PortFromUrl $Cfg.Dashboards.Url); Url = $Cfg.Dashboards.Url }
         @{ Name = 'API'; Enabled = $Cfg.Api.Enabled; Port = [int]$Cfg.Api.Port; Url = "http://$($Cfg.Api.Host):$($Cfg.Api.Port)" }
@@ -237,12 +360,27 @@ function Show-Status {
         $color = if ($up) { 'Green' } else { 'DarkGray' }
         Write-Host ("  {0,-12} {1,-6} {2}" -f $item.Name, $state, $item.Url) -ForegroundColor $color
     }
+    if ($Cfg.TriageDb.Enabled) {
+        $dbPath = Join-Path $Root $Cfg.TriageDb.Path
+        $exists = Test-Path $dbPath
+        $state = if ($exists) { '已就绪' } else { '未初始化' }
+        $color = if ($exists) { 'Green' } else { 'DarkGray' }
+        Write-Host ("  {0,-12} {1,-6} {2}" -f 'TriageDb', $state, $Cfg.TriageDb.Path) -ForegroundColor $color
+    } else {
+        Write-Host ("  {0,-12} 已禁用" -f 'TriageDb')
+    }
     Write-Host ""
     Write-Host "  配置: scripts/dev-services.config.ps1"
     Write-Host "  日志: $LogDir"
 }
 
 function Start-All {
+    if ($Cfg.Redis.Enabled) {
+        Start-Redis | Out-Null
+    }
+    if ($Cfg.TriageDb.Enabled) {
+        Init-TriageDb | Out-Null
+    }
     if ($Cfg.OpenSearch.Enabled) {
         $osHome = Join-Path $Root $Cfg.OpenSearch.Home
         $osPort = Get-PortFromUrl $Cfg.OpenSearch.Url
@@ -263,6 +401,7 @@ function Stop-All {
     if ($Cfg.Api.Enabled) { Stop-Port ([int]$Cfg.Api.Port) 'API' }
     if ($Cfg.Dashboards.Enabled) { Stop-Port (Get-PortFromUrl $Cfg.Dashboards.Url) 'Dashboards' }
     if ($Cfg.OpenSearch.Enabled) { Stop-Port (Get-PortFromUrl $Cfg.OpenSearch.Url) 'OpenSearch' }
+    if ($Cfg.Redis.Enabled) { Stop-Redis }
 }
 
 switch ($Action) {

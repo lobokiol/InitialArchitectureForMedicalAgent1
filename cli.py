@@ -28,6 +28,8 @@ class ChatCLI:
         # 默认等久一点（后台可能检索/推理较慢）；可通过 BACKEND_TIMEOUT 调整
         self.timeout = float(os.getenv("BACKEND_TIMEOUT", "120"))
         self.session = requests.Session()
+        # 本地后端不走系统代理，避免 SOCKS 代理缺 PySocks 导致请求失败
+        self.session.trust_env = False
         self.user_id: Optional[str] = None
         self.user_name: Optional[str] = None
         self.thread_id: Optional[str] = None

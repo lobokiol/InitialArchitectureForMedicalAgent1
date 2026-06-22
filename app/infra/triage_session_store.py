@@ -6,6 +6,8 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from app.core import config
+
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS triage_sessions (
@@ -167,3 +169,28 @@ class TriageSessionStore:
             params,
         )
         return [dict(r) for r in cur.fetchall()]
+
+
+def check_triage_session_db() -> dict[str, Any]:
+    """Triage SQLite readiness for /ready."""
+    if not config.TRIAGE_SESSION_ENABLED:
+        return {"ok": True, "enabled": False}
+
+    try:
+        store = TriageSessionStore(config.TRIAGE_SESSION_DB_PATH)
+        store.init_schema()
+        conn = store._connect()
+        count = conn.execute("SELECT COUNT(*) FROM triage_sessions").fetchone()[0]
+        return {
+            "ok": True,
+            "enabled": True,
+            "path": config.TRIAGE_SESSION_DB_PATH,
+            "session_count": count,
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "enabled": True,
+            "path": config.TRIAGE_SESSION_DB_PATH,
+            "error": str(exc),
+        }
