@@ -56,3 +56,11 @@ EMBEDDING_BASE_URL = os.getenv("EMBEDDING_BASE_URL", "https://dashscope.aliyuncs
 LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "60"))
 LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "2"))
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.0"))
+
+# Triage session persistence (SQLite, for eval)
+TRIAGE_SESSION_DB_PATH: str = os.getenv("TRIAGE_SESSION_DB_PATH", "data/triage_sessions.db")
+TRIAGE_SESSION_ENABLED: bool = os.getenv("TRIAGE_SESSION_ENABLED", "true").lower() in (
+    "1",
+    "true",
+    "yes",
+)

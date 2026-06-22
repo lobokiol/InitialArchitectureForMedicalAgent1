@@ -4,6 +4,11 @@ from app.core.logging import logger
 from app.domain.models import AppState
 
 
+def is_dept_followup_reply(state: AppState) -> bool:
+    """Public helper for triage session recorder."""
+    return _is_dept_followup_reply(state)
+
+
 def _is_dept_followup_reply(state: AppState) -> bool:
     """科室反问待选：任意 HumanMessage 回复都继续消歧。"""
     ds = state.dept_state

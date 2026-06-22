@@ -18,3 +18,5 @@ reports/
 esTools/
 .vscode/
 chrome-extension/
+data/*.db
+exports/
