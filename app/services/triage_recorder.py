@@ -15,6 +15,10 @@ def _utc_now_iso() -> str:
 
 
 def classify_outcome(state: AppState) -> str | None:
+    cs = state.clarify_state
+    if cs and getattr(cs, "status", None) == "asking" and cs.last_choices:
+        return None
+
     ds = state.dept_state
     status = getattr(ds, "status", None) if ds else None
 
