@@ -196,9 +196,10 @@ function Start-Api {
     }
     Ensure-Venv
     $log = Join-Path $LogDir 'api.log'
-    $reloadArg = if ($Cfg.Api.Reload) { '--reload' } else { '' }
+    $reloadArg = if ($Cfg.Api.Reload) { '--reload --reload-dir app' } else { '' }
     Write-Step "启动 API -> http://$($Cfg.Api.Host):$port (日志: $log)"
-    $cmd = 'set PYTHONPATH=. & set HTTP_PROXY= & set HTTPS_PROXY= & set ALL_PROXY= & cd /d "' + $Root + '" & "' + $Uvicorn + '" app.main:app --host ' + $Cfg.Api.Host + ' --port ' + $port + ' ' + $reloadArg + ' >> "' + $log + '" 2>&1'
+    # UTF-8 控制台 + 无缓冲 stdout，避免 api.log 乱码且长时间不落盘
+    $cmd = 'chcp 65001 >nul & set PYTHONIOENCODING=utf-8 & set PYTHONUTF8=1 & set PYTHONUNBUFFERED=1 & set PYTHONPATH=. & set HTTP_PROXY= & set HTTPS_PROXY= & set ALL_PROXY= & cd /d "' + $Root + '" & "' + $Uvicorn + '" app.main:app --host ' + $Cfg.Api.Host + ' --port ' + $port + ' ' + $reloadArg + ' >> "' + $log + '" 2>&1'
     Start-Process -FilePath 'cmd.exe' -ArgumentList '/c', $cmd -WorkingDirectory $Root -WindowStyle Hidden | Out-Null
     if (Wait-HttpOk "http://$($Cfg.Api.Host):$port/healthz" 60 'API') {
         Write-Ok "API 已就绪"

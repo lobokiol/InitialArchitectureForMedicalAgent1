@@ -19,7 +19,7 @@ app = create_app()
 @app.get("/healthz")
 async def healthz():
     logger.info("health check ping")
-    return {"status": "ok"}
+    return {"status": "ok", "log_sink": "foreground-api"}
 
 
 @app.get("/ready")
