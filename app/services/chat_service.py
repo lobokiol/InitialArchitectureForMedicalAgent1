@@ -109,7 +109,7 @@ def chat_once(
     cs = state.clarify_state
     awaiting_dept = bool(ds and ds.status == "asking" and ds.last_choices)
     awaiting_clarify = bool(
-        cs and cs.status == "asking" and cs.last_choices and cs.phase in ("age", "sex", "pain_location", "red_flags")
+        cs and cs.status == "asking" and cs.last_choices and cs.phase in ("age", "sex", "pain_location")
     )
     dept_choices = [c.model_dump() for c in ds.last_choices] if awaiting_dept and ds else []
     clarify_choices = [c.model_dump() for c in cs.last_choices] if awaiting_clarify and cs else []

@@ -71,42 +71,6 @@ def symptom_clarify_node(state: AppState) -> dict:
     cs = state.clarify_state or _init_clarify(chunk)
     required = chunk.get("required_slots") or []
 
-    # start red_flags after confidence pass
-    if (
-        state.dept_confidence_passed
-        and cs.phase == "done"
-        and "red_flags" in required
-        and "red_flags" not in cs.filled_slots
-        and not cs.last_choices
-    ):
-        asking = cs.model_copy(deep=True)
-        asking.phase = "red_flags"  # type: ignore[assignment]
-        asking.status = "asking"
-        return _ask_slot(asking, chunk, "red_flags")
-
-    # red_flags answer
-    if cs.phase == "red_flags":
-        if cs.last_choices:
-            reply = _last_human(state)
-            if reply:
-                picked = resolve_dept_choice(reply, _as_dept_choices(cs.last_choices))
-                if picked is None:
-                    msg = "请从下列选项中选择（输入选项文字或编号）。\n\n" + format_clarify_message(
-                        cs.last_question or "", cs.last_choices
-                    )
-                    return {"messages": [AIMessage(content=msg)], "clarify_state": cs.model_copy(deep=True)}
-                filled = dict(cs.filled_slots)
-                filled["red_flags"] = picked.label
-                done = cs.model_copy(deep=True)
-                done.filled_slots = filled
-                done.status = "done"
-                done.phase = "done"
-                done.last_choices = []
-                return {"clarify_state": done}
-        if state.dept_confidence_passed and "red_flags" in required:
-            return _ask_slot(cs, chunk, "red_flags")
-        return {}
-
     if cs.phase in ("age", "sex", "pain_location") and cs.last_choices:
         reply = _last_human(state)
         if not reply:
@@ -142,7 +106,7 @@ def symptom_clarify_node(state: AppState) -> dict:
         updated = cs.model_copy(deep=True)
         updated.filled_slots = filled
         updated.last_choices = []
-        if nxt and nxt != "red_flags":
+        if nxt:
             updated.phase = nxt  # type: ignore[assignment]
             return _ask_slot(updated, chunk, nxt)
         updated.status = "done"

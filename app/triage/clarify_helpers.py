@@ -18,7 +18,7 @@ def format_clarify_message(question: str, choices: list[ClarifyChoice]) -> str:
     return "\n".join(lines)
 
 
-_SLOT_ORDER = ["age", "sex", "pain_location", "red_flags"]
+_SLOT_ORDER = ["age", "sex", "pain_location"]
 
 
 def ordered_required_slots(required_slots: list[str]) -> list[str]:

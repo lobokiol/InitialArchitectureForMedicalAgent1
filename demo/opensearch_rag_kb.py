@@ -25,8 +25,8 @@ HYBRID_PIPELINE = os.getenv("RAG_KB_HYBRID_PIPELINE", "rag-knowledge-hybrid-pipe
 DATA_PATH = Path(__file__).resolve().parent / "data" / "rag_knowledge.jsonl"
 
 ACCEPTANCE_QUERIES: dict[str, str] = {
-    "脚心出汗": "RK0010",
-    "脚出汗": "RK0010",
+    "肚子疼": "CL0001",
+    "脚疼": "CL0007",
 }
 
 
@@ -63,8 +63,10 @@ def wait_for_opensearch(timeout_sec: int = 120) -> OpenSearch:
 def enrich_doc(doc: dict[str, Any], raw_line: str) -> dict[str, Any]:
     parts = [
         doc.get("canonical_symptom", ""),
+        doc.get("symptom_id", ""),
         doc.get("raw_question", ""),
         doc.get("description", ""),
+        " ".join(doc.get("aliases") or []),
         " ".join(doc.get("alliance") or []),
         " ".join(doc.get("accompanying_symptom_keywords") or []),
     ]

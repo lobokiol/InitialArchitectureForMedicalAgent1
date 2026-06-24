@@ -129,15 +129,6 @@ def route_after_dept(state: AppState) -> str:
 def route_after_confidence(state: AppState) -> str:
     if not state.dept_confidence_passed:
         return "low_confidence_reject"
-    cs = state.clarify_state
-    chunk = state.rag_chunk or {}
-    required = chunk.get("required_slots") or []
-    if (
-        cs
-        and "red_flags" in required
-        and "red_flags" not in (cs.filled_slots or {})
-    ):
-        return "symptom_clarify"
     return "answer_generate"
 
 

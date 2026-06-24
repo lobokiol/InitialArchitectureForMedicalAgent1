@@ -109,7 +109,6 @@ def build_graph() -> StateGraph:
         "dept_confidence",
         route_after_confidence,
         {
-            "symptom_clarify": "symptom_clarify",
             "answer_generate": "answer_generate",
             "low_confidence_reject": "low_confidence_reject",
         },

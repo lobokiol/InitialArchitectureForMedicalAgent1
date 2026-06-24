@@ -16,7 +16,7 @@ class SymptomClarifyState(BaseModel):
     status: Literal["asking", "done"] = "asking"
     clarify_chunk_id: str | None = None
     symptom_id: str | None = None
-    phase: Literal["age", "sex", "pain_location", "red_flags", "done"] = "age"
+    phase: Literal["age", "sex", "pain_location", "done"] = "age"
     filled_slots: dict[str, str] = Field(default_factory=dict)
     last_question: str | None = None
     last_choices: list[ClarifyChoice] = Field(default_factory=list)
