@@ -1,0 +1,1 @@
+{"id": "RK0025", "symptom_id": "腹痛", "location": "右下腹", "candidate_departments": ["消化内科", "普外科", "妇科", "泌尿外科"], "differential_questions": [{"text": "发热、恶心呕吐", "scores": {"普外科": 4}}, {"text": "腹泻、腹胀", "scores": {"消化内科": 5}}, {"text": "尿频、尿急、尿痛", "scores": {"泌尿外科": 4}}, {"text": "月经异常、白带异常", "scores": {"妇科": 4}}]}
