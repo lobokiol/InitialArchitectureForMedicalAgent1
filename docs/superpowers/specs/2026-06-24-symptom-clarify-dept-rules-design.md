@@ -25,9 +25,8 @@
   → 召回 RK0025（symptom_id=腹痛, location=右下腹）
   → 展示全部 differential_questions 选项（多选 +「都没有」）
   → 累加打分 + try_lock_department 锁定科室
-  → 反问 red_flags（仅收集，不影响 locked_department）
-  → LLM 置信度评分（locked_department vs 完整槽位表关联度）
-  → score ≥ 60：输出科室建议；< 60：reject
+  → LLM 置信度评分（locked_department vs 槽位表，**不含 red_flags**）
+  → score ≥ 60：反问 red_flags（仅收集）→ 输出科室建议；< 60：reject
 ```
 
 ### 1.3 设计决策汇总
@@ -40,8 +39,8 @@
 | location 匹配 | 字面一致，**不做**归一化模块（CL 选项与 rules `location` 对齐） |
 | 男性 | 排除「妇科」科室及妇科专属 differential 选项 |
 | 科室锁定 | 基分 + 多选累加 → `try_lock_department`；「都没有」/低分差 fallback；平局按 `candidate_departments` 顺序取第一个 |
-| red_flags | 第一期只写入 state，不影响科室推荐 |
-| 置信度 | **LLM 评分**（locked_department 与 slot 表关联度），≥60 输出，<60 reject；分数暴露于 `/chat` |
+| red_flags | 第一期只写入 state，不影响科室推荐；**不进入** LLM 置信度 prompt |
+| 置信度 | **LLM 评分**（locked_department 与 slot 表关联度，含 age/sex/pain_location/differential，**排除 red_flags**），≥60 输出，<60 reject；分数暴露于 `/chat` |
 | 与脚部 RK 流程 | 并存：`type=symptom` 走现有单选消歧，同样经 LLM 置信度门禁 |
 
 ---
@@ -71,13 +70,13 @@ flowchart TD
     clarify -->|phase in age,sex,pain_location| END
     clarify -->|pain_location done| dept_rules
     dept_rules -->|asking| END
-    dept_rules -->|locked| clarify
-    clarify -->|red_flags asking| END
-    clarify -->|all slots done| confidence
+    dept_rules -->|locked| confidence
     dept_old -->|asking| END
     dept_old -->|locked| confidence
-    confidence -->|pass| answer
     confidence -->|reject| low_conf_reject
+    confidence -->|pass| clarify
+    clarify -->|red_flags asking| END
+    clarify -->|red_flags done| answer
     disease_dept --> answer
     answer --> END
     low_conf_reject --> END
@@ -233,27 +232,27 @@ base[dept] = len(active_depts) - index
 
 ### 5.3 red_flags
 
-在 differential 锁定科室**之后**、LLM 置信度**之前**：
+在 differential 锁定科室且 **LLM 置信度 ≥ 60 通过之后**、最终输出之前：
 
 - 展示 `questions.red_flags` 选项（含「都没有」）
 - 值写入 `filled_slots["red_flags"]`
-- **不改变** `locked_department`
+- **不改变** `locked_department`，**不进入** LLM 置信度 prompt
 
-实现顺序：`differential`（lock）→ `red_flags` → `dept_confidence` → `answer_generate` / `low_confidence_reject`。
-
-red_flags 虽不影响科室打分，但进入 LLM 置信度 prompt，供关联度评估参考。
+实现顺序：`differential`（lock）→ `dept_confidence` → 通过则 `red_flags` → `answer_generate`；reject 则 `low_confidence_reject`（跳过 red_flags）。
 
 ### 5.4 LLM 置信度评分
 
 **触发**：`locked_department` 已设置（clarify 链路与脚部 RK 链均适用）。急诊 / disease 链跳过。
 
-**输入 prompt 要素**：
+**输入 prompt 要素**（**排除 `red_flags`**）：
 
 - `locked_department`
 - `TriageSlotTable`（primary_symptom、companion 等）
-- `SymptomClarifyState.filled_slots`（age、sex、pain_location、differential 选项、red_flags 若已填）
+- `SymptomClarifyState.filled_slots` 子集：`age`、`sex`、`pain_location`、differential 多选结果
 - `dept_rule_chunk`（symptom_id、location、candidate_departments、differential_questions）
 - 用户 differential 多选结果原文
+
+构建 prompt 时显式过滤：不传 `filled_slots["red_flags"]`，也不在 `slot_alignment` 中评估红旗项。
 
 **结构化输出**：`DeptConfidenceResult.score`（0–100 浮点）
 
