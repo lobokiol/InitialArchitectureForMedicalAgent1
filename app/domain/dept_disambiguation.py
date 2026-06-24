@@ -20,5 +20,7 @@ class DeptDisambiguationState(BaseModel):
     last_choices: list[DeptChoice] = Field(default_factory=list)
     asked_choice_ids: list[str] = Field(default_factory=list)
     margin: float | None = None
+    multi_select: bool = False
+    choice_mode: Literal["accompany", "differential"] = "accompany"
 
     model_config = ConfigDict(extra="ignore")

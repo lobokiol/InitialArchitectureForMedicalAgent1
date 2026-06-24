@@ -11,6 +11,9 @@ def triage_state_reset_patch() -> dict:
         "rag_chunk": None,
         "dept_state": None,
         "locked_department": None,
+        "clarify_state": None,
+        "dept_confidence_result": None,
+        "dept_confidence_passed": None,
         "disease_dept_result": None,
         "symptom_slot_result": None,
     }

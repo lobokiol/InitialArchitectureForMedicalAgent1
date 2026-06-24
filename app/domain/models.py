@@ -98,6 +98,9 @@ class AppState(BaseModel):
     rag_chunk: dict | None = None
     dept_state: Optional[Any] = None
     locked_department: str | None = None
+    clarify_state: Optional[Any] = None
+    dept_confidence_result: Optional[Any] = None
+    dept_confidence_passed: bool | None = None
 
     @field_validator("medical_docs", mode="before")
     @classmethod
