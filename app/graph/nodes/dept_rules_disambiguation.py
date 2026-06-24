@@ -8,6 +8,7 @@ from app.domain.models import AppState
 from app.triage.dept_choices import NONE_CHOICE_ID, format_choice_message, resolve_dept_choice
 from app.triage.dept_rules_scoring import (
     accumulate_scores,
+    apply_pediatric_boost,
     build_base_scores,
     filter_rule_by_sex,
     lock_department_from_totals,
@@ -78,11 +79,14 @@ def dept_rules_disambiguation_node(state: AppState) -> dict:
             selections = _selection_dicts(rule, picked or [])
             base = build_base_scores(active_depts)
             totals = accumulate_scores(base, selections, active_depts)
+            age = cs.filled_slots.get("age")
+            totals = apply_pediatric_boost(totals, age, active_depts)
             locked_dept, totals, margin, _tie = lock_department_from_totals(
                 totals,
                 rule.get("candidate_departments") or [],
                 active_depts,
                 none_selected=none_selected,
+                age_label=age,
             )
             filled = dict(cs.filled_slots)
             if none_selected:
