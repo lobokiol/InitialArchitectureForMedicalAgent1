@@ -32,6 +32,7 @@ USE_MEMORY_CHECKPOINTER: bool = os.getenv("USE_MEMORY_CHECKPOINTER", "false").lo
 
 # Index / collection defaults
 RAG_KB_INDEX: str = os.getenv("RAG_KB_INDEX", "rag_knowledge")
+RAG_DEPT_RULES_INDEX: str = os.getenv("RAG_DEPT_RULES_INDEX", "rag_department_rules")
 DISEASE_KB_INDEX: str = os.getenv("DISEASE_KB_INDEX", "disease_kb")
 ES_INDEX_NAME: str = os.getenv("ES_INDEX_NAME", "hospital_procedures")
 MILVUS_COLLECTION: str = os.getenv("MILVUS_COLLECTION", "medical_knowledge")

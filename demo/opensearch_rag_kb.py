@@ -68,7 +68,13 @@ def enrich_doc(doc: dict[str, Any], raw_line: str) -> dict[str, Any]:
         " ".join(doc.get("alliance") or []),
         " ".join(doc.get("accompanying_symptom_keywords") or []),
     ]
+    if doc.get("type") == "symptomClarify":
+        aliases = doc.get("aliases") or []
+        parts.extend(aliases)
     out = dict(doc)
+    if doc.get("type") == "symptomClarify":
+        out["alliance"] = list(doc.get("aliases") or [])
+        out["symptom_id"] = doc.get("symptom_id")
     out["raw_json"] = raw_line
     out["search_text"] = " ".join(p for p in parts if p)
     return out
@@ -101,11 +107,15 @@ def recreate_index(client: OpenSearch, index_name: str = INDEX_NAME) -> None:
     print(f"[OS] created index {index_name!r} (embedding dim={EMBEDDING_DIM})")
 
 
-def embed_texts(texts: list[str]) -> list[list[float]]:
+def embed_texts(texts: list[str], batch_size: int = 25) -> list[list[float]]:
     from app.core.llm import get_embedding_model
 
     model = get_embedding_model()
-    vectors = model.embed_documents(texts)
+    vectors: list[list[float]] = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i : i + batch_size]
+        batch_vectors = model.embed_documents(batch)
+        vectors.extend(batch_vectors)
     if not vectors or len(vectors[0]) != EMBEDDING_DIM:
         raise RuntimeError(
             f"unexpected embedding dim: got {len(vectors[0]) if vectors else 0}, "

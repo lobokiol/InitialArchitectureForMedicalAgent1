@@ -1,4 +1,5 @@
 # pip install rich requests
+import json
 import os
 import sys
 from typing import Any, Dict, List, Optional
@@ -302,13 +303,40 @@ class ChatCLI:
             finally:
                 progress.stop()
         self.thread_id = data.get("thread_id") or self.thread_id
+        while data.get("awaiting_clarify") and data.get("clarify_choices"):
+            labels = [c["label"] for c in data["clarify_choices"]]
+            reply = data.get("reply", "")
+            if reply:
+                console.print(Panel(Markdown(reply), title="助手", style="success"))
+            phase = data.get("clarify_phase") or ""
+            console.print(Panel(f"请回答：{phase}", style="info"))
+            pick = Prompt.ask("您的选择", choices=labels, console=console)
+            payload = {"user_id": self.user_id, "message": pick}
+            if self.thread_id:
+                payload["thread_id"] = self.thread_id
+            try:
+                resp = self.session.post(
+                    f"{self.base_url}/chat",
+                    json=payload,
+                    timeout=self.timeout,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+            except requests.RequestException as exc:
+                console.print(Panel(f"请求失败：{exc}", style="warning"))
+                return
+            self.thread_id = data.get("thread_id") or self.thread_id
         while data.get("awaiting_dept_choice") and data.get("dept_choices"):
             labels = [c["label"] for c in data["dept_choices"]]
             reply = data.get("reply", "")
             if reply:
                 console.print(Panel(Markdown(reply), title="助手", style="success"))
-            console.print(Panel("请选择症状（从下列选项中选择）", style="info"))
-            pick = Prompt.ask("您的选择", choices=labels, console=console)
+            if data.get("multi_select"):
+                console.print(Panel("可多选，输入编号如 1,3", style="info"))
+                pick = Prompt.ask("您的选择", console=console)
+            else:
+                console.print(Panel("请选择症状（从下列选项中选择）", style="info"))
+                pick = Prompt.ask("您的选择", choices=labels, console=console)
             payload = {"user_id": self.user_id, "message": pick}
             if self.thread_id:
                 payload["thread_id"] = self.thread_id
@@ -326,18 +354,28 @@ class ChatCLI:
             self.thread_id = data.get("thread_id") or self.thread_id
         reply = data.get("reply", "")
         console.print(Panel(Markdown(reply), title="助手", style="success"))
+        if data.get("dept_confidence") is not None:
+            passed = data.get("dept_confidence_passed")
+            score = data.get("dept_confidence")
+            status = "通过" if passed else "未通过"
+            console.print(Panel(f"科室置信度：{score:.0f} 分（{status}）", style="info"))
         if "急诊" in reply or "建议就诊科室" in reply or "建议首选就诊" in reply:
             console.print(Panel("已给出导诊科室建议；换症状请 /new", style="info"))
-        self._render_intent(data.get("intent_result"))
+        self._render_node_trace(data.get("node_trace"))
+        self._render_app_state(data.get("app_state"))
         self._render_docs(data.get("used_docs", {}))
 
-    def _render_intent(self, intent: Optional[Dict[str, Any]]) -> None:
-        if not intent:
+    def _render_node_trace(self, trace: Optional[List[Any]]) -> None:
+        if not trace:
             return
-        lines = []
-        for key, val in intent.items():
-            lines.append(f"{key}: {val}")
-        console.print(Panel("\n".join(lines), title="意图识别", style="info"))
+        lines = [f">>> {name}" for name in trace]
+        console.print(Panel("\n".join(lines), title="节点流转", style="dim"))
+
+    def _render_app_state(self, app_state: Optional[Dict[str, Any]]) -> None:
+        if not app_state:
+            return
+        text = json.dumps(app_state, ensure_ascii=False, indent=2)
+        console.print(Panel(text, title="AppState", style="info"))
 
     def _render_docs(self, used_docs: Dict[str, Any]) -> None:
         if not used_docs:

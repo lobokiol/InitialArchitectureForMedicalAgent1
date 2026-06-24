@@ -76,6 +76,23 @@ def rag_knowledge_index_body() -> dict[str, Any]:
     }
 
 
+def rag_department_rules_index_body() -> dict[str, Any]:
+    """Keyword mapping for demo/data/rag_department_rules.jsonl."""
+    return {
+        "settings": {"index": {"number_of_shards": 1, "number_of_replicas": 0}},
+        "mappings": {
+            "properties": {
+                "id": {"type": "keyword"},
+                "symptom_id": {"type": "keyword"},
+                "location": {"type": "keyword"},
+                "candidate_departments": {"type": "keyword"},
+                "differential_questions": {"type": "object", "enabled": False},
+                "raw_json": {"type": "text", "index": False},
+            }
+        },
+    }
+
+
 def triage_templates_index_body() -> dict[str, Any]:
     """Keyword-only mapping (no vectors) for demo/data/triage_templates.jsonl."""
     return {

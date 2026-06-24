@@ -3,6 +3,20 @@ from app.domain.models import AppState
 from app.infra.opensearch_rag import rerank_by_alliance, search_rag_knowledge
 
 
+def _prefer_symptom_clarify(hits: list[dict], query: str) -> dict | None:
+    q = (query or "").strip()
+    for h in hits:
+        if h.get("type") != "symptomClarify":
+            continue
+        aliases = h.get("aliases") or h.get("alliance") or []
+        if any(isinstance(a, str) and (a in q or q in a) for a in aliases):
+            return h
+    for h in hits:
+        if h.get("type") == "symptomClarify":
+            return h
+    return None
+
+
 def rag_symptom_recall_node(state: AppState) -> dict:
     logger.info(">>> Enter node: rag_symptom_recall")
     table = state.slot_table
@@ -18,9 +32,9 @@ def rag_symptom_recall_node(state: AppState) -> dict:
     if table.emergency:
         q = f"{q} {table.emergency}".strip()
 
-    hits = search_rag_knowledge(q, k=3)
+    hits = search_rag_knowledge(q, k=5)
     if table.primary_symptom:
-        extra = search_rag_knowledge(table.primary_symptom, k=3)
+        extra = search_rag_knowledge(table.primary_symptom, k=5)
         seen = {h.get("id") for h in hits}
         for h in extra:
             if h.get("id") not in seen:
@@ -31,7 +45,12 @@ def rag_symptom_recall_node(state: AppState) -> dict:
         logger.warning("rag_symptom_recall: no hits for %r", q)
         return {"rag_chunk": None, "rag_chunk_id": None}
 
-    chunk = hits[0]
+    clarify = _prefer_symptom_clarify(hits, q)
+    chunk = clarify if clarify else hits[0]
     chunk_id = chunk.get("id")
-    logger.info("rag_symptom_recall hit id=%s canonical=%s", chunk_id, chunk.get("canonical_symptom"))
+    logger.info(
+        "rag_symptom_recall hit id=%s type=%s",
+        chunk_id,
+        chunk.get("type"),
+    )
     return {"rag_chunk": chunk, "rag_chunk_id": chunk_id}

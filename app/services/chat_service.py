@@ -4,6 +4,7 @@ from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 
 from app.core.logging import logger
 from app.domain.models import AppState, IntentResult, RetrievedDoc
+from app.domain.state_debug import dump_app_state
 from app.domain.routing import is_dept_followup_reply
 from app.graph.builder import build_app
 from app.infra.redis_client import checkpointer
@@ -54,7 +55,7 @@ def chat_once(
     """
     Synchronous entry for chat; backend LangGraph uses synchronous invoke.
     """
-    logger.info("chat_once called (user_id=%s, thread_id=%s)", user_id, thread_id)
+    logger.info("chat_once called (user_id=%s, thread_id=%s) message=%r", user_id, thread_id, message)
 
     thread_id = _ensure_thread(user_id, thread_id)
 
@@ -69,11 +70,21 @@ def chat_once(
         }
     }
 
-    state = _app.invoke(inputs, config=config)
-    if isinstance(state, dict):
-        state = AppState(**state)
+    node_trace: list[str] = []
+    for chunk in _app.stream(inputs, config=config, stream_mode="updates"):
+        for node_name in chunk:
+            node_trace.append(node_name)
+
+    snap = _app.get_state(config)
+    if not snap or not snap.values:
+        raise RuntimeError("LangGraph finished without checkpoint state")
+    state = AppState(**snap.values)
 
     reply = _extract_reply(state.messages)
+    trace_line = " → ".join(node_trace) if node_trace else "(empty)"
+    logger.info("--- 节点流转 ---")
+    logger.info("%s", trace_line)
+    logger.info("--- 回复 --- %s", reply)
 
     try:
         _recorder.record_turn(
@@ -95,8 +106,15 @@ def chat_once(
     intent_dict = state.intent_result.model_dump() if isinstance(state.intent_result, IntentResult) else None
 
     ds = state.dept_state
-    awaiting = bool(ds and ds.status == "asking" and ds.last_choices)
-    dept_choices = [c.model_dump() for c in ds.last_choices] if awaiting and ds else []
+    cs = state.clarify_state
+    awaiting_dept = bool(ds and ds.status == "asking" and ds.last_choices)
+    awaiting_clarify = bool(
+        cs and cs.status == "asking" and cs.last_choices and cs.phase in ("age", "sex", "pain_location", "red_flags")
+    )
+    dept_choices = [c.model_dump() for c in ds.last_choices] if awaiting_dept and ds else []
+    clarify_choices = [c.model_dump() for c in cs.last_choices] if awaiting_clarify and cs else []
+    multi_select = bool(ds and ds.multi_select) if ds else False
+    conf = state.dept_confidence_result
 
     return {
         "user_id": user_id,
@@ -107,8 +125,18 @@ def chat_once(
             "medical": _dump_docs(state.medical_docs),
             "process": _dump_docs(state.process_docs),
         },
-        "awaiting_dept_choice": awaiting,
+        "awaiting_dept_choice": awaiting_dept,
         "dept_choices": dept_choices,
+        "awaiting_clarify": awaiting_clarify,
+        "clarify_phase": cs.phase if cs else None,
+        "clarify_choices": clarify_choices,
+        "multi_select": multi_select,
+        "dept_confidence": conf.score if conf else None,
+        "dept_confidence_passed": state.dept_confidence_passed,
+        "dept_confidence_reason": conf.reason if conf else None,
+        "locked_department": state.locked_department,
+        "node_trace": node_trace,
+        "app_state": dump_app_state(state),
     }
 
 

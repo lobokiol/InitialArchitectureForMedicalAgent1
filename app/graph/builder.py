@@ -2,11 +2,18 @@ from langgraph.graph import StateGraph, START, END
 
 from app.domain.models import AppState
 from app.domain.routing import (
+    route_after_clarify,
+    route_after_confidence,
     route_after_dept,
+    route_after_dept_rules,
+    route_after_rag,
     route_after_slot_gate,
     route_after_trim,
 )
 from app.graph.nodes.decision import decision_node
+from app.graph.nodes.dept_confidence import dept_confidence_node, low_confidence_reject_node
+from app.graph.nodes.dept_disambiguation import dept_disambiguation_node
+from app.graph.nodes.dept_rules_disambiguation import dept_rules_disambiguation_node
 from app.graph.nodes.disease_dept import disease_dept_node
 from app.graph.nodes.symptom_slot import symptom_slot_node
 from app.graph.nodes.reject import reject_node
@@ -15,16 +22,12 @@ from app.graph.nodes.trim_history import trim_history_node
 from app.graph.nodes.slot_fill import slot_fill_node
 from app.graph.nodes.slot_gate import slot_gate_node
 from app.graph.nodes.rag_symptom_recall import rag_symptom_recall_node
-from app.graph.nodes.dept_disambiguation import dept_disambiguation_node
+from app.graph.nodes.symptom_clarify import symptom_clarify_node
 
 
 def build_graph() -> StateGraph:
     """
-    导诊主图（槽位门禁 + RAG 科室消歧）：
-
-    trim_history → decision → slot_fill → slot_gate
-      → disease_dept | rag_symptom_recall | reject
-    symptom: rag → dept_disambiguation → answer | END(反问)
+    导诊主图（槽位门禁 + CL 澄清 + department_rules 多选 + LLM 置信度门禁）：
     """
     graph = StateGraph(AppState)
 
@@ -35,7 +38,11 @@ def build_graph() -> StateGraph:
     graph.add_node("disease_dept", disease_dept_node)
     graph.add_node("symptom_slot", symptom_slot_node)
     graph.add_node("rag_symptom_recall", rag_symptom_recall_node)
+    graph.add_node("symptom_clarify", symptom_clarify_node)
+    graph.add_node("dept_rules_disambiguation", dept_rules_disambiguation_node)
     graph.add_node("dept_disambiguation", dept_disambiguation_node)
+    graph.add_node("dept_confidence", dept_confidence_node)
+    graph.add_node("low_confidence_reject", low_confidence_reject_node)
     graph.add_node("reject", reject_node)
     graph.add_node("answer_generate", answer_generate_node)
 
@@ -45,6 +52,8 @@ def build_graph() -> StateGraph:
         route_after_trim,
         {
             "decision": "decision",
+            "symptom_clarify": "symptom_clarify",
+            "dept_rules_disambiguation": "dept_rules_disambiguation",
             "dept_disambiguation": "dept_disambiguation",
         },
     )
@@ -62,18 +71,53 @@ def build_graph() -> StateGraph:
     )
 
     graph.add_edge("disease_dept", "answer_generate")
-    graph.add_edge("rag_symptom_recall", "dept_disambiguation")
+    graph.add_conditional_edges(
+        "rag_symptom_recall",
+        route_after_rag,
+        {
+            "symptom_clarify": "symptom_clarify",
+            "dept_disambiguation": "dept_disambiguation",
+        },
+    )
+    graph.add_conditional_edges(
+        "symptom_clarify",
+        route_after_clarify,
+        {
+            "end_ask": END,
+            "dept_rules_disambiguation": "dept_rules_disambiguation",
+            "answer_generate": "answer_generate",
+        },
+    )
+    graph.add_conditional_edges(
+        "dept_rules_disambiguation",
+        route_after_dept_rules,
+        {
+            "end_ask": END,
+            "dept_confidence": "dept_confidence",
+        },
+    )
     graph.add_conditional_edges(
         "dept_disambiguation",
         route_after_dept,
         {
-            "answer_generate": "answer_generate",
             "end_ask": END,
+            "dept_confidence": "dept_confidence",
+            "answer_generate": "answer_generate",
+        },
+    )
+    graph.add_conditional_edges(
+        "dept_confidence",
+        route_after_confidence,
+        {
+            "symptom_clarify": "symptom_clarify",
+            "answer_generate": "answer_generate",
+            "low_confidence_reject": "low_confidence_reject",
         },
     )
 
     graph.add_edge("symptom_slot", "answer_generate")
     graph.add_edge("reject", END)
+    graph.add_edge("low_confidence_reject", END)
     graph.add_edge("answer_generate", END)
 
     return graph
