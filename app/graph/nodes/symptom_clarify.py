@@ -62,6 +62,50 @@ def _ask_slot(cs: SymptomClarifyState, chunk: dict, slot: str) -> dict:
     }
 
 
+def _bind_dept_rule(
+    cs: SymptomClarifyState,
+    chunk: dict,
+    filled: dict[str, str],
+    location: str,
+) -> SymptomClarifyState | None:
+    sid = cs.symptom_id or chunk.get("symptom_id") or ""
+    rule = search_dept_rule(sid, location)
+    if not rule:
+        return None
+    slots = dict(filled)
+    slots.setdefault("pain_location", location)
+    updated = cs.model_copy(deep=True)
+    updated.filled_slots = slots
+    updated.dept_rule_id = rule.get("id")
+    updated.dept_rule_chunk = rule
+    updated.last_choices = []
+    updated.status = "done"
+    updated.phase = "done"
+    return updated
+
+
+def _finish_with_default_location(
+    cs: SymptomClarifyState,
+    chunk: dict,
+    filled: dict[str, str],
+) -> dict | None:
+    loc = chunk.get("default_location")
+    if not isinstance(loc, str) or not loc.strip():
+        return None
+    location = loc.strip()
+    updated = _bind_dept_rule(cs, chunk, filled, location)
+    if updated is None:
+        return {
+            "messages": [AIMessage(content=f"暂无「{location}」对应的导诊规则，请联系分诊台。")],
+        }
+    logger.info(
+        "symptom_clarify: default_location=%r bound rule_id=%s",
+        location,
+        updated.dept_rule_id,
+    )
+    return {"clarify_state": updated}
+
+
 def symptom_clarify_node(state: AppState) -> dict:
     logger.info(">>> Enter node: symptom_clarify phase=%s", getattr(state.clarify_state, "phase", None))
     chunk = state.rag_chunk
@@ -93,13 +137,11 @@ def symptom_clarify_node(state: AppState) -> dict:
                 return {
                     "messages": [AIMessage(content=f"暂无「{picked.label}」对应的导诊规则，请换部位或联系分诊台。")],
                 }
-            updated = cs.model_copy(deep=True)
-            updated.filled_slots = filled
-            updated.dept_rule_id = rule.get("id")
-            updated.dept_rule_chunk = rule
-            updated.last_choices = []
-            updated.status = "done"
-            updated.phase = "done"
+            updated = _bind_dept_rule(cs, chunk, filled, picked.label)
+            if updated is None:
+                return {
+                    "messages": [AIMessage(content=f"暂无「{picked.label}」对应的导诊规则，请换部位或联系分诊台。")],
+                }
             return {"clarify_state": updated}
 
         nxt = next_slot_phase(cs.phase, required)
@@ -109,6 +151,9 @@ def symptom_clarify_node(state: AppState) -> dict:
         if nxt:
             updated.phase = nxt  # type: ignore[assignment]
             return _ask_slot(updated, chunk, nxt)
+        auto = _finish_with_default_location(updated, chunk, filled)
+        if auto:
+            return auto
         updated.status = "done"
         updated.phase = "done"
         return {"clarify_state": updated}

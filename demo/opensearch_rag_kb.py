@@ -135,6 +135,38 @@ def load_raw_lines(data_path: Path = DATA_PATH) -> list[tuple[str, dict[str, Any
     return rows
 
 
+def upsert_doc(
+    client: OpenSearch,
+    doc_id: str,
+    data_path: Path = DATA_PATH,
+    index_name: str = INDEX_NAME,
+    with_embedding: bool = True,
+) -> bool:
+    """Index or overwrite a single document by id (no full rebuild)."""
+    raw_line: str | None = None
+    doc: dict[str, Any] | None = None
+    for line in data_path.read_text(encoding="utf-8").splitlines():
+        raw = line.strip()
+        if not raw:
+            continue
+        parsed = json.loads(raw)
+        if parsed.get("id") == doc_id:
+            raw_line, doc = raw, parsed
+            break
+    if doc is None or raw_line is None:
+        print(f"[OS] doc id={doc_id!r} not found in {data_path}")
+        return False
+
+    enriched = enrich_doc(doc, raw_line)
+    if with_embedding:
+        enriched["embedding"] = embed_texts([raw_line])[0]
+
+    client.index(index=index_name, id=doc_id, body=enriched)
+    client.indices.refresh(index=index_name)
+    print(f"[OS] upserted {doc_id!r} into {index_name!r} (with_embedding={with_embedding})")
+    return True
+
+
 def index_rag_knowledge(
     client: OpenSearch,
     data_path: Path = DATA_PATH,
@@ -282,12 +314,22 @@ def run_acceptance(client: OpenSearch) -> int:
 def main() -> int:
     skip_embed = "--no-embed" in sys.argv
     acceptance_only = "--acceptance" in sys.argv
+    doc_id: str | None = None
+    if "--doc" in sys.argv:
+        idx = sys.argv.index("--doc")
+        if idx + 1 >= len(sys.argv):
+            print("usage: opensearch_rag_kb.py [--doc DOC_ID] [--no-embed] [--acceptance]")
+            return 2
+        doc_id = sys.argv[idx + 1]
     _root = _DEMO_DIR.parent
     if str(_root) not in sys.path:
         sys.path.insert(0, str(_root))
 
     client = wait_for_opensearch()
-    if not acceptance_only:
+    if doc_id:
+        if not upsert_doc(client, doc_id, with_embedding=not skip_embed):
+            return 1
+    elif not acceptance_only:
         index_rag_knowledge(client, with_embedding=not skip_embed)
     return run_acceptance(client)
 
