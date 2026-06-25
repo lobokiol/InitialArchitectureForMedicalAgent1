@@ -18,13 +18,17 @@
         WaitSeconds = 120
     }
 
-    # Redis（Docker：LangGraph checkpoint + 会话元数据）
+    # Redis（Windows 本机服务 / redis-server.exe；LangGraph checkpoint 需模块，否则回退 SQLite）
     Redis = @{
         Enabled     = $true
-        ComposeFile = 'sourceData\redis\docker-compose.yaml'
+        Mode        = 'windows'   # windows | docker
+        ServiceName = 'Redis'
+        ServerExe   = 'C:\Program Files\Redis\redis-server.exe'
+        ConfFile    = 'redis.windows.conf'
         Uri         = 'redis://127.0.0.1:6379'
         Port        = 6379
         WaitSeconds = 30
+        ComposeFile = 'sourceData\redis\docker-compose.yaml'
     }
 
     # Triage 导诊记录（SQLite 单文件，无需独立进程）

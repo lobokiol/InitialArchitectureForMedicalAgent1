@@ -29,6 +29,8 @@ USE_MEMORY_CHECKPOINTER: bool = os.getenv("USE_MEMORY_CHECKPOINTER", "false").lo
     "true",
     "yes",
 )
+# Windows 原生 Redis 3.x 无 RediSearch 时，LangGraph checkpoint 回退到此 SQLite
+LANGGRAPH_CHECKPOINT_DB: str = os.getenv("LANGGRAPH_CHECKPOINT_DB", "data/langgraph_checkpoints.db")
 
 # Index / collection defaults
 RAG_KB_INDEX: str = os.getenv("RAG_KB_INDEX", "rag_knowledge")

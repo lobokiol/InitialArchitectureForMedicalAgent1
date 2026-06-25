@@ -115,48 +115,114 @@ function Start-BackgroundBat([string]$Name, [string]$WorkDir, [string]$BatRelati
     return $false
 }
 
-function Start-Redis {
-    if (-not $Cfg.Redis.Enabled) { return $true }
+function Resolve-RedisServerExe {
+    if ($Cfg.Redis.ServerExe -and (Test-Path $Cfg.Redis.ServerExe)) {
+        return $Cfg.Redis.ServerExe
+    }
+    $cmd = Get-Command redis-server -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    foreach ($candidate in @(
+            'C:\Program Files\Redis\redis-server.exe',
+            'C:\Program Files\Memurai\memurai.exe'
+        )) {
+        if (Test-Path $candidate) { return $candidate }
+    }
+    return $null
+}
+
+function Wait-RedisPort([int]$Port, [int]$TimeoutSec) {
+    $deadline = (Get-Date).AddSeconds($TimeoutSec)
+    while ((Get-Date) -lt $deadline) {
+        if (Test-PortListening $Port) { return $true }
+        Start-Sleep -Seconds 2
+    }
+    return $false
+}
+
+function Start-RedisWindows {
     $port = [int]$Cfg.Redis.Port
     if (Test-PortListening $port) {
         Write-Ok "Redis 已在运行 (端口 $port)"
         return $true
     }
-    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
-        Write-Warn "未检测到 Docker，无法启动 Redis。可设 USE_MEMORY_CHECKPOINTER=true 或安装 Docker Desktop"
+
+    $svcName = $Cfg.Redis.ServiceName
+    if ($svcName) {
+        $svc = Get-Service -Name $svcName -ErrorAction SilentlyContinue
+        if ($svc) {
+            Write-Step "启动 Redis Windows 服务 ($svcName)"
+            try {
+                if ($svc.Status -ne 'Running') {
+                    Start-Service -Name $svcName -ErrorAction Stop
+                }
+                if (Wait-RedisPort $port ([int]$Cfg.Redis.WaitSeconds)) {
+                    Write-Ok "Redis 服务已就绪"
+                    return $true
+                }
+                Write-Warn "Redis 服务已启动但端口 $port 未监听"
+            } catch {
+                Write-Warn "启动 Redis 服务失败: $_"
+            }
+        }
+    }
+
+    $exe = Resolve-RedisServerExe
+    if (-not $exe) {
+        Write-Warn "未找到 redis-server.exe，请安装 Windows Redis 或 Memurai"
         return $false
     }
-    $compose = Join-Path $Root $Cfg.Redis.ComposeFile
-    if (-not (Test-Path $compose)) {
-        Write-Warn "Redis compose 不存在: $compose"
-        return $false
+
+    $redisDir = Split-Path $exe -Parent
+    $conf = Join-Path $redisDir ($Cfg.Redis.ConfFile)
+    if (-not (Test-Path $conf)) {
+        $conf = Join-Path $redisDir 'memurai.conf'
     }
-    Write-Step "启动 Redis (docker compose) -> 端口 $port"
-    docker compose -f $compose up -d 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warn "docker compose up 失败，请确认 Docker Desktop 已运行"
-        return $false
+    $args = if (Test-Path $conf) { "`"$conf`"" } else { "--port $port" }
+    $log = Join-Path $LogDir 'redis.log'
+    Write-Step "启动 Redis (本机) -> 端口 $port (日志: $log)"
+    Start-Process -FilePath 'cmd.exe' -ArgumentList @(
+        '/c', "cd /d `"$redisDir`" && `"$exe`" $args >> `"$log`" 2>&1"
+    ) -WorkingDirectory $redisDir -WindowStyle Hidden | Out-Null
+
+    if (Wait-RedisPort $port ([int]$Cfg.Redis.WaitSeconds)) {
+        Write-Ok "Redis 已就绪"
+        return $true
     }
-    $deadline = (Get-Date).AddSeconds([int]$Cfg.Redis.WaitSeconds)
-    while ((Get-Date) -lt $deadline) {
+    Write-Warn "Redis 在 $($Cfg.Redis.WaitSeconds)s 内未就绪，请查看 $log"
+    return $false
+}
+
+function Start-Redis {
+    if (-not $Cfg.Redis.Enabled) { return $true }
+    $mode = if ($Cfg.Redis.Mode) { $Cfg.Redis.Mode } else { 'windows' }
+    if ($mode -eq 'docker' -and (Get-Command docker -ErrorAction SilentlyContinue)) {
+        $port = [int]$Cfg.Redis.Port
         if (Test-PortListening $port) {
-            Write-Ok "Redis 已就绪"
+            Write-Ok "Redis 已在运行 (端口 $port)"
             return $true
         }
-        Start-Sleep -Seconds 2
+        $compose = Join-Path $Root $Cfg.Redis.ComposeFile
+        if (Test-Path $compose) {
+            Write-Step "启动 Redis (docker compose) -> 端口 $port"
+            docker compose -f $compose up -d 2>&1 | Out-Null
+            if (Wait-RedisPort $port ([int]$Cfg.Redis.WaitSeconds)) {
+                Write-Ok "Redis 已就绪"
+                return $true
+            }
+        }
     }
-    Write-Warn "Redis 在 $($Cfg.Redis.WaitSeconds)s 内未就绪"
-    return $false
+    return Start-RedisWindows
 }
 
 function Stop-Redis {
     if (-not $Cfg.Redis.Enabled) { return }
     $port = [int]$Cfg.Redis.Port
-    if (Get-Command docker -ErrorAction SilentlyContinue) {
-        $compose = Join-Path $Root $Cfg.Redis.ComposeFile
-        if (Test-Path $compose) {
-            docker compose -f $compose stop 2>&1 | Out-Null
-            Write-Host "  已停止 Redis (docker compose)"
+    $svcName = $Cfg.Redis.ServiceName
+    if ($svcName) {
+        $svc = Get-Service -Name $svcName -ErrorAction SilentlyContinue
+        if ($svc -and $svc.Status -eq 'Running') {
+            Stop-Service -Name $svcName -Force -ErrorAction SilentlyContinue
+            Write-Host "  已停止 Redis 服务 ($svcName)"
             return
         }
     }
@@ -217,8 +283,15 @@ function Invoke-Verify {
         Write-Step "验证 Redis $($Cfg.Redis.Uri)"
         Ensure-Venv
         $env:PYTHONPATH = '.'
+        $env:HTTP_PROXY = ''
+        $env:HTTPS_PROXY = ''
+        $env:ALL_PROXY = ''
         $uri = $Cfg.Redis.Uri
-        $py = "import redis; redis.Redis.from_url('$uri', socket_connect_timeout=3).ping()"
+        $py = @"
+import redis
+redis.Redis.from_url('$uri', socket_connect_timeout=3).ping()
+print('ping ok')
+"@
         try {
             & $Python -c $py | Out-Null
             if ($LASTEXITCODE -eq 0) {
