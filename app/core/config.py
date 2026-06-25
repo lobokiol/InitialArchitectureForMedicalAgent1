@@ -1,9 +1,12 @@
 import os
 import getpass
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-# Load environment variables early
-load_dotenv(override=True)
+# Always load project-root .env (works when cwd is tests/, scripts/, etc.)
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(_PROJECT_ROOT / ".env", override=True)
 
 
 def _require_env(name: str) -> str:

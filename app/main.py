@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.core import config  # noqa: F401 — load project-root .env before LangChain/LangGraph
 from app.api.routers import chat, threads
 from app.api.routers import users
 from app.core.logging import logger  # ensure logging configured
