@@ -1,6 +1,6 @@
 ## 前端展示
 
-<img src="../demo/web页面展示.gif" width="50%" />
+<img src="../sourceData/web页面展示.gif" width="50%" />
 
 ---
 
