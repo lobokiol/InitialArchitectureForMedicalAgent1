@@ -79,7 +79,7 @@ docker compose up -d 2>&1 | ForEach-Object {
 
 # Step 5: 等待就绪
 Write-Step "等待服务就绪（约 30-60 秒）"
-$services = @("redis", "opensearch", "milvus", "api")
+$services = @("redis", "opensearch", "api")
 $maxWait = 60
 $startTime = Get-Date
 

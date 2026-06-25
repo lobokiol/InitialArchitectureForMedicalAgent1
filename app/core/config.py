@@ -22,7 +22,6 @@ def _require_env(name: str) -> str:
 # Core external service settings
 DASHSCOPE_API_KEY: str = _require_env("DASHSCOPE_API_KEY")
 ES_URL: str = os.getenv("ES_URL", "http://localhost:9200")
-MILVUS_URI: str = os.getenv("MILVUS_URI", "http://localhost:19530")
 REDIS_URI: str = os.getenv("REDIS_URI", "redis://localhost:6379")
 USE_MEMORY_CHECKPOINTER: bool = os.getenv("USE_MEMORY_CHECKPOINTER", "false").lower() in (
     "1",
@@ -39,12 +38,6 @@ RAG_CLARIFY_MIN_SCORE: float = float(os.getenv("RAG_CLARIFY_MIN_SCORE", "1.2"))
 RAG_CLARIFY_MIN_MARGIN: float = float(os.getenv("RAG_CLARIFY_MIN_MARGIN", "0.15"))
 DISEASE_KB_INDEX: str = os.getenv("DISEASE_KB_INDEX", "disease_kb")
 ES_INDEX_NAME: str = os.getenv("ES_INDEX_NAME", "hospital_procedures")
-MILVUS_COLLECTION: str = os.getenv("MILVUS_COLLECTION", "medical_knowledge")
-
-# Retrieval / rewrite parameters
-MILVUS_TOP_K: int = int(os.getenv("MILVUS_TOP_K", "15"))
-MILVUS_MIN_SIM: float = float(os.getenv("MILVUS_MIN_SIM", "0.5"))
-MILVUS_MAX_DOCS: int = int(os.getenv("MILVUS_MAX_DOCS", "8"))
 MAX_REWRITE: int = int(os.getenv("MAX_REWRITE", "2"))
 
 # Short-term history control

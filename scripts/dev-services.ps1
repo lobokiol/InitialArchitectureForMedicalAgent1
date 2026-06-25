@@ -398,14 +398,6 @@ print(n)
         }
     }
 
-    if ($Cfg.Verify.ChatApiTests -and $Cfg.Api.Enabled) {
-        Write-Step "运行 scripts/archive/test_chat_api.py"
-        Ensure-Venv
-        $env:PYTHONPATH = '.'
-        & $Python (Join-Path $Root 'scripts/archive/test_chat_api.py') --base-url "http://$($Cfg.Api.Host):$($Cfg.Api.Port)"
-        if ($LASTEXITCODE -ne 0) { $ok = $false } else { Write-Ok 'test_chat_api 全量通过' }
-    }
-
     if ($Cfg.Dashboards.Enabled) {
         Write-Step "验证 Dashboards $($Cfg.Dashboards.Url)"
         try {
