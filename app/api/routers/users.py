@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from app.infra.redis_client import redis_client
+from app.infra.redis_compat import hset_mapping
 
 _memory_users: dict[str, dict[str, str]] = {}
 
@@ -28,9 +29,10 @@ def _upsert_user(user_id: str, name: str | None) -> UserInfo:
     if redis_client is not None:
         key = f"user:{user_id}:meta"
         created_at = redis_client.hget(key, "created_at") or now
-        redis_client.hset(
+        hset_mapping(
+            redis_client,
             key,
-            mapping={
+            {
                 "user_id": user_id,
                 "name": name or "",
                 "created_at": created_at,

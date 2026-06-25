@@ -1,0 +1,168 @@
+# 完整生产级 Docker Compose - 一键启动全部服务
+# 包含：Medical Agent API + Redis + OpenSearch + Milvus 基础设施
+#
+# 用法：
+#   docker compose up -d                    # 启动全部
+#   docker compose up -d api                # 只启动 API
+#   docker compose logs -f api              # 查看 API 日志
+#   docker compose down -v                  # 停止并清理数据
+
+services:
+  # ========== Medical Triage API ==========
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medical-triage-api
+    ports:
+      - "8000:8000"
+    environment:
+      # 服务发现 - 使用 Docker 内部网络
+      - REDIS_URI=redis://redis:6379
+      - ES_URL=http://opensearch:9200
+      - MILVUS_URI=http://milvus:19530
+      # 从宿主机的 .env 文件读取密钥（需要在 .env 中设置）
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      - CHAT_MODEL_NAME=${CHAT_MODEL_NAME:-qwen-plus}
+      - EMBEDDING_MODEL_NAME=${EMBEDDING_MODEL_NAME:-text-embedding-v2}
+      # 开发模式配置
+      - PYTHONPATH=/app
+      - UVICORN_LOG_LEVEL=info
+    env_file:
+      - .env
+    volumes:
+      # 挂载数据目录，保留会话和知识库
+      - ./data:/app/data
+      # 开发模式：热重载代码（生产环境注释掉）
+      - ./app:/app/app:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+      milvus:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ========== Redis - 会话 + Checkpoint ==========
+  redis:
+    image: redis/redis-stack:latest
+    container_name: medical-agent-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ========== OpenSearch - 检索引擎 ==========
+  opensearch:
+    image: opensearchproject/opensearch:2.11.0
+    container_name: medical-agent-opensearch
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ========== Milvus - 向量数据库 ==========
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: medical-agent-etcd
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+      - ETCDCTL_API=3
+    volumes:
+      - etcd-data:/etcd
+    command: >
+      etcd -advertise-client-urls http://etcd:2379
+      -listen-client-urls http://0.0.0.0:2379
+      --data-dir /etcd
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: medical-agent-minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    ports:
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  milvus:
+    image: milvusdb/milvus:v2.3.3
+    container_name: medical-agent-milvus
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    volumes:
+      - milvus-data:/var/lib/milvus
+    depends_on:
+      - etcd
+      - minio
+    command: ["milvus", "run", "standalone"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
+
+# ========== 数据卷 ==========
+volumes:
+  redis-data:
+  opensearch-data:
+  etcd-data:
+  minio-data:
+  milvus-data:
+
+# ========== 网络（可选：自定义 bridge） ==========
+networks:
+  default:
+    name: medical-agent-network

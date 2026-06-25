@@ -1,0 +1,402 @@
+# 前端面试演示页面设计提示词
+
+> 基于 COSTAR 框架编写的 AI Agent 提示词，用于生成医院导诊系统的前端面试演示页面
+>
+> **更新说明（2026-06）**：对齐当前仓库实现——OpenSearch 替代 Milvus/ES；补充症状澄清、科室消歧/鉴别多选、`/ready` 就绪检查；API 字段与 `cli.py` 多轮交互逻辑一致。
+
+---
+
+## C (Context) 背景
+
+你是一名资深前端开发工程师，擅长使用 React、TypeScript、Tailwind CSS 和 Framer Motion 构建现代化、交互性强的 Web 应用。你的任务是为一个**医院导诊 Agentic 助手**项目设计并实现一个用于面试演示的展示页面。
+
+该项目是一个生产级的医院导诊问答系统，当前仓库状态：
+
+| 维度 | 说明 |
+|------|------|
+| 后端 | FastAPI + LangGraph（14 节点 StateGraph）+ Redis Checkpoint + OpenSearch + DashScope |
+| 检索 | OpenSearch 三索引：`rag_knowledge`、`disease_kb`、`rag_department_rules`；`sourceData/data/*.jsonl` 为源数据 |
+| 持久化 | Redis 存会话元数据与 LangGraph Checkpoint；SQLite `data/triage_sessions.db` 记录完整导诊周期（评估用，前端无需直接访问） |
+| 已有前端 | `cli.py`（Rich CLI）——**多轮澄清、科室选项、斜杠命令的参考实现** |
+| 待建设 | 可视化 Web 演示页，调用现有 REST API，行为尽量复刻 CLI |
+
+一次 `/chat` 请求链路：
+
+```text
+Web/CLI → POST /chat → chat_service → LangGraph（读/写 Checkpoint）
+       → OpenSearch 混合检索 + DashScope LLM → ChatResponse
+       → triage_recorder 异步写 SQLite（前端无感）
+```
+
+---
+
+## O (Objective) 目标
+
+请使用 **React + TypeScript + Tailwind CSS + Framer Motion** 构建面试演示页，需实现：
+
+1. **用户管理**：`user_id` + 昵称；`POST /users`、`GET /users/{user_id}`；localStorage 持久化
+2. **会话管理**：创建 / 切换 / 删除 / 列表；对齐 `GET/POST/DELETE /threads`、`POST /threads/switch`、`GET /threads/current`
+3. **命令系统**（可选 UI 或输入框解析）：`/help`、`/new`、`/threads`、`/switch`、`/delete`、`/user`、`/exit`——行为参考 `cli.py`
+4. **多轮导诊对话**（**核心**）：
+   - 普通文本问答
+   - **症状澄清**（`awaiting_clarify` + `clarify_choices`）：年龄 / 性别 / 疼痛部位等，单选
+   - **科室消歧**（`awaiting_dept_choice` + `dept_choices`）：伴随症状或 RK 鉴别项；`multi_select=true` 时支持多选（如 `1,3`）
+   - 循环调用 `/chat` 直至无待选状态，逻辑同 `cli.py` 的 `_ask_chat`
+5. **结果展示**：Markdown 回复、意图（`intent_result`）、参考文档（`used_docs`）、科室置信度（`dept_confidence`）、可选调试信息（`node_trace`）
+6. **健康检查**：启动前或设置页调用 `GET /ready`，展示 OpenSearch / Redis / LangGraph / TriageDb 状态
+7. **面试友好**：架构说明 + 可交互 Live Demo，便于快速展示全栈与 Agent 编排能力
+
+---
+
+## S (Style) 风格
+
+- **整体**：专业、现代、治愈风格。绿色点缀为主。
+- **布局**：卡片式；左侧会话列表 + 右侧对话区（桌面）；移动端抽屉式会话
+- **动画**：Framer Motion 渐入、消息气泡、选项卡片点击反馈、抽屉滑入
+- **代码**：函数组件 + Hooks；`api.ts` 集中封装；TypeScript 类型与后端 Pydantic 模型对齐
+
+---
+
+## T (Tone) 语气
+
+专业、清晰、自信；演示可交互，突出 LangGraph 多轮导诊与 RAG 能力。
+
+---
+
+## A (Audience) 受众
+
+技术主管：时间有限，关注技术选型、多轮 Agent 交互、API 设计与工程完整度。
+
+---
+
+## R (Response) 响应格式
+
+### 1. 推荐项目结构
+
+```text
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── Hero.tsx
+│   │   ├── ProjectIntro.tsx
+│   │   ├── Architecture.tsx
+│   │   ├── LiveDemo.tsx           # 核心：对话 + 多轮选项
+│   │   ├── ClarifyChoices.tsx     # 症状澄清选项
+│   │   ├── DeptChoices.tsx        # 科室/鉴别选项（单选/多选）
+│   │   ├── IntentBadge.tsx
+│   │   ├── DocSources.tsx
+│   │   ├── ThreadList.tsx
+│   │   ├── UserModal.tsx
+│   │   ├── CommandHelp.tsx
+│   │   ├── ReadinessBanner.tsx    # /ready 状态
+│   │   └── Footer.tsx
+│   ├── hooks/
+│   │   ├── useChat.ts             # 含多轮 clarify/dept 循环
+│   │   ├── useUser.ts
+│   │   ├── useThreads.ts
+│   │   └── useReadiness.ts
+│   ├── lib/
+│   │   └── api.ts
+│   ├── types/
+│   │   └── index.ts               # 与 ChatResponse 对齐
+│   ├── App.tsx
+│   └── main.tsx
+├── .env.example                   # VITE_API_BASE=http://127.0.0.1:8000
+├── vite.config.ts
+└── package.json
+```
+
+### 2. 后端接口（与 `app/api/routers` 一致）
+
+默认基址：`http://127.0.0.1:8000`（`start-dev.cmd` 一键启动后可用）。Swagger：`GET /docs`。
+
+#### 对话 `POST /chat`
+
+**请求**
+
+```json
+{
+  "user_id": "demo-user",
+  "thread_id": "可选，省略则用当前会话",
+  "message": "我头疼"
+}
+```
+
+**响应**（`ChatResponse`，字段完整列表）
+
+```typescript
+interface ChatResponse {
+  user_id: string;
+  thread_id: string;
+  reply: string;                          // Markdown
+  intent_result?: IntentResult;
+  used_docs: { medical: RetrievedDoc[]; process: RetrievedDoc[] };
+  // --- 多轮导诊（前端必须处理）---
+  awaiting_clarify: boolean;
+  clarify_phase?: string;                 // age | sex | pain_location | ...
+  clarify_choices: ClarifyChoice[];
+  awaiting_dept_choice: boolean;
+  dept_choices: DeptChoice[];
+  multi_select: boolean;                  // true 时科室选项可多选
+  // --- 置信度与结果 ---
+  dept_confidence?: number;
+  dept_confidence_passed?: boolean;
+  dept_confidence_reason?: string;
+  locked_department?: string;
+  // --- 调试（演示页可折叠展示）---
+  node_trace: string[];
+  app_state?: Record<string, unknown>;
+}
+
+interface IntentResult {
+  has_symptom: boolean;
+  has_process: boolean;
+  main_intent: 'symptom' | 'process' | 'mixed' | 'non_medical';
+  symptom_query?: string;
+  process_query?: string;
+  triage_route?: 'disease' | 'symptom' | 'reject';
+}
+
+interface RetrievedDoc {
+  id: string;
+  source: 'medical' | 'process' | 'tool';
+  title?: string;
+  content: string;
+  score?: number;
+}
+
+interface ClarifyChoice {
+  id: string;
+  label: string;
+  slot?: string;
+}
+
+interface DeptChoice {
+  id: string;
+  label: string;
+  target_departments: string[];
+}
+```
+
+#### 多轮交互伪代码（对齐 `cli.py`）
+
+```typescript
+async function chatUntilSettled(userId: string, threadId: string, message: string) {
+  let data = await postChat({ user_id: userId, thread_id: threadId, message });
+
+  while (data.awaiting_clarify && data.clarify_choices.length) {
+  // 展示 data.reply + clarify_phase；用户点选 label
+    const pick = await ui.pickSingle(data.clarify_choices.map(c => c.label));
+    data = await postChat({ user_id: userId, thread_id: data.thread_id, message: pick });
+  }
+
+  while (data.awaiting_dept_choice && data.dept_choices.length) {
+    const pick = data.multi_select
+      ? await ui.pickMulti(data.dept_choices)   // 发送 "1,3" 或选项 label
+      : await ui.pickSingle(data.dept_choices.map(c => c.label));
+    data = await postChat({ user_id: userId, thread_id: data.thread_id, message: pick });
+  }
+
+  return data; // 最终 reply、intent_result、used_docs、dept_confidence...
+}
+```
+
+#### 会话 ` /threads`
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/threads?user_id=` | 会话列表 `ThreadInfo[]` |
+| POST | `/threads` | `{ user_id, title? }` → `{ thread_id, title }` |
+| DELETE | `/threads/{thread_id}?user_id=` | → `{ deleted, new_current_thread_id? }` |
+| GET | `/threads/current?user_id=` | 当前会话，无则创建默认 |
+| POST | `/threads/switch` | `{ user_id, thread_id }` |
+
+```typescript
+interface ThreadInfo {
+  thread_id: string;
+  title: string;
+  created_at: string;
+  last_active_at: string;
+  is_deleted: boolean;
+}
+```
+
+#### 用户 `/users`
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/users` | `{ user_id, name? }` 创建或更新 |
+| GET | `/users/{user_id}` | 获取用户信息 |
+
+#### 健康检查
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/healthz` | `{ status: "ok" }` 存活探测 |
+| GET | `/ready` | LangGraph + OpenSearch + Redis + TriageDb 聚合状态；`status` 可为 `degraded` |
+
+---
+
+### 3. 核心组件要点
+
+| 组件 | 功能 | 要点 |
+|------|------|------|
+| LiveDemo | 主对话区 | 发送消息、加载态、Markdown 渲染、驱动多轮选项 |
+| ClarifyChoices | 症状澄清 | `clarify_phase` 标题 + 单选按钮/卡片 |
+| DeptChoices | 科室消歧 | `multi_select` 切换单选/多选 UI |
+| IntentBadge | 意图 | `main_intent` + `triage_route` |
+| DocSources | 溯源 | `used_docs.medical` / `process`，展示 title + score |
+| ThreadList | 会话抽屉 | 对标 `/threads`、`/switch` |
+| ReadinessBanner | 依赖状态 | 调用 `/ready`，未就绪时提示先 `start-dev.cmd` |
+| Architecture | 架构图 | CLI/Web → API → LangGraph → OpenSearch/LLM |
+
+### 4. LiveDemo 布局示意
+
+```text
+┌──────────────────────────────────────────────────────┐
+│ 👤 demo-user · 会话：默认对话          [就绪 ●]      │
+├──────────────────────────────────────────────────────┤
+│ [用户] 脚背疼                                        │
+│ [助手] 请问患者年龄？                                │
+│ ┌ 澄清 · age ─────────────────────────────────┐   │
+│ │ ( ) 18岁以下  ( ) 18-60岁  ( ) 60岁以上      │   │
+│ └──────────────────────────────────────────────┘   │
+│ [助手] 请补充：是否伴有麻木？                        │
+│ ┌ 科室鉴别 · 可多选 ──────────────────────────┐   │
+│ │ [✓] 麻木  [ ] 肿胀  [ ] 外伤史                │   │
+│ └──────────────────────────────────────────────┘   │
+│ [意图] symptom · 路由 symptom                        │
+│ [置信度] 82 分（通过）                               │
+│ [参考] rag_knowledge / disease_kb 片段               │
+├──────────────────────────────────────────────────────┤
+│ 输入消息或 /help                          [发送]     │
+└──────────────────────────────────────────────────────┘
+```
+
+### 5. 命令系统（参考 `cli.py`）
+
+| 命令 | 行为 |
+|------|------|
+| `/help` | 显示命令列表 |
+| `/new` | `POST /threads` 创建新会话并切换 |
+| `/threads` | 打开会话列表 |
+| `/switch` | 选择 thread_id 后 `POST /threads/switch` |
+| `/delete` | `DELETE /threads/{id}` |
+| `/user` | 查看/更新昵称 `POST /users` |
+| `/exit` | 退出演示（Web 可忽略或关闭面板） |
+
+### 6. 架构与技术栈展示（面试用）
+
+**后端（已实现）**
+
+```text
+FastAPI · LangGraph · Redis · OpenSearch · DashScope · SQLite(triage)
+```
+
+**前端（待实现）**
+
+```text
+React · TypeScript · Tailwind CSS · Framer Motion · Vite
+```
+
+**LangGraph 能力摘要**（不必画全图，演示页简介即可）
+
+- 疾病链：NER → 槽位 → `disease_kb` → 科室
+- 症状链：混合召回 → **symptom_clarify**（CL）→ **dept_rules_disambiguation**（RK 鉴别）→ **dept_disambiguation**（伴随症状）→ **dept_confidence** → 生成回复
+
+---
+
+## 核心功能详细说明
+
+### 1. 用户与会话
+
+- 首次进入：弹窗输入 `user_id`（默认 `demo-user`）、昵称；`POST /users`
+- `GET /threads/current?user_id=` 获取或创建当前 thread
+- localStorage 保存 `user_id`、`thread_id`
+
+### 2. 对话与多轮选项（最重要）
+
+- 每次 `POST /chat` 后检查 `awaiting_clarify` / `awaiting_dept_choice`
+- 有待选时：**先展示 `reply`**，再渲染选项组件，用户选择后**再次** `POST /chat`（message 为选项 `label` 或多选编号串）
+- 与 CLI 一致：澄清为单选；科室 `multi_select=true` 时接受 `1,3` 或对应 label
+- 最终展示 `reply`（Markdown）、`dept_confidence`、`locked_department`
+- 超时建议 60s（LLM + 检索较慢）
+
+### 3. 意图与文档
+
+- `intent_result.main_intent`：`symptom` / `process` / `mixed` / `non_medical`
+- `triage_route`：`disease` / `symptom` / `reject`（新主诉路由）
+- `used_docs`：每类取 top 3 展示 title、source、score
+
+### 4. 错误处理
+
+- 网络失败：提示检查 `start-dev.cmd` 是否已启动 API（8000）
+- `GET /ready` 返回 `degraded`：展示 OpenSearch/Redis 哪项未就绪
+- API 4xx/5xx：展示 `detail` 字段
+
+### 5. 调试模式（可选）
+
+- 折叠面板展示 `node_trace`（本轮经过的图节点）
+- 高级：JSON 展示 `app_state`（面试调试 LangGraph 状态）
+
+---
+
+## 附加要求
+
+1. **响应式**：375px / 768px / 1440px
+2. **环境变量**：`VITE_API_BASE` 指向本地或远程 API
+3. **无状态前端**：会话与 Checkpoint 全在后端 Redis；前端只持 `user_id` + `thread_id`
+4. **不要**直接读 SQLite `triage_sessions.db`；评估数据由后端 `triage_recorder` 写入
+
+---
+
+## 验收标准
+
+1. 页面无控制台错误，动画流畅
+2. `GET /ready` 通过后 LiveDemo 可对话
+3. 能完成至少一条**多轮导诊**（含澄清或科室选项），行为与 CLI 一致
+4. 用户 / 会话 CRUD 正常
+5. 意图、参考文档、置信度正确展示
+6. 移动端布局可用
+7. 代码结构清晰，类型与 `ChatResponse` 对齐
+
+---
+
+## 技术依赖
+
+```json
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.400.0",
+    "axios": "^1.6.0",
+    "react-markdown": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
+  }
+}
+```
+
+---
+
+## 实现前必读
+
+1. 仓库根目录 **`README.md`**：项目结构、一键启动、架构分层图
+2. **`cli.py`**：多轮 `awaiting_clarify` / `awaiting_dept_choice` 循环的权威参考
+3. **`app/api/routers/chat.py`**：`ChatResponse` 字段定义
+4. **`app/services/chat_service.py`**：响应字段如何由 LangGraph 状态组装
+5. 本地启动：`.\start-dev.cmd` → API `http://127.0.0.1:8000/docs`
+
+---
+
+> 提示：本演示页目标是**复刻并可视化 CLI 能力**，而非重新设计导诊逻辑；所有业务规则在后端 LangGraph，前端只做 API 编排与体验。

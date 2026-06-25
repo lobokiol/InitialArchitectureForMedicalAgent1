@@ -1,0 +1,42 @@
+# 开发模式覆盖配置
+# 自动加载（不需要 -f 指定），用于本地开发
+#
+# 这个文件定义开发专用的配置：
+# - 热重载（挂载代码卷）
+# - 调试日志级别
+# - 端口映射到 localhost
+
+services:
+  api:
+    # 开发模式：用 uv 直接运行，支持热重载
+    command: >
+      uvicorn app.main:app 
+      --host 0.0.0.0 
+      --port 8000 
+      --reload 
+      --reload-dir /app/app
+      --access-log
+      --log-level debug
+    
+    # 开发环境变量
+    environment:
+      - UVICORN_RELOAD=true
+      - LOG_LEVEL=DEBUG
+      - PYTHONUNBUFFERED=1
+    
+    # 挂载源代码（热重载）
+    volumes:
+      - ./app:/app/app:ro
+      - ./demo/data:/app/demo/data:ro
+      - ./tests:/app/tests:ro
+    
+    # 开发模式不需要健康检查太频繁
+    healthcheck:
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  # 开发模式：Redis 使用内存模式（重启后数据丢失，更快）
+  redis:
+    command: redis-server --appendonly no --save ""

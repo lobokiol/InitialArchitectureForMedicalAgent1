@@ -2,6 +2,8 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
+from app.infra.redis_compat import hset_mapping
+
 
 USER_CURRENT_KEY = "user:{user_id}:current_thread"
 USER_THREADS_KEY = "user:{user_id}:threads"
@@ -106,9 +108,10 @@ class SessionManager:
             title = f"对话 {now_iso[:10]}"
 
         meta_key = self._thread_meta_key(thread_id)
-        self.client.hset(
+        hset_mapping(
+            self.client,
             meta_key,
-            mapping={
+            {
                 "user_id": user_id,
                 "title": title,
                 "created_at": now_iso,
