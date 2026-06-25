@@ -33,6 +33,8 @@ USE_MEMORY_CHECKPOINTER: bool = os.getenv("USE_MEMORY_CHECKPOINTER", "false").lo
 # Index / collection defaults
 RAG_KB_INDEX: str = os.getenv("RAG_KB_INDEX", "rag_knowledge")
 RAG_DEPT_RULES_INDEX: str = os.getenv("RAG_DEPT_RULES_INDEX", "rag_department_rules")
+RAG_CLARIFY_MIN_SCORE: float = float(os.getenv("RAG_CLARIFY_MIN_SCORE", "1.2"))
+RAG_CLARIFY_MIN_MARGIN: float = float(os.getenv("RAG_CLARIFY_MIN_MARGIN", "0.15"))
 DISEASE_KB_INDEX: str = os.getenv("DISEASE_KB_INDEX", "disease_kb")
 ES_INDEX_NAME: str = os.getenv("ES_INDEX_NAME", "hospital_procedures")
 MILVUS_COLLECTION: str = os.getenv("MILVUS_COLLECTION", "medical_knowledge")

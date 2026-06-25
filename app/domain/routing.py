@@ -81,6 +81,9 @@ def route_after_slot_gate(state: AppState) -> str:
 
 def route_after_rag(state: AppState) -> str:
     chunk = state.rag_chunk or {}
+    if not chunk:
+        logger.info(">>> route_after_rag: rag_miss_reject")
+        return "rag_miss_reject"
     if chunk.get("type") == "symptomClarify":
         logger.info(">>> route_after_rag: symptom_clarify")
         return "symptom_clarify"

@@ -21,6 +21,7 @@ from app.graph.nodes.answer import answer_generate_node
 from app.graph.nodes.trim_history import trim_history_node
 from app.graph.nodes.slot_fill import slot_fill_node
 from app.graph.nodes.slot_gate import slot_gate_node
+from app.graph.nodes.rag_miss_reject import rag_miss_reject_node
 from app.graph.nodes.rag_symptom_recall import rag_symptom_recall_node
 from app.graph.nodes.symptom_clarify import symptom_clarify_node
 
@@ -44,6 +45,7 @@ def build_graph() -> StateGraph:
     graph.add_node("dept_confidence", dept_confidence_node)
     graph.add_node("low_confidence_reject", low_confidence_reject_node)
     graph.add_node("reject", reject_node)
+    graph.add_node("rag_miss_reject", rag_miss_reject_node)
     graph.add_node("answer_generate", answer_generate_node)
 
     graph.add_edge(START, "trim_history")
@@ -77,6 +79,7 @@ def build_graph() -> StateGraph:
         {
             "symptom_clarify": "symptom_clarify",
             "dept_disambiguation": "dept_disambiguation",
+            "rag_miss_reject": "rag_miss_reject",
         },
     )
     graph.add_conditional_edges(
@@ -116,6 +119,7 @@ def build_graph() -> StateGraph:
 
     graph.add_edge("symptom_slot", "answer_generate")
     graph.add_edge("reject", END)
+    graph.add_edge("rag_miss_reject", END)
     graph.add_edge("low_confidence_reject", END)
     graph.add_edge("answer_generate", END)
 
