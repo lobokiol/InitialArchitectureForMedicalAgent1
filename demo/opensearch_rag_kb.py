@@ -27,6 +27,7 @@ DATA_PATH = Path(__file__).resolve().parent / "data" / "rag_knowledge.jsonl"
 ACCEPTANCE_QUERIES: dict[str, str] = {
     "肚子疼": "CL0001",
     "脚疼": "CL0007",
+    "神经疼": "CL0015",
 }
 
 
