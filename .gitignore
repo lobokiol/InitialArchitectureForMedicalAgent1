@@ -7,9 +7,10 @@ __pycache__/
 !README.md
 !docs/
 !docs/**
-demo/data/CM3KG/
-demo/es_milvus_DB/
-demo/.langgraph_api/
+sourceData/data/CM3KG/
+sourceData/es_milvus_DB/
+sourceData/.langgraph_api/
+.DS_Store
 .pytest_cache/
 *.log
 logs/
@@ -18,5 +19,5 @@ reports/
 esTools/
 .vscode/
 chrome-extension/
-data/*.db
+data/
 exports/
