@@ -49,11 +49,11 @@ if (-not (Test-Path "venv")) {
 Write-Host "==> 安装 Python 依赖..."
 & ".\venv\Scripts\pip.exe" install -r requirements.txt
 
-Write-Host "==> 导入 ES 指南数据..."
+Write-Host "==> 导入 OpenSearch 知识库 (需 OpenSearch 已启动)..."
 Push-Location demo
-& "..\venv\Scripts\python.exe" es.py
-Write-Host "==> 导入 Milvus 向量数据 (需 .env 中有效的 DASHSCOPE_API_KEY)..."
-& "..\venv\Scripts\python.exe" milvus.py
+& "..\venv\Scripts\python.exe" opensearch_rag_kb.py --no-embed
+& "..\venv\Scripts\python.exe" opensearch_dept_rules.py
+& "..\venv\Scripts\python.exe" opensearch_disease_kb.py
 Pop-Location
 
 Write-Host ""

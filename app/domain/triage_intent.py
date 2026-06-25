@@ -6,7 +6,7 @@
 | triage_route | 条件 | 后续 |
 |--------------|------|------|
 | disease      | 提到病名（可伴随症状） | disease_dept → answer |
-| symptom      | 无病名、有症状       | symptom_slot → answer |
+| symptom      | 无病名、有症状       | rag_symptom_recall → clarify / dept |
 | reject       | 无病名、无症状       | 固定拒答，不调 LLM |
 
 拒答文案：请输入症状？

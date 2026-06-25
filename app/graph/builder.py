@@ -15,7 +15,6 @@ from app.graph.nodes.dept_confidence import dept_confidence_node, low_confidence
 from app.graph.nodes.dept_disambiguation import dept_disambiguation_node
 from app.graph.nodes.dept_rules_disambiguation import dept_rules_disambiguation_node
 from app.graph.nodes.disease_dept import disease_dept_node
-from app.graph.nodes.symptom_slot import symptom_slot_node
 from app.graph.nodes.reject import reject_node
 from app.graph.nodes.answer import answer_generate_node
 from app.graph.nodes.trim_history import trim_history_node
@@ -37,7 +36,6 @@ def build_graph() -> StateGraph:
     graph.add_node("slot_fill", slot_fill_node)
     graph.add_node("slot_gate", slot_gate_node)
     graph.add_node("disease_dept", disease_dept_node)
-    graph.add_node("symptom_slot", symptom_slot_node)
     graph.add_node("rag_symptom_recall", rag_symptom_recall_node)
     graph.add_node("symptom_clarify", symptom_clarify_node)
     graph.add_node("dept_rules_disambiguation", dept_rules_disambiguation_node)
@@ -117,7 +115,6 @@ def build_graph() -> StateGraph:
         },
     )
 
-    graph.add_edge("symptom_slot", "answer_generate")
     graph.add_edge("reject", END)
     graph.add_edge("rag_miss_reject", END)
     graph.add_edge("low_confidence_reject", END)

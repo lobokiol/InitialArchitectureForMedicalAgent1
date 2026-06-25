@@ -57,7 +57,7 @@
         RagIndexCount  = $true
         RagIndexName   = 'rag_knowledge'
         ChatSmoke      = $false   # 单条 /chat，会消耗 LLM
-        ChatApiTests   = $false   # 跑 scripts/test_chat_api.py 全量用例
+        ChatApiTests   = $false   # 跑 scripts/archive/test_chat_api.py 全量用例
     }
 
     Logs = @{

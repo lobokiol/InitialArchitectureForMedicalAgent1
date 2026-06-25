@@ -4,8 +4,19 @@ from app.core.logging import logger
 from app.domain.models import AppState
 
 
+def is_awaiting_triage_followup(state: AppState) -> bool:
+    """Pre-invoke: system is waiting for user to reply to clarify or dept choices."""
+    cs = state.clarify_state
+    if cs and getattr(cs, "status", None) == "asking" and cs.last_choices:
+        return True
+    ds = state.dept_state
+    if ds and getattr(ds, "status", None) == "asking" and ds.last_choices:
+        return True
+    return False
+
+
 def is_dept_followup_reply(state: AppState) -> bool:
-    """Public helper for triage session recorder."""
+    """Post-trim: user message is a reply to clarify or dept choices."""
     return _is_dept_followup_reply(state) or _is_dept_rules_followup(state) or _is_clarify_followup(state)
 
 
@@ -143,5 +154,5 @@ def route_after_decision(state: AppState) -> str:
     if route == "disease":
         return "disease_dept"
     if route == "symptom":
-        return "symptom_slot"
+        return "rag_symptom_recall"
     return "reject"
