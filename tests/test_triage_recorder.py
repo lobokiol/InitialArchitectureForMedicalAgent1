@@ -11,7 +11,9 @@ if str(ROOT) not in sys.path:
 
 from app.domain.dept_disambiguation import DeptDisambiguationState
 from app.domain.models import AppState, IntentResult
+from app.domain.symptom_clarify import ClarifyChoice, SymptomClarifyState
 from app.infra.triage_session_store import TriageSessionStore
+from app.domain.routing import is_awaiting_triage_followup
 from app.services.triage_recorder import TriageSessionRecorder, classify_outcome
 
 
@@ -91,6 +93,64 @@ def test_classify_asking_returns_none() -> None:
     print("[OK] classify_asking_returns_none")
 
 
+def test_classify_clarify_asking_returns_none() -> None:
+    state = AppState(
+        clarify_state=SymptomClarifyState(
+            status="asking",
+            phase="age",
+            last_choices=[ClarifyChoice(id="c1", label="19-35岁", slot="age")],
+        ),
+    )
+    assert classify_outcome(state) is None
+    print("[OK] classify_clarify_asking_returns_none")
+
+
+def test_recorder_clarify_multi_turn_single_row() -> None:
+    store = TriageSessionStore(":memory:")
+    store.init_schema()
+    recorder = TriageSessionRecorder(store)
+
+    asking_age = AppState(
+        intent_result=IntentResult(triage_route="symptom"),
+        clarify_state=SymptomClarifyState(
+            status="asking",
+            phase="age",
+            last_choices=[ClarifyChoice(id="c1", label="19-35岁", slot="age")],
+        ),
+    )
+    recorder.record_turn(
+        user_id="u1",
+        thread_id="t1",
+        user_message="我眼睛疼",
+        assistant_reply="请问您的年龄？",
+        state=asking_age,
+        was_dept_followup=False,
+    )
+    assert store.get_in_progress("t1") is not None
+
+    asking_sex = AppState(
+        intent_result=IntentResult(triage_route="symptom"),
+        clarify_state=SymptomClarifyState(
+            status="asking",
+            phase="sex",
+            last_choices=[ClarifyChoice(id="c1", label="男", slot="sex")],
+        ),
+    )
+    recorder.record_turn(
+        user_id="u1",
+        thread_id="t1",
+        user_message="19-35岁",
+        assistant_reply="请问您的性别？",
+        state=asking_sex,
+        was_dept_followup=True,
+    )
+    row = store.get_in_progress("t1")
+    assert row is not None
+    assert row["turn_count"] == 2
+    assert json.loads(row["turns_json"])[0]["user"] == "我眼睛疼"
+    print("[OK] recorder_clarify_multi_turn_single_row")
+
+
 def test_recorder_multi_turn_single_row() -> None:
     store = TriageSessionStore(":memory:")
     store.init_schema()
@@ -129,6 +189,61 @@ def test_recorder_multi_turn_single_row() -> None:
     assert rows[0]["turn_count"] == 2
     assert rows[0]["outcome"] == "locked"
     print("[OK] recorder_multi_turn_single_row")
+
+
+def test_recorder_uses_pre_invoke_followup_flag() -> None:
+    """Turn 2 was_dept_followup must come from is_awaiting_triage_followup, not is_dept_followup_reply."""
+    store = TriageSessionStore(":memory:")
+    store.init_schema()
+    recorder = TriageSessionRecorder(store)
+
+    pre_state = AppState(
+        clarify_state=SymptomClarifyState(
+            status="asking",
+            phase="age",
+            last_choices=[ClarifyChoice(id="c1", label="19-35岁", slot="age")],
+        ),
+    )
+    was_followup = is_awaiting_triage_followup(pre_state)
+    assert was_followup is True
+
+    asking_age = AppState(
+        intent_result=IntentResult(triage_route="symptom"),
+        clarify_state=SymptomClarifyState(
+            status="asking",
+            phase="age",
+            last_choices=[ClarifyChoice(id="c1", label="19-35岁", slot="age")],
+        ),
+    )
+    recorder.record_turn(
+        user_id="u1",
+        thread_id="t1",
+        user_message="我眼睛疼",
+        assistant_reply="请问您的年龄？",
+        state=asking_age,
+        was_dept_followup=False,
+    )
+
+    asking_sex = AppState(
+        intent_result=IntentResult(triage_route="symptom"),
+        clarify_state=SymptomClarifyState(
+            status="asking",
+            phase="sex",
+            last_choices=[ClarifyChoice(id="c1", label="男", slot="sex")],
+        ),
+    )
+    recorder.record_turn(
+        user_id="u1",
+        thread_id="t1",
+        user_message="19-35岁",
+        assistant_reply="请问您的性别？",
+        state=asking_sex,
+        was_dept_followup=was_followup,
+    )
+    row = store.get_in_progress("t1")
+    assert row is not None
+    assert row["turn_count"] == 2
+    print("[OK] recorder_uses_pre_invoke_followup_flag")
 
 
 def test_new_intake_finalizes_incomplete() -> None:
@@ -202,7 +317,10 @@ if __name__ == "__main__":
     test_classify_reject()
     test_classify_emergency()
     test_classify_asking_returns_none()
+    test_classify_clarify_asking_returns_none()
     test_recorder_multi_turn_single_row()
+    test_recorder_clarify_multi_turn_single_row()
+    test_recorder_uses_pre_invoke_followup_flag()
     test_new_intake_finalizes_incomplete()
     test_export_data_ready()
     print("All triage recorder tests passed.")

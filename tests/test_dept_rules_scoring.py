@@ -2,13 +2,27 @@ import json
 from pathlib import Path
 
 from app.triage.dept_rules_scoring import (
+    PEDIATRIC_BOOST,
+    PEDIATRIC_DEPT,
     accumulate_scores,
+    apply_pediatric_boost,
     build_base_scores,
     filter_rule_by_sex,
+    is_pediatric_age,
     lock_department_from_totals,
 )
 
-RK0025 = json.loads(Path("demo/data/rag_department_rules.jsonl").read_text(encoding="utf-8"))
+
+def _load_rule(rid: str) -> dict:
+    for line in Path("sourceData/data/rag_department_rules.jsonl").read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            doc = json.loads(line)
+            if doc.get("id") == rid:
+                return doc
+    raise KeyError(rid)
+
+
+RK0025 = _load_rule("RK0025")
 
 
 def test_filter_rule_by_sex_male_removes_gynecology():
@@ -40,3 +54,41 @@ def test_accumulate_scores_adds_selection():
     sel = {"text": "发热、恶心呕吐", "scores": {"普外科": 4}}
     totals = accumulate_scores(base, [sel], active)
     assert totals["普外科"] > base["普外科"]
+
+
+def test_is_pediatric_age_buckets():
+    assert is_pediatric_age("5-11岁")
+    assert is_pediatric_age("2-4岁")
+    assert not is_pediatric_age("12-18岁")
+    assert not is_pediatric_age(None)
+
+
+def test_apply_pediatric_boost_only_when_candidate():
+    active = ["消化内科", "普外科", "儿科"]
+    base = build_base_scores(active)
+    boosted = apply_pediatric_boost(base, "5-11岁", active)
+    assert boosted[PEDIATRIC_DEPT] == base[PEDIATRIC_DEPT] + PEDIATRIC_BOOST
+    unchanged = apply_pediatric_boost(base, "5-11岁", ["消化内科", "普外科"])
+    assert unchanged == base
+    assert apply_pediatric_boost(base, "12-18岁", active) == base
+
+
+def test_pediatric_boost_wins_on_none_selected():
+    active = ["消化内科", "普外科", "妇科", "儿科"]
+    rule = _load_rule("RK0029")
+    base = build_base_scores(active)
+    totals = apply_pediatric_boost(base, "5-11岁", active)
+    dept, _, _, _ = lock_department_from_totals(
+        totals, rule["candidate_departments"], active, none_selected=True, age_label="5-11岁"
+    )
+    assert dept == PEDIATRIC_DEPT
+
+
+def test_pediatric_tie_break_prefers_pediatrics():
+    active = ["消化内科", "儿科"]
+    base = {"消化内科": 3.0, "儿科": 3.0}
+    dept, _, _, tie = lock_department_from_totals(
+        base, ["消化内科", "儿科"], active, none_selected=True, age_label="2-4岁"
+    )
+    assert tie
+    assert dept == PEDIATRIC_DEPT

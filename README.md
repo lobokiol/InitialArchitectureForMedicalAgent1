@@ -1,29 +1,8 @@
 # 生产级医院导诊 Agentic 助手
 
-基于 FastAPI + LangGraph + Redis + Elasticsearch + Milvus + DashScope 的医院导诊问答与流程指引助手，同时提供命令行前端（rich CLI），可以作为生产级医疗导诊 / 医疗流程问答系统的参考实现。
+基于 FastAPI + LangGraph + Redis + OpenSearch + DashScope 的医院导诊助手，提供 Rich CLI 多轮对话前端。
 
 后端通过 LangGraph 状态机编排多轮对话、症状问诊、流程检索与意图识别，前端则以 CLI 形式演示多会话聊天体验（类似 ChatGPT 的会话列表）。
-
----
-
-## 功能特性
-
-- 医疗导诊对话
-  - 支持面向「症状问诊」和「就医流程」的多轮对话。
-  - 结合向量检索与流程文档检索，给出答案和建议。
-- Agentic 对话编排（LangGraph）
-  - 使用 `AppState` 管理对话状态，基于 LangGraph 构建状态机。
-  - 包含意图识别、RAG 检索、文档评估、Query 重写、答案生成等节点。
-- 多会话管理（类似 ChatGPT）
-  - 会话列表、创建会话、删除会话、切换当前会话。
-  - 会话与用户元数据（名称、创建时间、最近活跃时间）存储在 Redis。
-- 检索增强生成（RAG）
-  - Elasticsearch：医院流程 / 制度等结构化文档检索。
-  - Milvus：症状 / 医疗知识向量检索。
-  - DashScope Embedding + Chat 模型。
-- 命令行前端（rich CLI）
-  - `cli.py` 提供交互式 CLI，支持斜杠命令和 Markdown 渲染。
-  - 通过 REST API 与后端通信，可作为 Web 前端的参考。
 
 ---
 
@@ -31,190 +10,216 @@
 
 ```text
 app/
-  main.py                  # FastAPI 应用入口（create_app / healthz）
-  api/
-    routers/
-      chat.py              # /chat 对话接口
-      threads.py           # /threads 会话管理接口
-      users.py             # /users 用户信息接口
-  core/
-    config.py              # 环境变量 & 配置集中管理
-    logging.py             # 日志配置
-    llm.py                 # DashScope 兼容 OpenAI 的 Chat / Embedding 封装
-  domain/
-    models.py              # AppState、IntentResult、RetrievedDoc 等领域模型
-    routing.py             # LangGraph 节点路由决策
+  main.py                      # FastAPI 入口（/healthz、/ready）
+  api/routers/                 # chat、threads、users
+  core/                        # config、logging、llm（DashScope 兼容）
+  domain/                      # AppState、routing、槽位/澄清/消歧模型
   graph/
-    builder.py             # LangGraph 状态机构建与编译
-    nodes/                 # 各种节点：decision / es_rag / milvus_rag / ...
+    builder.py                 # LangGraph 主图编译
+    nodes/                     # decision、slot_*、rag、clarify、dept_*、answer…
   infra/
-    redis_client.py        # Redis 连接 & LangGraph RedisSaver
-    es_client.py           # Elasticsearch 客户端封装
-    milvus_client.py       # Milvus 客户端封装
-  sessions/
-    manager.py             # 会话管理：user_id / thread_id 元数据
+    opensearch_rag.py          # OpenSearch 症状混合检索
+    opensearch_disease_kb.py   # 疾病库检索
+    opensearch_dept_rules.py   # 科室规则检索 + 本地 JSONL fallback
+    disease_kb_store.py        # disease_kb.jsonl 加载
+    redis_client.py            # Redis Checkpointer / MemorySaver 回退
+    triage_session_store.py    # SQLite 导诊周期持久化
+  ner/                         # 实体抽取、三分类路由
+  triage/                      # 槽位填充、科室打分、规则打分、置信度
+  sessions/manager.py          # 多会话元数据（Redis）
   services/
-    chat_service.py        # ChatService：衔接 API 与 LangGraph
+    chat_service.py            # API ↔ LangGraph 编排入口
+    triage_recorder.py         # 完整导诊周期写入 SQLite
 
-cli.py                     # rich + requests 命令行前端
-sourceData/                # 知识库 JSONL、OpenSearch 入库脚本、Docker compose
-  data/                    # rag_knowledge.jsonl、disease_kb.jsonl 等
-  opensearch_rag_kb.py     # 症状知识库入库
+cli.py                         # Rich CLI 前端
+sourceData/                    # 知识库 JSONL + OpenSearch 入库脚本
+  data/                        # rag_knowledge、disease_kb、rag_department_rules…
+  opensearch_rag_kb.py
   opensearch_disease_kb.py
   opensearch_dept_rules.py
-demo.py                    # 早期 demo / CLI 版本（保留作参考）
-
+scripts/                       # dev-services、repair_triage_fragments、评估脚本
+tests/                         # 单元测试、run_eval 黄金用例
+data/triage_sessions.db        # 导诊会话记录（运行时生成）
 ```
 
 ---
 
 ## 核心架构概览
 
+一次 `/chat` 请求的链路：**CLI → FastAPI → `chat_service` → LangGraph（读/写 Checkpoint）→ OpenSearch / LLM → 回复；同时 `triage_recorder` 异步写入 SQLite**。
+
 ### 系统分层
 
 ```mermaid
 flowchart TB
-    subgraph Client["客户端"]
-        CLI["cli.py（Rich CLI）"]
+    subgraph L1["① 客户端"]
+        CLI["cli.py<br/>Rich · 斜杠命令 · 多轮选项"]
     end
 
-    subgraph API["FastAPI 接口层"]
-        Chat["POST /chat"]
-        Threads["/threads 会话管理"]
-        Users["/users 用户元数据"]
-        Health["/healthz · /ready"]
+    subgraph L2["② API 层 app/api"]
+        CHAT["POST /chat"]
+        THREADS["/threads · /users"]
+        HEALTH["GET /healthz · /ready"]
     end
 
-    subgraph Service["服务层"]
-        CS["ChatService"]
-        SM["SessionManager"]
+    subgraph L3["③ 应用服务"]
+        CS["chat_service<br/>pre_state · stream · 组装响应"]
+        TR["triage_recorder<br/>完整导诊周期"]
+        SM["SessionManager<br/>会话列表 / 当前 thread"]
     end
 
-    subgraph Graph["LangGraph 导诊主图"]
-        LG["StateGraph + Checkpointer"]
+    subgraph L4["④ 编排与领域"]
+        LG["LangGraph<br/>14 节点 · AppState"]
+        NER["app/ner<br/>实体 · 三分类路由"]
+        TRI["app/triage<br/>槽位 · 打分 · 置信度"]
+        RT["app/domain/routing<br/>条件边"]
     end
 
-    subgraph Data["数据与检索"]
-        OS[("OpenSearch<br/>rag_knowledge · disease_kb")]
-        Redis[("Redis / MemorySaver<br/>会话 · Checkpoint")]
-        Milvus[("Milvus（可选）<br/>向量库")]
+    subgraph L5["⑤ 基础设施 app/infra · core/llm"]
+        OS["OpenSearch 客户端"]
+        RD["Redis Checkpointer<br/>或 MemorySaver"]
+        SQ["SQLite triage_sessions"]
+        LLM["DashScope Chat / Embedding"]
     end
 
-    subgraph LLM["DashScope（OpenAI 兼容）"]
-        ChatModel["Chat：deepseek-v4-flash / qwen-plus"]
-        Embed["Embedding：text-embedding-v2"]
+    subgraph L6["⑥ 数据"]
+        IDX[("索引<br/>rag_knowledge · disease_kb · rag_department_rules")]
+        JSONL[("sourceData/data<br/>JSONL 源文件")]
     end
 
-    CLI --> Chat
-    CLI --> Threads
-    Chat --> CS
-    Threads --> SM
+    CLI --> CHAT & THREADS
+    CHAT --> CS
+    THREADS --> SM
     CS --> LG
-    SM --> Redis
-    LG --> Redis
-    LG --> OS
-    LG --> Milvus
-    LG --> ChatModel
-    OS --> Embed
-    Milvus --> Embed
-    Health --> LG
-    Health --> OS
+    CS --> TR
+    LG --> NER & TRI & RT
+    LG --> OS & LLM
+    LG <-->|Checkpoint| RD
+    SM --> RD
+    TR --> SQ
+    OS --> IDX
+    JSONL -.opensearch_*.py 入库.-> IDX
+    HEALTH --> OS & RD & SQ & LG
 ```
+
+| 层级 | 目录 / 模块 | 职责 |
+|------|-------------|------|
+| 客户端 | `cli.py` | 调用 REST API；渲染 Markdown；处理 `awaiting_clarify` / `awaiting_dept_choice` 多轮选项 |
+| API | `app/api/routers` | 请求校验与响应序列化；`/ready` 聚合 OpenSearch、Redis、SQLite、LangGraph 状态 |
+| 应用服务 | `chat_service` | 唯一对话入口：读 Checkpoint 判追问、stream 主图、提取回复 |
+| 应用服务 | `triage_recorder` | 非阻塞记录导诊周期（`turns_json`、outcome、state 快照） |
+| 应用服务 | `SessionManager` | `user_id` ↔ 多 `thread_id` 元数据（标题、活跃时间） |
+| 编排 | `app/graph` | 编译 StateGraph；节点见 `builder.py` |
+| 领域 | `ner` / `triage` / `domain` | 与图节点解耦的业务规则：NER、槽位、科室打分、路由谓词 |
+| 基础设施 | `infra` + `core/llm` | 外部 I/O：检索、持久化、模型调用 |
+| 数据 | OpenSearch + JSONL | 运行时查索引；开发态改 JSONL 后重新入库 |
 
 ### LangGraph 导诊主图
 
-当前生产主图（`app/graph/builder.py`）采用 **槽位门禁 + OpenSearch RAG + 科室消歧** 流程：
+编译入口：`app/graph/builder.py` → `build_app(checkpointer)`。状态类型：`AppState`（messages、intent、槽位、clarify/dept 状态、RAG 结果等）。条件路由集中在 `app/domain/routing.py`。
+
+**14 个节点**
+
+| 节点 | 文件 | 作用 |
+|------|------|------|
+| `trim_history` | `nodes/trim_history.py` | 裁剪历史；多轮追问时跳过 `decision` |
+| `decision` | `nodes/decision.py` | NER + 三分类 `disease` / `symptom` / `reject` |
+| `slot_fill` | `nodes/slot_fill.py` | 从用户句填充槽位表 |
+| `slot_gate` | `nodes/slot_gate.py` | 槽位门禁，未通过则拒答 |
+| `disease_dept` | `nodes/disease_dept.py` | 疾病 → 科室（OpenSearch / JSONL） |
+| `rag_symptom_recall` | `nodes/rag_symptom_recall.py` | 症状混合召回 CL / RK |
+| `symptom_clarify` | `nodes/symptom_clarify.py` | CL 多轮：年龄 / 性别 / 部位 / 红旗 |
+| `dept_rules_disambiguation` | `nodes/dept_rules_disambiguation.py` | RK 鉴别项多选打分 |
+| `dept_disambiguation` | `nodes/dept_disambiguation.py` | 伴随症状消歧（单选/多选） |
+| `dept_confidence` | `nodes/dept_confidence.py` | LLM 评估科室推荐置信度 |
+| `answer_generate` | `nodes/answer.py` | 生成最终导诊回复 |
+| `reject` | `nodes/reject.py` | 槽位/意图拒答 |
+| `rag_miss_reject` | `nodes/rag_miss_reject.py` | RAG 未召回拒答 |
+| `low_confidence_reject` | `nodes/dept_confidence.py` | 置信度不足拒答 |
+
+**总览（条件边）**
 
 ```mermaid
 flowchart TD
-    START((START)) --> trim_history
+    START((START)) --> trim
 
-    trim_history -->|新 intake| decision
-    trim_history -->|科室待选回复| dept_disambiguation
-
-    decision["decision<br/>NER 实体抽取 + 三分类路由"]
-    slot_fill["slot_fill<br/>槽位填充（性别/年龄/主症等）"]
-    slot_gate["slot_gate<br/>槽位门禁"]
-    disease_dept["disease_dept<br/>疾病 → 科室"]
-    rag["rag_symptom_recall<br/>OpenSearch 关键词/语义召回"]
-    dept["dept_disambiguation<br/>科室打分 + LLM 反问/解析"]
-    answer["answer_generate<br/>模板/LLM 生成回复"]
-    reject["reject<br/>拒答"]
+    trim["trim_history<br/>route_after_trim"]
+    trim -->|新主诉| decision
+    trim -->|CL 追问回复| clarify
+    trim -->|RK 鉴别回复| rules
+    trim -->|RK 伴随回复| dept
 
     decision --> slot_fill --> slot_gate
 
-    slot_gate -->|槽位未通过| reject
-    slot_gate -->|triage_route=disease| disease_dept
-    slot_gate -->|triage_route=symptom| rag
+    slot_gate["slot_gate<br/>route_after_slot_gate"]
+    slot_gate -->|未通过| reject
+    slot_gate -->|disease| disease_dept
+    slot_gate -->|symptom| rag
 
-    disease_dept --> answer
-    rag --> dept
+    disease_dept --> answer["answer_generate"]
 
-    dept -->|status=asking| END((END 反问))
-    dept -->|科室已锁定| answer
+    rag["rag_symptom_recall<br/>route_after_rag"]
+    rag -->|无 chunk| rag_miss["rag_miss_reject"]
+    rag -->|type=symptomClarify| clarify
+    rag -->|type=symptom| dept
+
+    clarify["symptom_clarify<br/>route_after_clarify"]
+    clarify -->|status=asking| END((END))
+    clarify -->|有 dept_rule| rules
+    clarify -->|phase=done 且置信通过| answer
+
+    rules["dept_rules_disambiguation<br/>route_after_dept_rules"]
+    rules -->|status=asking| END
+    rules -->|locked| conf
+
+    dept["dept_disambiguation<br/>route_after_dept"]
+    dept -->|status=asking| END
+    dept -->|locked| conf
+    dept -->|未锁定| answer
+
+    conf["dept_confidence<br/>route_after_confidence"]
+    conf -->|通过| answer
+    conf -->|未通过| low["low_confidence_reject"]
 
     reject --> END
+    rag_miss --> END
+    low --> END
     answer --> END
 ```
 
-**路由说明：**
+**典型症状链路（CL → RK）**
 
-| 阶段 | 节点 | 作用 |
-|------|------|------|
-| 历史裁剪 | `trim_history` | 超长对话裁剪；若处于科室待选则直接进入消歧 |
-| 意图识别 | `decision` | LLM NER 抽取症状/疾病，规则路由 `disease` / `symptom` / `reject` |
-| 槽位 | `slot_fill` → `slot_gate` | 补齐导诊必填槽位，未通过则拒答 |
-| 疾病链 | `disease_dept` | 疾病知识库查科室，模板生成回复 |
-| 症状链 | `rag_symptom_recall` → `dept_disambiguation` | OpenSearch 混合检索候选科室，多轮消歧后锁定 |
-| 回复 | `answer_generate` | 综合锁定科室与上下文输出导诊建议 |
+```text
+用户主诉
+  → trim_history → decision → slot_fill → slot_gate
+  → rag_symptom_recall（命中 CL）
+  → symptom_clarify（age → sex → pain_location …，每轮 END 等待用户）
+  → dept_rules_disambiguation（鉴别多选，每轮 END 等待用户）
+  → dept_confidence → answer_generate → END
+```
+
+**典型症状链路（直接 RK 伴随消歧）**
+
+```text
+  → rag_symptom_recall（命中 RK symptom）
+  → dept_disambiguation（伴随症状，每轮 END 等待用户）
+  → dept_confidence 或 answer_generate → END
+```
 
 ### 各层职责
 
-- **接口层（`app/api`）**
-  - `POST /chat`：单轮对话入口，输入 `user_id` / `thread_id` / `message`，返回回复、意图、参考文档等。
-  - `GET/POST/DELETE /threads`：多会话管理。
-  - `POST/GET /users`：用户元数据。
-  - `GET /healthz`、`GET /ready`：健康检查（含 LangGraph + OpenSearch）。
+- **接口层（`app/api`）**：`/chat` 单轮对话；`/threads` 多会话；`/healthz`、`/ready` 依赖检查。
 - **服务层（`app/services`）**
-  - `ChatService`：衔接 API 与 LangGraph，管理 Checkpoint 与线程状态。
-- **图编排层（`app/graph`）**
-  - `builder.py`：编译导诊主图（见上图）。
-  - `nodes/*`：`decision`、`slot_fill`、`slot_gate`、`rag_symptom_recall`、`dept_disambiguation`、`disease_dept`、`answer_generate` 等。
-- **NER / 导诊规则（`app/ner`、`app/triage`）**
-  - 实体抽取、三分类路由、科室打分、消歧反问、会话状态重置。
-- **基础设施层（`app/infra`）**
-  - **OpenSearch**（`opensearch-py`）：`rag_knowledge` 症状召回、`disease_kb` 疾病科室。
-  - **Redis**：会话元数据 + LangGraph Checkpoint（不可用时可回退 `MemorySaver`）。
-  - **Milvus**：可选向量检索通道（`sourceData` 保留相关脚本，主图当前以 OpenSearch 为主）。
-  - **DashScope**：Chat + Embedding 模型（`app/core/llm.py`）。
-- **会话管理（`app/sessions`）**
-  - 基于 Redis 管理 `user_id` / `thread_id`、标题、活跃时间等。
-
----
-
-## 环境依赖
-
-- Python 3.10+
-- Redis
-- Elasticsearch
-- Milvus（或兼容协议的向量库）
-- DashScope 账号与 API Key（兼容 OpenAI API）
-
-主要 Python 依赖（摘要）：
-
-- `fastapi`
-- `uvicorn`
-- `langgraph`
-- `langchain-core`
-- `langchain-openai`
-- `redis`
-- `pymilvus`
-- `elasticsearch`
-- `python-dotenv`
-- `rich`
-- `requests`
-
-（具体依赖请根据实际 `pyproject.toml` / `requirements.txt` 或本地环境为准。）
+  - `chat_service`：读 Checkpoint、invoke LangGraph、返回回复与待选状态。
+  - `triage_recorder`：按导诊周期追加 `turns_json`，终态写入 `data/triage_sessions.db`。
+- **图编排（`app/graph`）**：14 个节点，条件路由见 `app/domain/routing.py`。
+- **NER / 导诊规则（`app/ner`、`app/triage`）**：实体抽取、路由、槽位、科室打分、规则打分、置信度 prompt。
+- **基础设施（`app/infra`）**
+  - **OpenSearch**：`rag_knowledge`、`disease_kb`、`rag_department_rules` 三索引。
+  - **Redis**：LangGraph Checkpoint + 会话列表（可 `USE_MEMORY_CHECKPOINTER=true` 回退内存）。
+  - **SQLite**：导诊评估用会话库（`TRIAGE_SESSION_ENABLED`）。
+  - **sourceData**：JSONL 源数据与入库脚本；运行时 fallback 读本地 JSONL。
+- **客户端（`cli.py`）**：Rich 交互、斜杠命令、科室/澄清选项多轮输入。
 
 ---
 
@@ -226,84 +231,44 @@ flowchart TD
 
 - `DASHSCOPE_API_KEY`：DashScope 兼容 OpenAI API 的密钥。
 
-可选（带默认值）：
-
-- `SOURCE_DATA_DIR`：知识库 JSONL 与入库脚本目录，默认 `sourceData`。
-- `ES_URL`：Elasticsearch 地址，默认 `http://localhost:9200`。
-- `MILVUS_URI`：Milvus 地址，默认 `http://localhost:19530`。
-- `REDIS_URI`：Redis 地址，默认 `redis://localhost:6379`。
-- `ES_INDEX_NAME`：流程文档索引名，默认 `hospital_procedures`。
-- `MILVUS_COLLECTION`：Milvus 集合名，默认 `medical_knowledge`。
-- `MILVUS_TOP_K` / `MILVUS_MIN_SIM` / `MILVUS_MAX_DOCS`：Milvus 检索参数。
-- `MAX_REWRITE`：允许的最大 Query 重写次数。
-- `MAX_HISTORY_MSGS` / `TRIM_TRIGGER_MSGS`：会话历史裁剪控制。
-- `CHAT_MODEL_NAME`：聊天模型名，默认 `qwen3-max`。
-- `EMBEDDING_MODEL_NAME`：向量模型名，默认 `text-embedding-v2`。
-- `CHAT_BASE_URL` / `EMBEDDING_BASE_URL`：DashScope 兼容 OpenAI 接口地址。
-- `LLM_TIMEOUT` / `LLM_MAX_RETRIES` / `LLM_TEMPERATURE`：LLM 请求配置。
-
-CLI 相关：
-
-- `BACKEND_BASE_URL`：CLI 连接的后端地址，默认 `http://localhost:8000`。
-- `BACKEND_TIMEOUT`：CLI 请求超时时间（秒），默认 `120`。
-
 ---
 
 ## 一键启动（Windows 本地开发）
 
-项目提供 **OpenSearch + FastAPI/LangGraph** 的一键拉起脚本，适合日常改代码后快速验证。
+`start-dev.cmd` / `start-dev.ps1` 转发到 `scripts/dev-services.ps1`，默认依次拉起：
 
-### 最小快速路径（Checklist）
-
-新 Windows 环境从零到跑通对话，按顺序勾选：
-
-- [ ] 安装 **Python 3.11** 与 **[uv](https://docs.astral.sh/uv/)**（推荐）
-- [ ] 克隆或解压项目，进入项目根目录
-- [ ] 创建虚拟环境并安装依赖：
-  ```powershell
-  uv venv --python 3.11
-  uv pip install -r requirements.txt
-  ```
-- [ ] 复制环境变量：`copy .env.example .env`，编辑并填入 **`DASHSCOPE_API_KEY`**
-- [ ] 下载 [OpenSearch 2.19 Windows x64](https://opensearch.org/downloads.html)，解压到  
-  `esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1`（路径可在 `scripts/dev-services.config.ps1` 修改）
-- [ ] 启动服务：`start-dev.cmd` 或 `.\start-dev.ps1`
-- [ ] **首次**（或知识库变更后）入库 RAG 数据：
-  ```powershell
-  $env:PYTHONPATH = "."
-  .\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed
-  .\.venv\Scripts\python.exe sourceData\opensearch_disease_kb.py --no-embed
-  ```
-- [ ] **新开终端**，启动 CLI 对话：`.\.venv\Scripts\python.exe cli.py`
-
-**无 Docker 时**：在 `.env` 设 `USE_MEMORY_CHECKPOINTER=true`（会话存内存，重启丢失）。
-
-**验证**：浏览器打开 http://127.0.0.1:8000/ready 应返回就绪；CLI 输入症状即可开始导诊。
+1. **Redis**（Docker，`sourceData/redis/docker-compose.yaml`，可在配置中禁用）
+2. **Triage SQLite** 初始化（`data/triage_sessions.db`）
+3. **OpenSearch**（本地 zip，`esTools/...`）
+4. **FastAPI**（后台，`logs/api.log`）
+5. 可选验证：Redis、`/ready`、`rag_knowledge` 文档数等
 
 ### 前置准备（首次）
 
 | 项 | 说明 |
 |----|------|
-| **Python 3.11** | 推荐用 [uv](https://docs.astral.sh/uv/) 管理虚拟环境 |
-| **OpenSearch 2.19** | 解压到 `esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1`（路径可在配置中改） |
-| **DashScope API Key** | 复制 `.env.example` → `.env`，填入 `DASHSCOPE_API_KEY` |
-| **Redis** | 可选；无 Docker 时设 `USE_MEMORY_CHECKPOINTER=true`（会话存内存，重启丢失） |
+| **Python 3.11** | 推荐 [uv](https://docs.astral.sh/uv/) + 项目根目录下 `.venv` |
+| **OpenSearch 2.19** | 解压到 `esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1`（改 `scripts/dev-services.config.ps1` → `OpenSearch.Home`） |
+| **DashScope API Key** | `copy .env.example .env`，填入 `DASHSCOPE_API_KEY` |
+| **Docker Desktop** | 一键脚本默认启 Redis；无 Docker 时在 `.env` 设 `USE_MEMORY_CHECKPOINTER=true`，并在配置中设 `Redis.Enabled = $false` |
+
+在项目根目录执行（首次）：
 
 ```powershell
-cd D:\InitialArchitectureForMedicalAgent1
-
-# 1. Python 环境（首次）
+# 1. Python 环境
 uv venv --python 3.11
 uv pip install -r requirements.txt
 
 # 2. 环境变量
 copy .env.example .env
-# 编辑 .env：DASHSCOPE_API_KEY、CHAT_MODEL_NAME 等
+# 编辑 .env，至少填入 DASHSCOPE_API_KEY
 
-# 3. OpenSearch 入库（首次 / 数据变更后）
+# 3. OpenSearch 入库（首次 / 知识库变更后；需 OpenSearch 已启动）
 $env:PYTHONPATH = "."
-.\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed   # 仅关键词
-# .\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py            # 含向量混合检索
+.\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed
+.\.venv\Scripts\python.exe sourceData\opensearch_disease_kb.py --no-embed
+.\.venv\Scripts\python.exe sourceData\opensearch_dept_rules.py
+# 含向量混合检索时去掉 --no-embed（需消耗 Embedding 额度）
 ```
 
 ### 常用命令
@@ -311,24 +276,25 @@ $env:PYTHONPATH = "."
 在项目根目录执行：
 
 ```powershell
-# 启动 OpenSearch + API，并自动健康检查
+# 启动全部服务 + 健康检查（默认）
+.\start-dev.cmd
+# 或
 .\start-dev.ps1
 
-# 或双击 / cmd
-start-dev.cmd
-
-# 只看状态
+# 只看状态（OpenSearch / Redis / API / TriageDb）
 .\start-dev.ps1 -Action status
 
-# 只跑验证（OpenSearch、/ready、rag_knowledge 文档数）
+# 只跑验证
 .\start-dev.ps1 -Action verify
 
 # 启动但不验证（更快）
 .\start-dev.ps1 -Action start -SkipVerify
 
-# 停止 API / OpenSearch
+# 停止 API、OpenSearch、Dashboards、Redis
 .\start-dev.ps1 -Action stop
 ```
+
+若 PowerShell 禁止执行脚本，用：`powershell -ExecutionPolicy Bypass -File .\start-dev.ps1`
 
 启动成功后：
 
@@ -338,47 +304,47 @@ start-dev.cmd
 | 健康检查 | http://127.0.0.1:8000/healthz |
 | 就绪检查 | http://127.0.0.1:8000/ready |
 | OpenSearch | http://127.0.0.1:9200 |
-| CLI 对话 | `.\.venv\Scripts\python.exe cli.py` |
+| CLI 对话 | 新开终端：`.\.venv\Scripts\python.exe cli.py` |
 
 ### 配置与日志
 
-改路径、端口、验证项只需编辑 **`scripts/dev-services.config.ps1`**：
-
-```powershell
-# 示例：开启 Dashboards、改 API 端口、打开 Chat 冒烟测试
-Dashboards.Enabled = $true
-Api.Port = 8000
-Verify.ChatSmoke = $false   # true 会调 LLM，消耗额度
-```
+改路径、端口、开关：编辑 **`scripts/dev-services.config.ps1`**（无需改启动脚本本身）。
 
 | 配置块 | 作用 |
 |--------|------|
 | `OpenSearch` | 本地 zip 路径、`Url`、启动等待秒数 |
-| `Api` | FastAPI 地址/端口、是否 `--reload` |
-| `Verify` | 启动后检查 OpenSearch、`/ready`、索引文档数等 |
-| `Logs.Dir` | 服务日志目录（默认 `logs/`） |
+| `Redis` | 是否启用、`sourceData\redis\docker-compose.yaml`、端口 |
+| `TriageDb` | SQLite 路径、启动时是否 `init_schema` |
+| `Api` | 监听地址/端口、后台 `--reload`（默认关） |
+| `Dashboards` | 可选 OpenSearch Dashboards |
+| `Verify` | 启动后检查项（OpenSearch、`/ready`、索引文档数、Chat 冒烟等） |
+| `Logs.Dir` | 日志目录（默认 `logs/`） |
 
-日志文件：`logs/opensearch.log`、`logs/api.log`。
+日志：`logs/opensearch.log`、`logs/api.log`。
 
 ### 前台调试 API（热重载）
 
-后台一键启动适合联调；改代码时建议前台跑 API：
+改代码时建议前台跑 API（会先释放 8000 端口）：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\start-api.ps1
 ```
 
-等价于 `uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`，日志直接打在终端。
+等价于：
 
-### 可选：Docker 启动 Redis
-
-```powershell
-docker compose -f sourceData/docker-compose.local.yml up -d redis
+```text
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app
 ```
 
-`.env` 中设置 `REDIS_URI=redis://localhost:6379`、`USE_MEMORY_CHECKPOINTER=false` 后重启 API。
+### 可选：单独启动 Redis
 
-更完整的 Windows 部署说明见 [`docs/DEPLOY_WINDOWS.md`](docs/DEPLOY_WINDOWS.md)。
+一键脚本已含 Redis。若仅手动启 Redis：
+
+```powershell
+docker compose -f sourceData/redis/docker-compose.yaml up -d
+```
+
+`.env` 保持 `REDIS_URI=redis://127.0.0.1:6379`、`USE_MEMORY_CHECKPOINTER=false`，然后重启 API。
 
 ---
 

@@ -1,4 +1,0 @@
-{
-  "defaults": { "gender": "男", "age": "30岁" },
-  "required_any_of": ["primary_symptom", "primary_disease"]
-}
