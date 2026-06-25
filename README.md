@@ -164,46 +164,17 @@ $env:PYTHONPATH = "."
 # 含向量混合检索时去掉 --no-embed（需消耗 Embedding 额度）
 ```
 
-### 常用命令
+### 拉起服务命令
 
 在项目根目录执行：
-启动服务命令
 
 ```powershell
-# 启动全部服务 + 健康检查（默认）
-.\start-dev.cmd
-# 或
+# 1. 启动全部依赖服务（Redis、OpenSearch、后台 API 等）
 .\start-dev.ps1
 
-# 只看状态（OpenSearch / Redis / API / TriageDb）
-.\start-dev.ps1 -Action status
-
-# 只跑验证
-.\start-dev.ps1 -Action verify
-
-# 启动但不验证（更快）
-.\start-dev.ps1 -Action start -SkipVerify
-
-# 停止 API、OpenSearch、Dashboards、Redis
-.\start-dev.ps1 -Action stop
-```
-启动 后台API服务
-依赖（OpenSearch、Redis 等）已运行时，可单独起 API：
-
+# 2. 启动后台 API 服务（需先执行上一步或依赖已就绪）
 .\scripts\start-api.ps1
 
-若 PowerShell 禁止执行脚本，用：`powershell -ExecutionPolicy Bypass -File .\start-dev.ps1`
-启动前端cli服务：
-API 起来后，新开一个终端：
-
+# 3. 启动 CLI 对话客户端（API 已就绪后，新开终端）
 .\.venv\Scripts\python.exe cli.py
-
-启动成功后：
-
-| 入口 | 地址 |
-|------|------|
-| API 文档 | http://127.0.0.1:8000/docs |
-| 健康检查 | http://127.0.0.1:8000/healthz |
-| 就绪检查 | http://127.0.0.1:8000/ready |
-| OpenSearch | http://127.0.0.1:9200 |
-| CLI 对话 | 新开终端：`.\.venv\Scripts\python.exe cli.py` |
+```
