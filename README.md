@@ -4,6 +4,10 @@
 
 后端通过 LangGraph 状态机编排多轮对话、症状问诊、流程检索与意图识别，前端则以 CLI 形式演示多会话聊天体验（类似 ChatGPT 的会话列表）。
 
+## 演示录屏
+
+[前端导诊演示视频](sourceData/20260625-1444-39.2631710.mp4)
+
 ---
 
 ## 项目结构
@@ -169,12 +173,20 @@ $env:PYTHONPATH = "."
 在项目根目录执行：
 
 ```powershell
-# 1. 启动全部依赖服务（Redis、OpenSearch、后台 API 等）
+# 1. 启动全部依赖服务（Redis、OpenSearch、后台 API 等，另起一个terminal）
 .\start-dev.ps1
 
-# 2. 启动后台 API 服务（需先执行上一步或依赖已就绪）
+# 2. 启动后台 API 服务（需先执行上一步或依赖已就绪，另起一个terminal）
 .\scripts\start-api.ps1
 
-# 3. 启动 CLI 对话客户端（API 已就绪后，新开终端）
+# 3. 启动 CLI 对话客户端（API 已就绪后，新开终端，另起一个terminal）
 .\.venv\Scripts\python.exe cli.py
+```
+## 启动web页面chat窗口，另起一个terminal
+
+```bash
+cd front_Web
+copy .env.example .env
+npm install
+npm run dev
 ```
