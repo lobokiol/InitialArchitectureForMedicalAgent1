@@ -19,6 +19,9 @@ param(
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Root
+chcp 65001 | Out-Null
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$OutputEncoding = [System.Text.UTF8Encoding]::new()
 
 $Cfg = . (Join-Path $Root 'scripts/dev-services.config.ps1')
 $LogDir = Join-Path $Root $Cfg.Logs.Dir
@@ -68,9 +71,9 @@ function Stop-Port([int]$Port, [string]$Label) {
         Write-Host "  $Label : 未运行 (端口 $Port)"
         return
     }
-    foreach ($c in $conns) {
-        Stop-Process -Id $c.OwningProcess -Force -ErrorAction SilentlyContinue
-        Write-Host "  已停止 $Label (PID $($c.OwningProcess), 端口 $Port)"
+    foreach ($c in ($conns | Select-Object -ExpandProperty OwningProcess -Unique)) {
+        taskkill /F /T /PID $c 2>$null | Out-Null
+        Write-Host "  已停止 $Label (PID $c, 端口 $Port)"
     }
 }
 
