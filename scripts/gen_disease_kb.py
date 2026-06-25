@@ -1,4 +1,4 @@
-"""Generate demo/data/disease_kb.jsonl with 100 high-frequency diseases."""
+"""Generate sourceData/data/disease_kb.jsonl with 100 high-frequency diseases."""
 import json
 from pathlib import Path
 
@@ -154,7 +154,7 @@ DISEASES = [
 
 DISEASES = DISEASES[:100]
 
-out = Path(__file__).resolve().parents[1] / "demo" / "data" / "disease_kb.jsonl"
+out = Path(__file__).resolve().parents[1] / "sourceData" / "data" / "disease_kb.jsonl"
 with out.open("w", encoding="utf-8") as f:
     for i, (canonical, aliases, desc, depts) in enumerate(DISEASES, 1):
         row = {

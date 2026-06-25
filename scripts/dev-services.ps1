@@ -300,10 +300,10 @@ print(n)
             if ($n -gt 0) {
                 Write-Ok "索引 $idx 文档数: $n"
             } else {
-                Write-Warn "索引 $idx 为空，可运行: .venv\Scripts\python.exe demo\opensearch_rag_kb.py --no-embed"
+                Write-Warn "索引 $idx 为空，可运行: .venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed"
             }
         } catch {
-            Write-Warn "索引 $idx 不存在或不可查，可运行入库脚本 demo\opensearch_rag_kb.py"
+            Write-Warn "索引 $idx 不存在或不可查，可运行入库脚本 sourceData\opensearch_rag_kb.py"
         }
     }
 

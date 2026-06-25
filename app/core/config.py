@@ -60,6 +60,9 @@ LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "60"))
 LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "2"))
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.0"))
 
+# Local knowledge-base scripts and JSONL data (formerly demo/)
+SOURCE_DATA_DIR: str = os.getenv("SOURCE_DATA_DIR", "sourceData")
+
 # Triage session persistence (SQLite, for eval)
 TRIAGE_SESSION_DB_PATH: str = os.getenv("TRIAGE_SESSION_DB_PATH", "data/triage_sessions.db")
 TRIAGE_SESSION_ENABLED: bool = os.getenv("TRIAGE_SESSION_ENABLED", "true").lower() in (

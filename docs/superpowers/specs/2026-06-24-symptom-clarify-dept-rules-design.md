@@ -11,8 +11,8 @@
 ### 1.1 现状
 
 - 症状链：`rag_symptom_recall` 从 `rag_knowledge` 召回 RK chunk → `dept_disambiguation` 基于 `accompanying_symptom_keywords` **单选**消歧。
-- `demo/data/rag_knowledge.jsonl` 已含 **CL0001**（`type: symptomClarify`，腹痛别名 + `pain_location` 选项）。
-- `demo/data/rag_department_rules.jsonl` 已含 **RK0025**（`symptom_id` + `location` + `differential_questions` 打分）。
+- `sourceData/data/rag_knowledge.jsonl` 已含 **CL0001**（`type: symptomClarify`，腹痛别名 + `pain_location` 选项）。
+- `sourceData/data/rag_department_rules.jsonl` 已含 **RK0025**（`symptom_id` + `location` + `differential_questions` 打分）。
 - 代码尚未接入上述数据类型。
 
 ### 1.2 目标流程（腹痛示例）
@@ -99,7 +99,7 @@ flowchart TD
 | `rag_knowledge`（现有） | `rag_knowledge.jsonl` | 混合检索；CL 的 `aliases` 写入 `alliance` |
 | `rag_department_rules`（新） | `rag_department_rules.jsonl` | `symptom_id` + `location` term 精确匹配 |
 
-入库脚本：`demo/opensearch_rag_kb.py` 同级新增 `demo/opensearch_dept_rules.py`（或扩展 demo 脚本）。
+入库脚本：`sourceData/opensearch_rag_kb.py` 同级新增 `sourceData/opensearch_dept_rules.py`（或扩展 demo 脚本）。
 
 ---
 
@@ -344,8 +344,8 @@ clarify 待选时 `awaiting_clarify=true`；differential 待选时 `awaiting_dep
 | `app/services/chat_service.py` | 响应字段 |
 | `app/api/routers/chat.py` | ChatResponse 扩展 |
 | `cli.py` | clarify + multi_select 循环 |
-| `demo/data/rag_knowledge.jsonl` | CL0001 补全 questions |
-| `demo/opensearch_dept_rules.py` | 索引入库 |
+| `sourceData/data/rag_knowledge.jsonl` | CL0001 补全 questions |
+| `sourceData/opensearch_dept_rules.py` | 索引入库 |
 
 ---
 

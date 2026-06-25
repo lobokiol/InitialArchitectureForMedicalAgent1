@@ -10,7 +10,7 @@
 
 The hospital triage agent runs multi-turn conversations (department disambiguation, reject, emergency, single-turn disease routing) but only persists runtime state in Redis (LangGraph checkpoint + session metadata). There is no durable, queryable record of completed triage cycles suitable for:
 
-- Regression testing against golden cases (`demo/data/foot_triage_golden.jsonl`)
+- Regression testing against golden cases (`sourceData/data/foot_triage_golden.jsonl`)
 - Bad-case analysis and labeling
 - Exporting labeled datasets for model iteration
 

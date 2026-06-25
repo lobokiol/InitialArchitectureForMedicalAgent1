@@ -135,7 +135,7 @@ Re-run generator only if verifying parity; hand-edited jsonl is source of truth 
 ### 6.1 `rag_knowledge` — incremental
 
 ```bash
-python demo/opensearch_rag_kb.py --doc CL0015
+python sourceData/opensearch_rag_kb.py --doc CL0015
 ```
 
 Uses `upsert_doc`: reads line from jsonl, `enrich_doc` (copies `aliases` → `alliance`), embeds, indexes into `rag_knowledge`.
@@ -143,14 +143,14 @@ Uses `upsert_doc`: reads line from jsonl, `enrich_doc` (copies `aliases` → `al
 ### 6.2 `rag_department_rules` — full rebuild
 
 ```bash
-python demo/opensearch_dept_rules.py
+python sourceData/opensearch_dept_rules.py
 ```
 
 Recreates index and bulk-loads all rules (~79 docs). No embeddings. Production code also falls back to local jsonl via `search_dept_rule` if OpenSearch misses.
 
 ### 6.3 Acceptance
 
-Extend `demo/opensearch_rag_kb.py` `ACCEPTANCE_QUERIES`:
+Extend `sourceData/opensearch_rag_kb.py` `ACCEPTANCE_QUERIES`:
 
 ```python
 "神经疼": "CL0015",
@@ -159,7 +159,7 @@ Extend `demo/opensearch_rag_kb.py` `ACCEPTANCE_QUERIES`:
 Run:
 
 ```bash
-python demo/opensearch_rag_kb.py --acceptance
+python sourceData/opensearch_rag_kb.py --acceptance
 ```
 
 Manual CLI smoke: `神经疼` → age → sex → pick each `pain_location` → differential → expect 神经内科 or 疼痛科 for typical neuralgia choices.

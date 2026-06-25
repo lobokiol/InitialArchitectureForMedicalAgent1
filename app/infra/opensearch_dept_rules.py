@@ -11,7 +11,7 @@ from app.core import config
 from app.core.logging import logger
 from app.infra.opensearch_rag import get_opensearch_client
 
-_RULES_PATH = Path(__file__).resolve().parents[2] / "demo" / "data" / "rag_department_rules.jsonl"
+_RULES_PATH = Path(__file__).resolve().parents[2] / config.SOURCE_DATA_DIR / "data" / "rag_department_rules.jsonl"
 
 
 @lru_cache(maxsize=1)

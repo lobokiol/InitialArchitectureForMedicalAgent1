@@ -7,9 +7,11 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from app.core import config
+
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_DISEASE_KB_PATH = _REPO_ROOT / "demo" / "data" / "disease_kb.jsonl"
-DEFAULT_TRIAGE_TEMPLATES_PATH = _REPO_ROOT / "demo" / "data" / "triage_templates.jsonl"
+DEFAULT_DISEASE_KB_PATH = _REPO_ROOT / config.SOURCE_DATA_DIR / "data" / "disease_kb.jsonl"
+DEFAULT_TRIAGE_TEMPLATES_PATH = _REPO_ROOT / config.SOURCE_DATA_DIR / "data" / "triage_templates.jsonl"
 
 
 def _disease_kb_path() -> Path:

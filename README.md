@@ -57,6 +57,11 @@ app/
     chat_service.py        # ChatService：衔接 API 与 LangGraph
 
 cli.py                     # rich + requests 命令行前端
+sourceData/                # 知识库 JSONL、OpenSearch 入库脚本、Docker compose
+  data/                    # rag_knowledge.jsonl、disease_kb.jsonl 等
+  opensearch_rag_kb.py     # 症状知识库入库
+  opensearch_disease_kb.py
+  opensearch_dept_rules.py
 demo.py                    # 早期 demo / CLI 版本（保留作参考）
 
 ```
@@ -180,7 +185,7 @@ flowchart TD
 - **基础设施层（`app/infra`）**
   - **OpenSearch**（`opensearch-py`）：`rag_knowledge` 症状召回、`disease_kb` 疾病科室。
   - **Redis**：会话元数据 + LangGraph Checkpoint（不可用时可回退 `MemorySaver`）。
-  - **Milvus**：可选向量检索通道（demo 保留，主图当前以 OpenSearch 为主）。
+  - **Milvus**：可选向量检索通道（`sourceData` 保留相关脚本，主图当前以 OpenSearch 为主）。
   - **DashScope**：Chat + Embedding 模型（`app/core/llm.py`）。
 - **会话管理（`app/sessions`）**
   - 基于 Redis 管理 `user_id` / `thread_id`、标题、活跃时间等。
@@ -223,6 +228,7 @@ flowchart TD
 
 可选（带默认值）：
 
+- `SOURCE_DATA_DIR`：知识库 JSONL 与入库脚本目录，默认 `sourceData`。
 - `ES_URL`：Elasticsearch 地址，默认 `http://localhost:9200`。
 - `MILVUS_URI`：Milvus 地址，默认 `http://localhost:19530`。
 - `REDIS_URI`：Redis 地址，默认 `redis://localhost:6379`。
@@ -247,6 +253,33 @@ CLI 相关：
 
 项目提供 **OpenSearch + FastAPI/LangGraph** 的一键拉起脚本，适合日常改代码后快速验证。
 
+### 最小快速路径（Checklist）
+
+新 Windows 环境从零到跑通对话，按顺序勾选：
+
+- [ ] 安装 **Python 3.11** 与 **[uv](https://docs.astral.sh/uv/)**（推荐）
+- [ ] 克隆或解压项目，进入项目根目录
+- [ ] 创建虚拟环境并安装依赖：
+  ```powershell
+  uv venv --python 3.11
+  uv pip install -r requirements.txt
+  ```
+- [ ] 复制环境变量：`copy .env.example .env`，编辑并填入 **`DASHSCOPE_API_KEY`**
+- [ ] 下载 [OpenSearch 2.19 Windows x64](https://opensearch.org/downloads.html)，解压到  
+  `esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1`（路径可在 `scripts/dev-services.config.ps1` 修改）
+- [ ] 启动服务：`start-dev.cmd` 或 `.\start-dev.ps1`
+- [ ] **首次**（或知识库变更后）入库 RAG 数据：
+  ```powershell
+  $env:PYTHONPATH = "."
+  .\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed
+  .\.venv\Scripts\python.exe sourceData\opensearch_disease_kb.py --no-embed
+  ```
+- [ ] **新开终端**，启动 CLI 对话：`.\.venv\Scripts\python.exe cli.py`
+
+**无 Docker 时**：在 `.env` 设 `USE_MEMORY_CHECKPOINTER=true`（会话存内存，重启丢失）。
+
+**验证**：浏览器打开 http://127.0.0.1:8000/ready 应返回就绪；CLI 输入症状即可开始导诊。
+
 ### 前置准备（首次）
 
 | 项 | 说明 |
@@ -269,8 +302,8 @@ copy .env.example .env
 
 # 3. OpenSearch 入库（首次 / 数据变更后）
 $env:PYTHONPATH = "."
-.\.venv\Scripts\python.exe demo\opensearch_rag_kb.py --no-embed   # 仅关键词
-# .\.venv\Scripts\python.exe demo\opensearch_rag_kb.py            # 含向量混合检索
+.\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed   # 仅关键词
+# .\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py            # 含向量混合检索
 ```
 
 ### 常用命令
@@ -340,7 +373,7 @@ powershell -ExecutionPolicy Bypass -File scripts\start-api.ps1
 ### 可选：Docker 启动 Redis
 
 ```powershell
-docker compose -f demo/docker-compose.local.yml up -d redis
+docker compose -f sourceData/docker-compose.local.yml up -d redis
 ```
 
 `.env` 中设置 `REDIS_URI=redis://localhost:6379`、`USE_MEMORY_CHECKPOINTER=false` 后重启 API。
@@ -371,11 +404,11 @@ uv pip install -r requirements.txt
 
 ```powershell
 $env:PYTHONPATH = "."
-.\.venv\Scripts\python.exe demo\opensearch_rag_kb.py
-.\.venv\Scripts\python.exe demo\opensearch_disease_kb.py
+.\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py
+.\.venv\Scripts\python.exe sourceData\opensearch_disease_kb.py
 ```
 
-数据文件：`demo/data/rag_knowledge.jsonl`、`demo/data/disease_kb.jsonl`。
+数据文件：`sourceData/data/rag_knowledge.jsonl`、`sourceData/data/disease_kb.jsonl`。
 
 ### 3. 启动后端
 

@@ -19,7 +19,7 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
 }
 
 Write-Host "==> 启动 Docker 依赖 (Redis / ES / Milvus)..."
-docker compose -f demo/docker-compose.local.yml up -d
+docker compose -f sourceData/docker-compose.local.yml up -d
 
 Write-Host "==> 等待 Elasticsearch 就绪 (约 30-60s)..."
 $ready = $false
@@ -50,7 +50,7 @@ Write-Host "==> 安装 Python 依赖..."
 & ".\venv\Scripts\pip.exe" install -r requirements.txt
 
 Write-Host "==> 导入 OpenSearch 知识库 (需 OpenSearch 已启动)..."
-Push-Location demo
+Push-Location sourceData
 & "..\venv\Scripts\python.exe" opensearch_rag_kb.py --no-embed
 & "..\venv\Scripts\python.exe" opensearch_dept_rules.py
 & "..\venv\Scripts\python.exe" opensearch_disease_kb.py

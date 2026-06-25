@@ -42,9 +42,9 @@
 | `app/graph/nodes/low_confidence_reject.py` | Reject reply with score |
 | `app/graph/builder.py` | Wire nodes and conditional edges |
 | `app/graph/nodes/rag_symptom_recall.py` | Prefer `symptomClarify` hits when alias matches |
-| `demo/opensearch_mappings.py` | `rag_department_rules_index_body()` |
-| `demo/opensearch_dept_rules.py` | Index + bulk load JSONL |
-| `demo/data/rag_knowledge.jsonl` | CL0001 full `questions` |
+| `sourceData/opensearch_mappings.py` | `rag_department_rules_index_body()` |
+| `sourceData/opensearch_dept_rules.py` | Index + bulk load JSONL |
+| `sourceData/data/rag_knowledge.jsonl` | CL0001 full `questions` |
 | `app/core/config.py` | `RAG_DEPT_RULES_INDEX` env |
 | `app/services/chat_service.py` | Response fields |
 | `app/api/routers/chat.py` | `ChatResponse` schema |
@@ -268,7 +268,7 @@ from app.triage.dept_rules_scoring import (
     filter_rule_by_sex, build_base_scores, accumulate_scores, lock_department_from_totals,
 )
 
-RK0025 = json.loads(Path("demo/data/rag_department_rules.jsonl").read_text(encoding="utf-8").splitlines()[0])
+RK0025 = json.loads(Path("sourceData/data/rag_department_rules.jsonl").read_text(encoding="utf-8").splitlines()[0])
 
 def test_filter_rule_by_sex_male_removes_gynecology():
     filtered = filter_rule_by_sex(RK0025, "男")
@@ -362,12 +362,12 @@ git commit -m "feat: dept rules scoring with gender filter and fallback"
 ### Task 4: OpenSearch department rules index + CL0001 data
 
 **Files:**
-- Modify: `demo/opensearch_mappings.py`
-- Create: `demo/opensearch_dept_rules.py`
+- Modify: `sourceData/opensearch_mappings.py`
+- Create: `sourceData/opensearch_dept_rules.py`
 - Create: `app/infra/opensearch_dept_rules.py`
 - Modify: `app/core/config.py`
-- Modify: `demo/data/rag_knowledge.jsonl`
-- Modify: `demo/opensearch_rag_kb.py` (`enrich_doc` — index CL `aliases` as `alliance`, `symptom_id`, `questions`)
+- Modify: `sourceData/data/rag_knowledge.jsonl`
+- Modify: `sourceData/opensearch_rag_kb.py` (`enrich_doc` — index CL `aliases` as `alliance`, `symptom_id`, `questions`)
 
 **Interfaces:**
 - Produces: `search_dept_rule(symptom_id: str, location: str) -> dict | None`
@@ -391,7 +391,7 @@ def rag_department_rules_index_body() -> dict[str, Any]:
     }
 ```
 
-- [ ] **Step 2: Create `demo/opensearch_dept_rules.py`** — mirror `demo/opensearch_rag_kb.py` bulk loader for `demo/data/rag_department_rules.jsonl`, index name from `RAG_DEPT_RULES_INDEX` default `rag_department_rules`.
+- [ ] **Step 2: Create `sourceData/opensearch_dept_rules.py`** — mirror `sourceData/opensearch_rag_kb.py` bulk loader for `sourceData/data/rag_department_rules.jsonl`, index name from `RAG_DEPT_RULES_INDEX` default `rag_department_rules`.
 
 - [ ] **Step 3: Create `app/infra/opensearch_dept_rules.py`**
 
@@ -422,9 +422,9 @@ def search_dept_rule(symptom_id: str, location: str) -> dict | None:
 RAG_DEPT_RULES_INDEX: str = os.getenv("RAG_DEPT_RULES_INDEX", "rag_department_rules")
 ```
 
-- [ ] **Step 5: Update CL0001 line in `demo/data/rag_knowledge.jsonl`** per spec §3.1 (full `questions` for age, sex, pain_location, red_flags).
+- [ ] **Step 5: Update CL0001 line in `sourceData/data/rag_knowledge.jsonl`** per spec §3.1 (full `questions` for age, sex, pain_location, red_flags).
 
-- [ ] **Step 6: Update `enrich_doc` in `demo/opensearch_rag_kb.py` for `symptomClarify`**
+- [ ] **Step 6: Update `enrich_doc` in `sourceData/opensearch_rag_kb.py` for `symptomClarify`**
 
 ```python
 if doc.get("type") == "symptomClarify":
@@ -436,14 +436,14 @@ if doc.get("type") == "symptomClarify":
 - [ ] **Step 7: Run index scripts**
 
 ```bash
-.\.venv\Scripts\python.exe demo/opensearch_rag_kb.py
-.\.venv\Scripts\python.exe demo/opensearch_dept_rules.py
+.\.venv\Scripts\python.exe sourceData/opensearch_rag_kb.py
+.\.venv\Scripts\python.exe sourceData/opensearch_dept_rules.py
 ```
 
 - [ ] **Step 8: Commit**
 
 ```bash
-git add demo/ app/infra/opensearch_dept_rules.py app/core/config.py
+git add sourceData/ app/infra/opensearch_dept_rules.py app/core/config.py
 git commit -m "feat: add rag_department_rules index and CL0001 question data"
 ```
 

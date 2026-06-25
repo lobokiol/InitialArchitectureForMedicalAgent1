@@ -21,7 +21,7 @@
     # Redis（Docker：LangGraph checkpoint + 会话元数据）
     Redis = @{
         Enabled     = $true
-        ComposeFile = 'demo\redis\docker-compose.yaml'
+        ComposeFile = 'sourceData\redis\docker-compose.yaml'
         Uri         = 'redis://127.0.0.1:6379'
         Port        = 6379
         WaitSeconds = 30
