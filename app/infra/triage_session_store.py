@@ -150,6 +150,7 @@ class TriageSessionStore:
         status: str | None = None,
         outcome: str | None = None,
         since: str | None = None,
+        user_id: str | None = None,
     ) -> list[dict[str, Any]]:
         conn = self._connect()
         clauses: list[str] = []
@@ -163,6 +164,9 @@ class TriageSessionStore:
         if since:
             clauses.append("completed_at >= ?")
             params.append(since)
+        if user_id:
+            clauses.append("user_id = ?")
+            params.append(user_id)
         where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
         cur = conn.execute(
             f"SELECT * FROM triage_sessions {where} ORDER BY completed_at DESC, started_at DESC",

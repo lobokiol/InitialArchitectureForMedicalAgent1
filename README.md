@@ -167,6 +167,7 @@ $env:PYTHONPATH = "."
 ### 常用命令
 
 在项目根目录执行：
+启动服务命令
 
 ```powershell
 # 启动全部服务 + 健康检查（默认）
@@ -186,8 +187,16 @@ $env:PYTHONPATH = "."
 # 停止 API、OpenSearch、Dashboards、Redis
 .\start-dev.ps1 -Action stop
 ```
+启动 后台API服务
+依赖（OpenSearch、Redis 等）已运行时，可单独起 API：
+
+.\scripts\start-api.ps1
 
 若 PowerShell 禁止执行脚本，用：`powershell -ExecutionPolicy Bypass -File .\start-dev.ps1`
+启动前端cli服务：
+API 起来后，新开一个终端：
+
+.\.venv\Scripts\python.exe cli.py
 
 启动成功后：
 

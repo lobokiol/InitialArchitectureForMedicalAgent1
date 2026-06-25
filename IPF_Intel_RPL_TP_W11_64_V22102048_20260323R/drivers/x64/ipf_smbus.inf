@@ -1,0 +1,132 @@
+;-------------------------------------------------------------------------------
+; INTEL CONFIDENTIAL
+;
+; Copyright (c) 2013-2024 Intel Corporation All Rights Reserved 
+;
+; The source code contained or described herein and all documents related to 
+; the source code ("Material") are owned by Intel Corporation or its suppliers 
+; or licensors. Title to the Material remains with Intel Corporation or its 
+; suppliers and licensors. The Material contains trade secrets and proprietary 
+; and confidential information of Intel or its suppliers and licensors. The 
+; Material is protected by worldwide copyright and trade secret laws and treaty 
+; provisions. No part of the Material may be used, copied, reproduced, 
+; modified, published, uploaded, posted, transmitted, distributed, or 
+; disclosed in any way without Intel's prior express written permission.
+;
+; No license under any patent, copyright, trade secret or other intellectual 
+; property right is granted to or conferred upon you by disclosure or delivery 
+; of the Materials, either expressly, by implication, inducement, estoppel or 
+; otherwise. Any license under such intellectual property rights must be 
+; expressed and approved by Intel in writing.
+;------------------------------------------------------------------------------
+
+[Version] 
+Signature   = "$WINDOWS NT$" 
+Class       = System
+ClassGUID   = {4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider    = %INTEL% 
+CatalogFile = ipf_smbus.cat
+DriverVer = 12/16/2024,2.2.10204.8
+PnpLockDown = 1
+
+;----------------------------------------------------------------------
+; File Information
+;----------------------------------------------------------------------
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles.amd64]
+ipf_smbus.sys=1,,
+
+[DestinationDirs]
+DefaultDestDir=13
+
+;-------------------------------------------------------------------------------
+; Manufacturer and Models Section
+;-------------------------------------------------------------------------------
+
+[Manufacturer]
+%INTEL% = INTEL, NTamd64.10.0...17763, NTamd64.10.0...22621
+
+[INTEL.NTamd64.10.0...17763]
+%PLATFORM.DeviceDesc%  = Install_Win10_17763,PCI\VEN_8086&DEV_7F23
+
+[INTEL.NTamd64.10.0...22621]
+%PLATFORM.DeviceDesc%  = Install_Win11_22621,PCI\VEN_8086&DEV_7F23
+
+;------------------------------------------------------------------------------
+; IPF_SMBUS
+;------------------------------------------------------------------------------
+
+[Install_Win10_17763.NTamd64]
+CopyFiles = CopyDriver
+
+[Install_Win11_22621.NTamd64]
+CopyFiles = CopyDriver
+
+[CopyDriver]
+ipf_smbus.sys,,,2
+
+[Install_Win10_17763.NTamd64.Services]
+AddService = ipf_smbus,2,IpfSmbusDriverService,IpfSmbusEtw_Install, System, ipf_smbus
+
+[Install_Win11_22621.NTamd64.Services]
+AddService = ipf_smbus,2,IpfSmbusDriverService,, System, ipf_smbus
+
+[IpfSmbusDriverService]
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %13%\ipf_smbus.sys
+LoadOrderGroup = Base
+
+[Install_Win10_17763.NTamd64.Wdf]
+KmdfService = ipf_smbus, KMDFVersion
+
+[Install_Win11_22621.NTamd64.Wdf]
+KmdfService = ipf_smbus, KMDFVersion
+
+[KMDFVersion]
+KmdfLibraryVersion = 1.11
+
+
+;----------------------------------------------------------------------
+; ETW Support compontents
+;----------------------------------------------------------------------
+
+[IpfSmbusEtw_Install]
+AddReg=IpfSmbusEtw_AddReg
+
+[IpfSmbusEtw_AddReg]
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\{D8A88027-23D6-4A5E-95B8-DAE5AAA9484F}",,%FLG_ADDREG_TYPE_SZ%,"IpfSmbusEtwProvider"
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\{D8A88027-23D6-4A5E-95B8-DAE5AAA9484F}","ResourceFileName",%REG_EXPAND_SZ%,"%13%\ipf_smbus.sys"
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\{D8A88027-23D6-4A5E-95B8-DAE5AAA9484F}","MessageFileName",%REG_EXPAND_SZ%,"%13%\ipf_smbus.sys"
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Publishers\{D8A88027-23D6-4A5E-95B8-DAE5AAA9484F}","Enabled",%FLG_ADDREG_TYPE_DWORD%,1
+
+[Install_Win11_22621.NTamd64.Events]
+AddEventProvider = {D8A88027-23D6-4A5E-95B8-DAE5AAA9484F},IpfSmbusEtw_Install_Win11
+
+[IpfSmbusEtw_Install_Win11]
+ProviderName = "IpfSmbusEtwProvider"
+ResourceFile = "%13%\ipf_smbus.sys"
+MessageFile = "%13%\ipf_smbus.sys"
+
+;----------------------------------------------------------------------
+; Strings and Constants
+;----------------------------------------------------------------------
+
+[Strings]
+SERVICE_DEMAND_START  = 3
+SERVICE_KERNEL_DRIVER = 1
+SERVICE_ERROR_NORMAL  = 1
+
+FLG_ADDREG_TYPE_SZ = 0x00000000
+REG_EXPAND_SZ = 0x00020000
+FLG_ADDREG_TYPE_DWORD = 0x00010001
+
+INTEL = "Intel"
+DiskName = "Intel(R) Innovation Platform Framework"
+PLATFORM.DeviceDesc = "Intel(R) Innovation Platform Framework SMBUS Device"
+
+

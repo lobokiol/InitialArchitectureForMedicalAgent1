@@ -21,13 +21,16 @@ def main() -> int:
     parser.add_argument("--outcome", default=None, help="Comma-separated outcomes")
     parser.add_argument("--since", default=None, help="YYYY-MM-DD")
     parser.add_argument("--status", default="completed")
+    parser.add_argument("--user-id", default=None, help="Filter by user_id")
     parser.add_argument("--db", default=config.TRIAGE_SESSION_DB_PATH)
     args = parser.parse_args()
 
     store = TriageSessionStore(args.db)
     store.init_schema()
     outcome = args.outcome if args.outcome and "," not in args.outcome else None
-    rows = store.list_sessions(status=args.status, outcome=outcome, since=args.since)
+    rows = store.list_sessions(
+        status=args.status, outcome=outcome, since=args.since, user_id=args.user_id
+    )
     if args.outcome and "," in args.outcome:
         allowed = set(args.outcome.split(","))
         rows = [r for r in rows if r.get("outcome") in allowed]
