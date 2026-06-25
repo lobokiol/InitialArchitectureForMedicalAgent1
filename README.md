@@ -98,7 +98,7 @@ flowchart TB
     SM --> RD
     TR --> SQ
     OS --> IDX
-    JSONL -.opensearch_*.py 入库.-> IDX
+    JSONL -.->|opensearch 入库脚本| IDX
     HEALTH --> OS & RD & SQ & LG
 ```
 
@@ -206,21 +206,6 @@ flowchart TD
   → dept_confidence 或 answer_generate → END
 ```
 
-### 各层职责
-
-- **接口层（`app/api`）**：`/chat` 单轮对话；`/threads` 多会话；`/healthz`、`/ready` 依赖检查。
-- **服务层（`app/services`）**
-  - `chat_service`：读 Checkpoint、invoke LangGraph、返回回复与待选状态。
-  - `triage_recorder`：按导诊周期追加 `turns_json`，终态写入 `data/triage_sessions.db`。
-- **图编排（`app/graph`）**：14 个节点，条件路由见 `app/domain/routing.py`。
-- **NER / 导诊规则（`app/ner`、`app/triage`）**：实体抽取、路由、槽位、科室打分、规则打分、置信度 prompt。
-- **基础设施（`app/infra`）**
-  - **OpenSearch**：`rag_knowledge`、`disease_kb`、`rag_department_rules` 三索引。
-  - **Redis**：LangGraph Checkpoint + 会话列表（可 `USE_MEMORY_CHECKPOINTER=true` 回退内存）。
-  - **SQLite**：导诊评估用会话库（`TRIAGE_SESSION_ENABLED`）。
-  - **sourceData**：JSONL 源数据与入库脚本；运行时 fallback 读本地 JSONL。
-- **客户端（`cli.py`）**：Rich 交互、斜杠命令、科室/澄清选项多轮输入。
-
 ---
 
 ## 配置与环境变量
@@ -305,114 +290,3 @@ $env:PYTHONPATH = "."
 | 就绪检查 | http://127.0.0.1:8000/ready |
 | OpenSearch | http://127.0.0.1:9200 |
 | CLI 对话 | 新开终端：`.\.venv\Scripts\python.exe cli.py` |
-
-### 配置与日志
-
-改路径、端口、开关：编辑 **`scripts/dev-services.config.ps1`**（无需改启动脚本本身）。
-
-| 配置块 | 作用 |
-|--------|------|
-| `OpenSearch` | 本地 zip 路径、`Url`、启动等待秒数 |
-| `Redis` | 是否启用、`sourceData\redis\docker-compose.yaml`、端口 |
-| `TriageDb` | SQLite 路径、启动时是否 `init_schema` |
-| `Api` | 监听地址/端口、后台 `--reload`（默认关） |
-| `Dashboards` | 可选 OpenSearch Dashboards |
-| `Verify` | 启动后检查项（OpenSearch、`/ready`、索引文档数、Chat 冒烟等） |
-| `Logs.Dir` | 日志目录（默认 `logs/`） |
-
-日志：`logs/opensearch.log`、`logs/api.log`。
-
-### 前台调试 API（热重载）
-
-改代码时建议前台跑 API（会先释放 8000 端口）：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\start-api.ps1
-```
-
-等价于：
-
-```text
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app
-```
-
-### 可选：单独启动 Redis
-
-一键脚本已含 Redis。若仅手动启 Redis：
-
-```powershell
-docker compose -f sourceData/redis/docker-compose.yaml up -d
-```
-
-`.env` 保持 `REDIS_URI=redis://127.0.0.1:6379`、`USE_MEMORY_CHECKPOINTER=false`，然后重启 API。
-
----
-
-## 本地开发与运行（手动分步）
-
-若不使用一键脚本，可按以下步骤操作。
-
-### 0. 前置准备
-
-- Python 3.11+（推荐 uv + `.venv`）
-- OpenSearch 2.x（或兼容 ES API 的检索服务）
-- DashScope API Key
-- Redis / Milvus 为可选项
-
-### 1. 安装依赖
-
-```powershell
-uv venv --python 3.11
-uv pip install -r requirements.txt
-```
-
-### 2. RAG 数据入库（OpenSearch）
-
-```powershell
-$env:PYTHONPATH = "."
-.\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py
-.\.venv\Scripts\python.exe sourceData\opensearch_disease_kb.py
-```
-
-数据文件：`sourceData/data/rag_knowledge.jsonl`、`sourceData/data/disease_kb.jsonl`。
-
-### 3. 启动后端
-
-```powershell
-$env:PYTHONPATH = "."
-.\.venv\Scripts\uvicorn.exe app.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
-### 4. 运行 CLI
-
-```powershell
-.\.venv\Scripts\python.exe cli.py
-```
-
-常用命令：`/help`、`/threads`、`/new`、`/switch`、`/delete`、`/user`、`/exit`。
-
----
-
-## API 简要说明
-
-仅列出核心接口，详细字段可通过代码或自动文档（FastAPI Swagger）查看。
-
-- `POST /chat`
-  - 请求体：`{ user_id: string, thread_id?: string, message: string }`
-  - 响应体（简化）：  
-    - `user_id`: 用户 ID  
-    - `thread_id`: 当前会话 ID  
-    - `reply`: 助手回复文本（Markdown）  
-    - `intent_result`: 意图识别结果（是否为症状/流程/混合等）  
-    - `used_docs.medical` / `used_docs.process`: 本轮使用到的文档列表
-
-- `GET /threads?user_id=...`
-- `POST /threads`
-- `DELETE /threads/{thread_id}?user_id=...`
-- `GET /threads/current?user_id=...`
-- `POST /threads/switch`
-
-- `POST /users`
-- `GET /users/{user_id}`
-
-- `GET /healthz`
