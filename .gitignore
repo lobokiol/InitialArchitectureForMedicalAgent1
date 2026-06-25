@@ -17,6 +17,7 @@ logs/
 reports/
 .idea/
 esTools/
+IPF_Intel*/
 .vscode/
 chrome-extension/
 data/
