@@ -90,6 +90,23 @@ def main() -> int:
                 "thread_id": thread,
             }
         )
+        cur.execute(
+            """
+            SELECT id, outcome, turn_count, status
+            FROM triage_sessions
+            WHERE thread_id = ? AND status = 'completed'
+            ORDER BY completed_at DESC
+            LIMIT 5
+            """,
+            (thread,),
+        )
+        foot_sessions = [dict(r) for r in cur.fetchall()]
+        report["sql"]["foot_multi_turn_sessions"] = foot_sessions
+        multi_row = next((s for s in foot_sessions if s["turn_count"] >= 2), None)
+        if multi_row is None:
+            print(f"FAIL: foot multi-turn should be one row with turn_count>=2, got {foot_sessions}")
+            print(f"Report: {REPORT}")
+            return 1
 
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row

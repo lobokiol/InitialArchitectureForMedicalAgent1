@@ -5,7 +5,7 @@ from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 from app.core.logging import logger
 from app.domain.models import AppState, IntentResult, RetrievedDoc
 from app.domain.state_debug import dump_app_state
-from app.domain.routing import is_dept_followup_reply
+from app.domain.routing import is_awaiting_triage_followup
 from app.graph.builder import build_app
 from app.infra.redis_client import checkpointer
 from app.services.triage_recorder import TriageSessionRecorder
@@ -60,7 +60,7 @@ def chat_once(
     thread_id = _ensure_thread(user_id, thread_id)
 
     pre_state = _read_checkpoint_state(thread_id, user_id)
-    was_dept_followup = bool(pre_state and is_dept_followup_reply(pre_state))
+    was_dept_followup = bool(pre_state and is_awaiting_triage_followup(pre_state))
 
     inputs = {"messages": [HumanMessage(content=message)]}
     config = {
