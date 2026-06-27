@@ -1,3 +1,5 @@
+# 仅 Redis — 供 start-dev 路径 A 在 dev-services.config.ps1 设 Redis.Mode = 'docker' 时使用
+# 勿与根目录 docker-compose.yml 或本机 Windows Redis 同时占用 6379
 version: "3.8"
 
 services:

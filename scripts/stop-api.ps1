@@ -42,7 +42,7 @@ if (Test-PortListen $port) {
 }
 
 if (Test-PortListen $port) {
-    Write-Warning "Port $port still in use. Run: .\start-dev.cmd -Action stop"
+    Write-Warning "Port $port still in use. Run: .\start-dev.ps1 -Action stop"
     netstat -ano | findstr ":$port"
     exit 1
 }

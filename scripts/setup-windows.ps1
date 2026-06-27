@@ -1,4 +1,5 @@
-# 本地 Windows 一键环境准备（需已安装 Docker Desktop + Python 3.10+）
+# [遗留] 首次环境准备 — 使用 Elasticsearch + venv，与当前 OpenSearch + .venv 主流程不一致
+# 推荐改用：路径 A start-dev.ps1  或  路径 B docker compose up / docker-quickstart.ps1
 # 用法：powershell -ExecutionPolicy Bypass -File scripts/setup-windows.ps1
 
 $ErrorActionPreference = "Stop"

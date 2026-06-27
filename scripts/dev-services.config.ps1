@@ -18,7 +18,9 @@
         WaitSeconds = 120
     }
 
-    # Redis（Windows 本机服务 / redis-server.exe；LangGraph checkpoint 需模块，否则回退 SQLite）
+    # Redis — 路径 A 专用；路径 B（docker compose）勿与 start-dev 同时启
+    # Mode: windows = 本机 Redis/Memurai 服务或 redis-server.exe
+    #       docker  = sourceData\redis\docker-compose.yaml（需 Docker Desktop）
     Redis = @{
         Enabled     = $true
         Mode        = 'windows'   # windows | docker

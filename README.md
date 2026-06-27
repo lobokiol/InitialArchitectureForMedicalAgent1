@@ -130,63 +130,91 @@ flowchart TB
 
 ---
 
-## 一键启动（Windows 本地开发）
+## 启动方式
 
-`start-dev.cmd` / `start-dev.ps1` 转发到 `scripts/dev-services.ps1`，默认依次拉起：
+| | **A — Windows** | **B — Linux** |
+|--|-----------------|---------------|
+| 方式 | 本机混合开发（`start-dev.ps1`） | 全 Docker（`docker compose`） |
+| 组件 | 本机 OpenSearch + 本机/Docker Redis + 本机 API | 容器内 API + Redis + OpenSearch |
+| 适合 | 日常改 Python、热重载、调试 | 部署、演示 |
 
-1. **Redis**（Docker，`sourceData/redis/docker-compose.yaml`，可在配置中禁用）
-2. **Triage SQLite** 初始化（`data/triage_sessions.db`）
-3. **OpenSearch**（本地 zip，`esTools/...`）
-4. **FastAPI**（后台，`logs/api.log`）
-5. 可选验证：Redis、`/ready`、`rag_knowledge` 文档数等
+**同一台机器上不要同时跑 A 和 B**（会抢 `8000` / `6379` / `9200`）。切换前先停止当前方式。
 
-### 前置准备（首次）
+### 共用前置
 
-| 项 | 说明 |
-|----|------|
-| **Python 3.11** | 推荐 [uv](https://docs.astral.sh/uv/) + 项目根目录下 `.venv` |
-| **OpenSearch 2.19** | 解压到 `esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1`（改 `scripts/dev-services.config.ps1` → `OpenSearch.Home`） |
-| **DashScope API Key** | `copy .env.example .env`，填入 `DASHSCOPE_API_KEY` |
-| **Docker Desktop** | 一键脚本默认启 Redis；无 Docker 时在 `.env` 设 `USE_MEMORY_CHECKPOINTER=true`，并在配置中设 `Redis.Enabled = $false` |
+```bash
+cp .env.example .env    # Windows: copy .env.example .env
+# 编辑 .env，至少填入 DASHSCOPE_API_KEY
+```
 
-在项目根目录执行（首次）：
+**知识库入库**（OpenSearch 已就绪后，首次或 JSONL 变更时；去掉 `--no-embed` 可走向量检索）：
+
+```bash
+export PYTHONPATH=. ES_URL=http://localhost:9200
+# Windows PowerShell: $env:PYTHONPATH="."; $env:ES_URL="http://localhost:9200"
+
+.venv/bin/python sourceData/opensearch_rag_kb.py --no-embed
+.venv/bin/python sourceData/opensearch_disease_kb.py --no-embed
+.venv/bin/python sourceData/opensearch_dept_rules.py
+# Windows 将 .venv/bin/python 换为 .\.venv\Scripts\python.exe
+```
+
+---
+
+### A — Windows 本地开发
+
+**依赖：** Python 3.11 + `.venv`（推荐 [uv](https://docs.astral.sh/uv/)）、OpenSearch 2.19 Windows zip、DashScope Key。
 
 ```powershell
-# 1. Python 环境
 uv venv --python 3.11
 uv pip install -r requirements.txt
-
-# 2. 环境变量
-copy .env.example .env
-# 编辑 .env，至少填入 DASHSCOPE_API_KEY
-
-# 3. OpenSearch 入库（首次 / 知识库变更后；需 OpenSearch 已启动）
-$env:PYTHONPATH = "."
-.\.venv\Scripts\python.exe sourceData\opensearch_rag_kb.py --no-embed
-.\.venv\Scripts\python.exe sourceData\opensearch_disease_kb.py --no-embed
-.\.venv\Scripts\python.exe sourceData\opensearch_dept_rules.py
-# 含向量混合检索时去掉 --no-embed（需消耗 Embedding 额度）
+# OpenSearch 解压到 scripts/dev-services.config.ps1 → OpenSearch.Home
+# 默认: esTools\opensearch-2.19.1-windows-x64\opensearch-2.19.1
 ```
 
-### 拉起服务命令
-
-在项目根目录执行：
+`start-dev.ps1` 依次拉起 Redis（默认 Windows 本机）、Triage SQLite、OpenSearch、后台 API，并验证 `/ready` 等。
 
 ```powershell
-# 1. 启动全部依赖服务（Redis、OpenSearch、后台 API 等，另起一个terminal）
-.\start-dev.ps1
+.\start-dev.ps1                    # 启动
+.\start-dev.ps1 -Action status     # 状态
+.\start-dev.ps1 -Action stop       # 停止
 
-# 2. 启动后台 API 服务（需先执行上一步或依赖已就绪，另起一个terminal）
-.\scripts\start-api.ps1
-
-# 3. 启动 CLI 对话客户端（API 已就绪后，新开终端，另起一个terminal）
-.\.venv\Scripts\python.exe cli.py
+.\scripts\start-api.ps1            # 另开终端：前台 API + 热重载
+.\.venv\Scripts\python.exe cli.py  # 另开终端：CLI
 ```
-## 启动web页面chat窗口，另起一个terminal
+
+无 Redis：`.env` 设 `USE_MEMORY_CHECKPOINTER=true`，`dev-services.config.ps1` 设 `Redis.Enabled = $false`。
+
+---
+
+### B — Linux（Docker）
+
+**依赖：** Docker Engine / Compose、DashScope Key；入库或 CLI 时需 Python 3.11 + `.venv`。
+
+```bash
+uv venv --python 3.11 && uv pip install -r requirements.txt   # 仅入库 / CLI
+
+docker compose up -d --build
+docker compose logs -f api
+docker compose down        # 停止
+docker compose down -v     # 停止并清数据卷
+```
+
+`docker-compose.override.yml` 在 `docker compose` 时自动合并（热重载、debug 日志）。API：`http://localhost:8000`（`/docs`、`/healthz`、`/ready`）。
+
+```bash
+.venv/bin/python cli.py    # 另开终端：CLI
+```
+
+---
+
+### Web 前端（A / B 的 API 就绪后）
 
 ```bash
 cd front_Web
-copy .env.example .env
+cp .env.example .env       # Windows: copy .env.example .env
 npm install
 npm run dev
 ```
+
+开发环境走 `/api` 代理到 `127.0.0.1:8000`。

@@ -1,11 +1,14 @@
-# 完整生产级 Docker Compose - 一键启动全部服务
+# 全栈 Docker Compose — Windows / Linux / macOS（需 Docker Desktop 或 Docker Engine）
 # 包含：Medical Agent API + Redis + OpenSearch
+# 与 start-dev.ps1（路径 A）互斥，勿同时运行（端口 8000 / 6379 / 9200）
 #
-# 用法：
-#   docker compose up -d                    # 启动全部
-#   docker compose up -d api                # 只启动 API
+# 用法（项目根目录）：
+#   docker compose up -d                    # 启动全部（自动合并 docker-compose.override.yml）
+#   .\scripts\docker-quickstart.ps1         # Windows 一键：检查 .env → build → up
+#   docker compose up -d api                # 只启动 API（依赖需已 healthy）
 #   docker compose logs -f api              # 查看 API 日志
-#   docker compose down -v                  # 停止并清理数据
+#   docker compose down                     # 停止
+#   docker compose down -v                  # 停止并清理数据卷
 
 services:
   # ========== Medical Triage API ==========

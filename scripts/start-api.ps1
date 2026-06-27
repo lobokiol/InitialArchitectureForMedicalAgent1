@@ -27,8 +27,7 @@ if (Test-Path $stopScript) {
     & $stopScript
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERR] Port 8000 still in use. Run:" -ForegroundColor Red
-        Write-Host "  .\stop-dev.cmd" -ForegroundColor Yellow
-        Write-Host "  .\start-dev.cmd -Action stop" -ForegroundColor Yellow
+        Write-Host "  .\start-dev.ps1 -Action stop" -ForegroundColor Yellow
         exit 1
     }
 }

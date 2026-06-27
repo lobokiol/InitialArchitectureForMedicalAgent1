@@ -10,7 +10,10 @@
 
 ## 前置条件
 
-后端 API 运行于 `http://127.0.0.1:8000`（项目根目录执行 `.\scripts\start-api.ps1`）。
+后端 API 运行于 `http://127.0.0.1:8000`：
+
+- **路径 A（本机）**：`.\scripts\start-api.ps1` 或 `.\start-dev.ps1`
+- **路径 B（Docker）**：`docker compose up -d` 或 `.\scripts\docker-quickstart.ps1`
 
 ## 启动
 
