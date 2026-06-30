@@ -24,7 +24,7 @@ export function UserModal({ open, forced, loading, onSubmit, onClose }: UserModa
         className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6"
       >
         <div className="flex justify-between items-start mb-1">
-          <h2 className="text-lg font-semibold text-brand-700">欢迎使用导诊 Demo</h2>
+          <h2 className="text-lg font-semibold text-brand-700">欢迎使用智能导诊助手</h2>
           {!forced && onClose && (
             <button type="button" onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg">
               <X size={18} />

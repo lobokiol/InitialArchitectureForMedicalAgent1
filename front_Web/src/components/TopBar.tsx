@@ -32,7 +32,7 @@ export function TopBar({
           <Menu size={20} />
         </button>
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-brand-700 truncate">医院导诊 Demo</p>
+          <p className="text-sm font-semibold text-brand-700 truncate">智能导诊助手</p>
           <p className="text-xs text-gray-500 truncate">
             {userId || '未登录'} · {threadTitle}
           </p>
