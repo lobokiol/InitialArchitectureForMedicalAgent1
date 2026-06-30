@@ -171,7 +171,7 @@ export default function App() {
             />
             <ChatInput disabled={inputDisabled} onSend={handleSend} />
             <InfoBar
-              response={chat.lastResponse}
+              response={chat.currentTurn?.chatSnapshot ?? chat.lastResponse}
               onOpenDetail={() => {
                 setFullText(undefined);
                 setDetailOpen(true);
@@ -183,7 +183,7 @@ export default function App() {
 
       <DetailOverlay
         open={detailOpen}
-        response={chat.lastResponse}
+        response={chat.currentTurn?.chatSnapshot ?? chat.lastResponse}
         fullText={fullText}
         onClose={() => {
           setDetailOpen(false);

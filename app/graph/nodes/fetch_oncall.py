@@ -27,10 +27,14 @@ def resolve_department(state: AppState) -> str | None:
     return None
 
 
+def _clear_oncall_patch() -> dict:
+    return {"oncall_appointments": [], "oncall_fetch_error": None}
+
+
 def fetch_oncall_node(state: AppState) -> dict:
     logger.info(">>> Enter node: fetch_oncall")
     if not config.MCP_ENABLED or not should_fetch(state):
-        return {}
+        return _clear_oncall_patch()
     dept = resolve_department(state)
     if not dept:
         return {}

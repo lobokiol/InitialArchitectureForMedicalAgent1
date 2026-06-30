@@ -39,6 +39,25 @@ def test_resolve_department_disease_first():
 
     state = AppState(
         disease_dept_result=DiseaseDeptResult(
+            diseases=["胃炎"],
+            departments=[{"disease": "胃炎", "dept": "消化内科"}],
+        )
+    )
+    assert resolve_department(state) == "消化内科"
+
+
+def test_recommended_department_symptom_chain():
+    from app.graph.nodes.fetch_oncall import resolve_department
+
+    state = AppState(locked_department="骨科", dept_confidence_passed=True)
+    assert resolve_department(state) == "骨科"
+
+
+def test_resolve_department_picks_first_of_multiple():
+    from app.graph.nodes.fetch_oncall import resolve_department
+
+    state = AppState(
+        disease_dept_result=DiseaseDeptResult(
             diseases=["骨折"],
             departments=[{"dept": "骨科"}, {"dept": "康复科"}],
         )

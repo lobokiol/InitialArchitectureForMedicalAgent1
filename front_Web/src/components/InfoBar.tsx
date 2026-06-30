@@ -10,7 +10,7 @@ interface InfoBarProps {
 export function InfoBar({ response, onOpenDetail }: InfoBarProps) {
   const conf = response?.dept_confidence;
   const passed = response?.dept_confidence_passed;
-  const locked = response?.locked_department;
+  const dept = response?.recommended_department;
 
   return (
     <div className="shrink-0 h-10 border-t border-brand-500/20 bg-white px-3 md:px-6 flex items-center justify-between gap-2 text-xs overflow-hidden">
@@ -22,7 +22,7 @@ export function InfoBar({ response, onOpenDetail }: InfoBarProps) {
             {passed ? ' ✓' : ''}
           </span>
         )}
-        {locked && <span className="text-gray-500 truncate hidden sm:inline">→ {locked}</span>}
+        {dept && <span className="text-gray-500 truncate hidden sm:inline">→ {dept}</span>}
       </div>
       <button
         type="button"

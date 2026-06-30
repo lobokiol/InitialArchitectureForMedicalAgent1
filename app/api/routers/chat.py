@@ -38,6 +38,7 @@ class ChatResponse(BaseModel):
     dept_confidence_passed: Optional[bool] = None
     dept_confidence_reason: Optional[str] = None
     locked_department: Optional[str] = None
+    recommended_department: Optional[str] = None
     oncall_appointments: List[OnCallDoctor] = []
     oncall_fetch_error: Optional[str] = None
     node_trace: List[str] = []

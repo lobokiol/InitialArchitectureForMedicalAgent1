@@ -69,7 +69,8 @@ export function ChatStage({
               loading={busy && !turn.assistantReply}
               onExpandFull={() => onExpandFull(turn.assistantReply)}
             />
-            {turn.chatSnapshot?.oncall_appointments &&
+            {turn.chatSnapshot?.recommended_department &&
+              turn.chatSnapshot.oncall_appointments &&
               turn.chatSnapshot.oncall_appointments.length > 0 && (
                 <AppointmentCards doctors={turn.chatSnapshot.oncall_appointments} />
               )}

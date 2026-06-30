@@ -49,6 +49,7 @@ export interface ChatResponse {
   dept_confidence_passed?: boolean;
   dept_confidence_reason?: string;
   locked_department?: string;
+  recommended_department?: string;
   oncall_appointments?: OnCallDoctor[];
   oncall_fetch_error?: string;
   node_trace: string[];
