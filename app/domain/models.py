@@ -77,6 +77,28 @@ class OnCallDoctor(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
 
+class DepartmentIntro(BaseModel):
+    department: str
+    summary: str
+    scope: list[str] = Field(default_factory=list)
+    visit_tips: str = ""
+    floor: str = ""
+    phone: str = ""
+
+    model_config = ConfigDict(extra="ignore")
+
+
+class DepartmentRoute(BaseModel):
+    department: str
+    from_location: str
+    to: str
+    estimated_minutes: int
+    steps: list[str] = Field(default_factory=list)
+    landmarks: list[str] = Field(default_factory=list)
+
+    model_config = ConfigDict(extra="ignore")
+
+
 class RelevanceResult(BaseModel):
     '''LLM 判断检索到的文档与用户问题的相关性结果'''
     can_answer_overall: bool = False
@@ -109,8 +131,11 @@ class AppState(BaseModel):
     clarify_state: Optional[Any] = None
     dept_confidence_result: Optional[Any] = None
     dept_confidence_passed: bool | None = None
+    emergency_gate_passed: bool | None = None
+    emergency_match: dict | None = None
     oncall_appointments: list[OnCallDoctor] = Field(default_factory=list)
     oncall_fetch_error: str | None = None
+    last_recommended_department: str | None = None
 
     @field_validator("medical_docs", mode="before")
     @classmethod

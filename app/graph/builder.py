@@ -6,16 +6,19 @@ from app.domain.routing import (
     route_after_confidence,
     route_after_dept,
     route_after_dept_rules,
+    route_after_emergency_gate,
     route_after_rag,
     route_after_slot_gate,
     route_after_trim,
 )
 from app.graph.nodes.decision import decision_node
+from app.graph.nodes.emergency_gate import emergency_gate_node
 from app.graph.nodes.dept_confidence import dept_confidence_node, low_confidence_reject_node
 from app.graph.nodes.dept_disambiguation import dept_disambiguation_node
 from app.graph.nodes.dept_rules_disambiguation import dept_rules_disambiguation_node
 from app.graph.nodes.disease_dept import disease_dept_node
 from app.graph.nodes.fetch_oncall import fetch_oncall_node
+from app.graph.nodes.mcp_followup import mcp_followup_node
 from app.graph.nodes.reject import reject_node
 from app.graph.nodes.answer import answer_generate_node
 from app.graph.nodes.trim_history import trim_history_node
@@ -35,6 +38,7 @@ def build_graph() -> StateGraph:
     graph.add_node("trim_history", trim_history_node)
     graph.add_node("decision", decision_node)
     graph.add_node("slot_fill", slot_fill_node)
+    graph.add_node("emergency_gate", emergency_gate_node)
     graph.add_node("slot_gate", slot_gate_node)
     graph.add_node("disease_dept", disease_dept_node)
     graph.add_node("rag_symptom_recall", rag_symptom_recall_node)
@@ -44,6 +48,7 @@ def build_graph() -> StateGraph:
     graph.add_node("dept_confidence", dept_confidence_node)
     graph.add_node("low_confidence_reject", low_confidence_reject_node)
     graph.add_node("fetch_oncall", fetch_oncall_node)
+    graph.add_node("mcp_followup", mcp_followup_node)
     graph.add_node("reject", reject_node)
     graph.add_node("rag_miss_reject", rag_miss_reject_node)
     graph.add_node("answer_generate", answer_generate_node)
@@ -57,11 +62,20 @@ def build_graph() -> StateGraph:
             "symptom_clarify": "symptom_clarify",
             "dept_rules_disambiguation": "dept_rules_disambiguation",
             "dept_disambiguation": "dept_disambiguation",
+            "mcp_followup": "mcp_followup",
         },
     )
 
     graph.add_edge("decision", "slot_fill")
-    graph.add_edge("slot_fill", "slot_gate")
+    graph.add_edge("slot_fill", "emergency_gate")
+    graph.add_conditional_edges(
+        "emergency_gate",
+        route_after_emergency_gate,
+        {
+            "answer_generate": "answer_generate",
+            "slot_gate": "slot_gate",
+        },
+    )
     graph.add_conditional_edges(
         "slot_gate",
         route_after_slot_gate,
@@ -118,6 +132,7 @@ def build_graph() -> StateGraph:
     )
 
     graph.add_edge("fetch_oncall", "answer_generate")
+    graph.add_edge("mcp_followup", END)
     graph.add_edge("reject", END)
     graph.add_edge("rag_miss_reject", END)
     graph.add_edge("low_confidence_reject", END)

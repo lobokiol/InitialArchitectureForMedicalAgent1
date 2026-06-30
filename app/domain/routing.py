@@ -62,6 +62,39 @@ def _is_dept_followup_reply(state: AppState) -> bool:
     return isinstance(last, HumanMessage)
 
 
+def _last_human_text(state: AppState) -> str:
+    msgs = state.messages or []
+    for msg in reversed(msgs):
+        if isinstance(msg, HumanMessage) and isinstance(msg.content, str):
+            return msg.content.strip()
+    return ""
+
+
+def is_mcp_followup_reply(state: AppState) -> bool:
+    from app.core import config
+    from app.mcp.followup import (
+        looks_like_dept_info_query,
+        looks_like_new_triage,
+        match_department_in_text,
+    )
+
+    if not config.MCP_ENABLED or not config.MCP_FOLLOWUP_ENABLED:
+        return False
+    if is_dept_followup_reply(state):
+        return False
+    text = _last_human_text(state)
+    if not text:
+        return False
+    if looks_like_new_triage(text) and not looks_like_dept_info_query(text):
+        return False
+    explicit_dept = match_department_in_text(text)
+    if looks_like_dept_info_query(text) and explicit_dept:
+        return True
+    if not state.last_recommended_department:
+        return False
+    return looks_like_dept_info_query(text) or bool(explicit_dept)
+
+
 def route_after_trim(state: AppState) -> str:
     if _is_clarify_followup(state):
         logger.info(">>> route_after_trim: continue symptom_clarify")
@@ -72,7 +105,18 @@ def route_after_trim(state: AppState) -> str:
     if _is_dept_followup_reply(state):
         logger.info(">>> route_after_trim: continue dept_disambiguation")
         return "dept_disambiguation"
+    if is_mcp_followup_reply(state):
+        logger.info(">>> route_after_trim: mcp_followup")
+        return "mcp_followup"
     return "decision"
+
+
+def route_after_emergency_gate(state: AppState) -> str:
+    if state.emergency_gate_passed is False and state.locked_department == "急诊":
+        logger.info(">>> route_after_emergency_gate: emergency -> answer_generate")
+        return "answer_generate"
+    logger.info(">>> route_after_emergency_gate: pass -> slot_gate")
+    return "slot_gate"
 
 
 def route_after_slot_gate(state: AppState) -> str:

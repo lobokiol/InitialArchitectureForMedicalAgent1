@@ -14,9 +14,12 @@ def triage_state_reset_patch() -> dict:
         "clarify_state": None,
         "dept_confidence_result": None,
         "dept_confidence_passed": None,
+        "emergency_gate_passed": None,
+        "emergency_match": None,
         "disease_dept_result": None,
         "symptom_slot_result": None,
         "oncall_appointments": [],
         "oncall_fetch_error": None,
         "tool_call_result": None,
+        "last_recommended_department": None,
     }
