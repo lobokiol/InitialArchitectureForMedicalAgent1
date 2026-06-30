@@ -1,20 +1,10 @@
+"""Backward-compatible launcher; delegates to hospital_mcp."""
 from __future__ import annotations
 
-import json
+import runpy
+from pathlib import Path
 
-from mcp.server.fastmcp import FastMCP
-
-from mock_data import doctors_for_department
-
-mcp = FastMCP("hospital-his-mock")
-
-
-@mcp.tool()
-def get_oncall_appointments(department: str) -> str:
-    """查询指定科室值班医生预约信息。"""
-    doctors = doctors_for_department(department)
-    return json.dumps(doctors, ensure_ascii=False)
-
+_TARGET = Path(__file__).resolve().parents[1] / "hospital_mcp" / "server.py"
 
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+    runpy.run_path(str(_TARGET), run_name="__main__")

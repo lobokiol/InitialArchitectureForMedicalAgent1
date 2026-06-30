@@ -7,7 +7,7 @@ from app.domain.models import AppState, IntentResult, RetrievedDoc
 from app.domain.state_debug import dump_app_state
 from app.domain.routing import is_awaiting_triage_followup
 from app.graph.builder import build_app
-from app.graph.nodes.fetch_oncall import resolve_department
+from app.mcp.followup import resolve_recommended_department
 from app.infra.redis_client import checkpointer
 from app.services.triage_recorder import TriageSessionRecorder
 from app.sessions.manager import SessionManager
@@ -136,7 +136,7 @@ def chat_once(
         "dept_confidence_passed": state.dept_confidence_passed,
         "dept_confidence_reason": conf.reason if conf else None,
         "locked_department": state.locked_department,
-        "recommended_department": resolve_department(state),
+        "recommended_department": resolve_recommended_department(state),
         "oncall_appointments": [d.model_dump() for d in state.oncall_appointments],
         "oncall_fetch_error": state.oncall_fetch_error,
         "node_trace": node_trace,

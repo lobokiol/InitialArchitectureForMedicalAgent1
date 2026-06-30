@@ -75,3 +75,17 @@ def test_mcp_client_returns_three_doctors():
     doctors = fetch_oncall_appointments_sync("骨科")
     assert len(doctors) == 3
     assert doctors[0].name.startswith("骨科")
+
+
+def test_fetch_sets_last_recommended_department(monkeypatch):
+    from app.domain.models import OnCallDoctor
+    from app.graph.nodes.fetch_oncall import fetch_oncall_node
+
+    monkeypatch.setattr(
+        "app.graph.nodes.fetch_oncall.fetch_oncall_appointments_sync",
+        lambda dept: [OnCallDoctor(name=f"{dept}·张医生", time="14:00", slots=3)],
+    )
+    state = AppState(locked_department="骨科", dept_confidence_passed=True)
+    result = fetch_oncall_node(state)
+    assert result["last_recommended_department"] == "骨科"
+    assert len(result["oncall_appointments"]) == 1

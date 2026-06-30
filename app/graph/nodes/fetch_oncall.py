@@ -28,30 +28,47 @@ def resolve_department(state: AppState) -> str | None:
 
 
 def _clear_oncall_patch() -> dict:
-    return {"oncall_appointments": [], "oncall_fetch_error": None}
+    return {
+        "oncall_appointments": [],
+        "oncall_fetch_error": None,
+    }
 
 
 def fetch_oncall_node(state: AppState) -> dict:
-    logger.info(">>> Enter node: fetch_oncall")
+    logger.info(">>> Enter node: fetch_hospital_info")
     if not config.MCP_ENABLED or not should_fetch(state):
         return _clear_oncall_patch()
     dept = resolve_department(state)
     if not dept:
         return {}
+    patch: dict = {"last_recommended_department": dept}
     try:
         doctors = fetch_oncall_appointments_sync(dept)
         if not doctors:
-            return {
+            patch.update(
+                {
+                    "oncall_appointments": [],
+                    "oncall_fetch_error": "暂无法获取预约信息",
+                }
+            )
+            return patch
+        patch.update(
+            {
+                "oncall_appointments": doctors,
+                "oncall_fetch_error": None,
+                "tool_call_result": {"department": dept, "doctors": [d.model_dump() for d in doctors]},
+            }
+        )
+        return patch
+    except Exception:
+        logger.exception("fetch_hospital_info failed dept=%s", dept)
+        patch.update(
+            {
                 "oncall_appointments": [],
                 "oncall_fetch_error": "暂无法获取预约信息",
             }
-        return {
-            "oncall_appointments": doctors,
-            "tool_call_result": {"department": dept, "doctors": [d.model_dump() for d in doctors]},
-        }
-    except Exception:
-        logger.exception("fetch_oncall failed dept=%s", dept)
-        return {
-            "oncall_appointments": [],
-            "oncall_fetch_error": "暂无法获取预约信息",
-        }
+        )
+        return patch
+
+
+fetch_hospital_info_node = fetch_oncall_node

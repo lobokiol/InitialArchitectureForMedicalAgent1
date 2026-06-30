@@ -1,7 +1,7 @@
 # 医院 MCP 完整模块设计
 
 **日期**: 2026-06-30  
-**状态**: 待实现  
+**状态**: 已实现  
 **范围**: 将 `mcp_server` 升级为独立医院 MCP 服务 `hospital_mcp/`，将 `app/mcp` 升级为通用 Client；导诊 Agent 继续作为调用方。覆盖值班医生预约、科室介绍、导诊台到目标科室路线。数据均为 JSON Mock。
 
 **前置**: `docs/superpowers/specs/2026-06-30-his-oncall-mcp-design.md`（v1 单工具已实现）

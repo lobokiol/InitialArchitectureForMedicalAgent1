@@ -57,6 +57,8 @@ def build_state_snapshot(state: AppState) -> dict:
         snap["disease_dept_result"] = state.disease_dept_result.model_dump()
     if state.intent_result is not None:
         snap["intent_result"] = state.intent_result.model_dump()
+    if state.dept_confidence_result is not None:
+        snap["dept_confidence_result"] = state.dept_confidence_result.model_dump()
     if state.rag_chunk:
         snap["rag_chunk"] = {
             "id": state.rag_chunk.get("id"),

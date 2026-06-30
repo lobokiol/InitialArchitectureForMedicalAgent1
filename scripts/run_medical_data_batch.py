@@ -14,6 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT = ROOT / "sourceData" / "data" / "小医疗数据.json"
 PROXIES = {"http": None, "https": None}
 
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.batch_clarify_persona import pick_clarify_reply
+
 
 def load_questions(path: Path, limit: int | None) -> list[str]:
     rows: list[str] = []
@@ -30,17 +35,8 @@ def load_questions(path: Path, limit: int | None) -> list[str]:
     return rows
 
 
-def pick_reply(data: dict) -> str | None:
-    if data.get("awaiting_clarify") and data.get("clarify_choices"):
-        phase = data.get("clarify_phase")
-        if phase == "age":
-            return "19-35岁"
-        if phase == "sex":
-            return "男"
-        return data["clarify_choices"][0]["label"]
-    if data.get("awaiting_dept_choice") and data.get("dept_choices"):
-        return "1" if data.get("multi_select") else data["dept_choices"][0]["label"]
-    return None
+def pick_reply(data: dict, query: str) -> str | None:
+    return pick_clarify_reply(data, query)
 
 
 def run_case(sess: requests.Session, base: str, user_id: str, query: str, max_steps: int) -> dict:
@@ -61,7 +57,7 @@ def run_case(sess: requests.Session, base: str, user_id: str, query: str, max_st
         )
         r.raise_for_status()
         last = r.json()
-        nxt = pick_reply(last)
+        nxt = pick_reply(last, query)
         if nxt is None:
             return {"ok": True, "thread_id": thread_id, "steps": step + 1, "data": last}
         msg = nxt
@@ -75,9 +71,11 @@ def main() -> int:
     p.add_argument("--user-id", default="batch-med-small-100")
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--max-steps", type=int, default=15)
+    p.add_argument("--skip-indices", default="", help="Comma-separated 1-based indices to skip")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
     base = args.base_url.rstrip("/")
+    skip = {int(x) for x in args.skip_indices.split(",") if x.strip()}
 
     questions = load_questions(args.input, args.limit)
     print(f"Loaded {len(questions)} questions from {args.input}")
@@ -97,6 +95,9 @@ def main() -> int:
     errors: list[dict] = []
 
     for i, query in enumerate(questions, 1):
+        if i in skip:
+            print(f"[{i}/{len(questions)}] SKIP (excluded)")
+            continue
         try:
             result = run_case(sess, base, args.user_id, query, args.max_steps)
             if not result["ok"]:

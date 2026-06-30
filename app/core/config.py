@@ -72,5 +72,10 @@ TRIAGE_SESSION_ENABLED: bool = os.getenv("TRIAGE_SESSION_ENABLED", "true").lower
 )
 
 MCP_ENABLED: bool = os.getenv("MCP_ENABLED", "true").lower() in ("1", "true", "yes")
-MCP_SERVER_COMMAND: str = os.getenv("MCP_SERVER_COMMAND", "python mcp_server/server.py")
+MCP_SERVER_COMMAND: str = os.getenv("MCP_SERVER_COMMAND", "python hospital_mcp/server.py")
 MCP_TIMEOUT_SECONDS: float = float(os.getenv("MCP_TIMEOUT_SECONDS", "5.0"))
+MCP_FOLLOWUP_ENABLED: bool = os.getenv("MCP_FOLLOWUP_ENABLED", "true").lower() in (
+    "1",
+    "true",
+    "yes",
+)

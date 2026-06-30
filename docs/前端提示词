@@ -108,7 +108,7 @@ frontend/
 
 ### 2. 后端接口（与 `app/api/routers` 一致）
 
-默认基址：`http://127.0.0.1:8000`（`start-dev.cmd` 一键启动后可用）。Swagger：`GET /docs`。
+默认基址：`http://127.0.0.1:8000`（`start-dev.ps1` 一键启动后可用）。Swagger：`GET /docs`。
 
 #### 对话 `POST /chat`
 
@@ -247,7 +247,7 @@ interface ThreadInfo {
 | IntentBadge | 意图 | `main_intent` + `triage_route` |
 | DocSources | 溯源 | `used_docs.medical` / `process`，展示 title + score |
 | ThreadList | 会话抽屉 | 对标 `/threads`、`/switch` |
-| ReadinessBanner | 依赖状态 | 调用 `/ready`，未就绪时提示先 `start-dev.cmd` |
+| ReadinessBanner | 依赖状态 | 调用 `/ready`，未就绪时提示先 `start-dev.ps1` |
 | Architecture | 架构图 | CLI/Web → API → LangGraph → OpenSearch/LLM |
 
 ### 4. LiveDemo 布局示意
@@ -330,7 +330,7 @@ React · TypeScript · Tailwind CSS · Framer Motion · Vite
 
 ### 4. 错误处理
 
-- 网络失败：提示检查 `start-dev.cmd` 是否已启动 API（8000）
+- 网络失败：提示检查 `start-dev.ps1` 是否已启动 API（8000）
 - `GET /ready` 返回 `degraded`：展示 OpenSearch/Redis 哪项未就绪
 - API 4xx/5xx：展示 `detail` 字段
 
@@ -395,7 +395,7 @@ React · TypeScript · Tailwind CSS · Framer Motion · Vite
 2. **`cli.py`**：多轮 `awaiting_clarify` / `awaiting_dept_choice` 循环的权威参考
 3. **`app/api/routers/chat.py`**：`ChatResponse` 字段定义
 4. **`app/services/chat_service.py`**：响应字段如何由 LangGraph 状态组装
-5. 本地启动：`.\start-dev.cmd` → API `http://127.0.0.1:8000/docs`
+5. 本地启动：`.\start-dev.ps1` → API `http://127.0.0.1:8000/docs`
 
 ---
 

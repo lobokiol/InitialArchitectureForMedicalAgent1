@@ -7,6 +7,7 @@ def test_reset_clears_oncall_fields():
     assert patch["oncall_appointments"] == []
     assert patch["oncall_fetch_error"] is None
     assert patch["tool_call_result"] is None
+    assert patch["last_recommended_department"] is None
     assert patch["locked_department"] is None
 
 
