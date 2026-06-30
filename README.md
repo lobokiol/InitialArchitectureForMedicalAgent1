@@ -17,32 +17,51 @@ app/
   main.py                      # FastAPI 入口（/healthz、/ready）
   api/routers/                 # chat、threads、users
   core/                        # config、logging、llm（DashScope 兼容）
-  domain/                      # AppState、routing、槽位/澄清/消歧模型
+  domain/                      # AppState、routing、槽位/澄清/消歧/急诊门禁模型
   graph/
-    builder.py                 # LangGraph 主图编译
-    nodes/                     # decision、slot_*、rag、clarify、dept_*、answer…
+    builder.py                 # LangGraph 主图编译（17 节点）
+    nodes/
+      trim_history、decision、slot_fill、emergency_gate、slot_gate
+      disease_dept、rag_symptom_recall、symptom_clarify
+      dept_rules_disambiguation、dept_disambiguation、dept_confidence
+      fetch_oncall、mcp_followup、answer_generate、reject…
   infra/
-    opensearch_rag.py          # OpenSearch 症状混合检索
+    es_client.py               # OpenSearch 连接
+    opensearch_rag.py          # 症状混合检索（BM25 + KNN）
+    rag_hybrid_search.py       # 混合检索 pipeline 共享逻辑
     opensearch_disease_kb.py   # 疾病库检索
     opensearch_dept_rules.py   # 科室规则检索 + 本地 JSONL fallback
     disease_kb_store.py        # disease_kb.jsonl 加载
     redis_client.py            # Redis Checkpointer / MemorySaver 回退
+    redis_compat.py            # Redis 版本兼容
     triage_session_store.py    # SQLite 导诊周期持久化
+  mcp/
+    client.py                  # MCP Stdio 客户端（值班/科室介绍/路线）
+    followup.py                # 追问意图 → MCP 工具调用
   ner/                         # 实体抽取、三分类路由
-  triage/                      # 槽位填充、科室打分、规则打分、置信度
+  triage/                      # 槽位填充、科室打分、急诊规则、session_reset
   sessions/manager.py          # 多会话元数据（Redis）
   services/
     chat_service.py            # API ↔ LangGraph 编排入口
     triage_recorder.py         # 完整导诊周期写入 SQLite
 
+hospital_mcp/                  # 医院 HIS MCP 服务（Mock）
+  server.py                    # get_oncall_appointments · intro · route
+  adapters/mock_store.py
+  mock/                        # departments.json、routes.json
+
+mcp_server/server.py           # 兼容启动入口 → hospital_mcp
+
 cli.py                         # Rich CLI 前端
+front_Web/                     # React + Vite Web 前端
+  src/                         # components、hooks、lib/api.ts
 sourceData/                    # 知识库 JSONL + OpenSearch 入库脚本
   data/                        # rag_knowledge、disease_kb、rag_department_rules…
   opensearch_rag_kb.py
   opensearch_disease_kb.py
   opensearch_dept_rules.py
-scripts/                       # dev-services、repair_triage_fragments、评估脚本
-tests/                         # 单元测试、run_eval 黄金用例
+scripts/                       # dev-services、评估脚本、数据生成
+tests/                         # 单元测试、黄金用例
 data/triage_sessions.db        # 导诊会话记录（运行时生成）
 ```
 
@@ -58,6 +77,7 @@ data/triage_sessions.db        # 导诊会话记录（运行时生成）
 flowchart TB
     subgraph L1["① 客户端"]
         CLI["cli.py<br/>Rich · 斜杠命令 · 多轮选项"]
+        WEB["front_Web<br/>React · Vite · /api 代理"]
     end
 
     subgraph L2["② API 层 app/api"]
@@ -73,31 +93,38 @@ flowchart TB
     end
 
     subgraph L4["④ 编排与领域"]
-        LG["LangGraph<br/>14 节点 · AppState"]
+        LG["LangGraph<br/>17 节点 · AppState"]
         NER["app/ner<br/>实体 · 三分类路由"]
-        TRI["app/triage<br/>槽位 · 打分 · 置信度"]
+        TRI["app/triage<br/>槽位 · 打分 · 急诊"]
         RT["app/domain/routing<br/>条件边"]
     end
 
-    subgraph L5["⑤ 基础设施 app/infra · core/llm"]
+    subgraph L5["⑤ MCP 集成"]
+        MCP_CLIENT["app/mcp<br/>client · followup"]
+        HOSP_MCP["hospital_mcp<br/>值班 · 介绍 · 路线"]
+    end
+
+    subgraph L6["⑥ 基础设施 app/infra · core/llm"]
         OS["OpenSearch 客户端"]
         RD["Redis Checkpointer<br/>或 MemorySaver"]
         SQ["SQLite triage_sessions"]
         LLM["DashScope Chat / Embedding"]
     end
 
-    subgraph L6["⑥ 数据"]
+    subgraph L7["⑦ 数据"]
         IDX[("索引<br/>rag_knowledge · disease_kb · rag_department_rules")]
         JSONL[("sourceData/data<br/>JSONL 源文件")]
     end
 
-    CLI --> CHAT & THREADS
+    CLI & WEB --> CHAT & THREADS
     CHAT --> CS
     THREADS --> SM
     CS --> LG
     CS --> TR
     LG --> NER & TRI & RT
     LG --> OS & LLM
+    LG --> MCP_CLIENT
+    MCP_CLIENT <-->|stdio| HOSP_MCP
     LG <-->|Checkpoint| RD
     SM --> RD
     TR --> SQ
@@ -108,14 +135,15 @@ flowchart TB
 
 | 层级 | 目录 / 模块 | 职责 |
 |------|-------------|------|
-| 客户端 | `cli.py` | 调用 REST API；渲染 Markdown；处理 `awaiting_clarify` / `awaiting_dept_choice` 多轮选项 |
+| 客户端 | `cli.py` · `front_Web` | 调用 REST API；渲染 Markdown / 组件；处理 `awaiting_clarify` / `awaiting_dept_choice` 多轮选项 |
 | API | `app/api/routers` | 请求校验与响应序列化；`/ready` 聚合 OpenSearch、Redis、SQLite、LangGraph 状态 |
 | 应用服务 | `chat_service` | 唯一对话入口：读 Checkpoint 判追问、stream 主图、提取回复 |
 | 应用服务 | `triage_recorder` | 非阻塞记录导诊周期（`turns_json`、outcome、state 快照） |
 | 应用服务 | `SessionManager` | `user_id` ↔ 多 `thread_id` 元数据（标题、活跃时间） |
-| 编排 | `app/graph` | 编译 StateGraph；节点见 `builder.py` |
-| 领域 | `ner` / `triage` / `domain` | 与图节点解耦的业务规则：NER、槽位、科室打分、路由谓词 |
-| 基础设施 | `infra` + `core/llm` | 外部 I/O：检索、持久化、模型调用 |
+| 编排 | `app/graph` | 编译 StateGraph；17 节点见 `builder.py`（含 `emergency_gate`、`fetch_oncall`、`mcp_followup`） |
+| 领域 | `ner` / `triage` / `domain` | 与图节点解耦的业务规则：NER、槽位、科室打分、急诊门禁、路由谓词 |
+| MCP | `app/mcp` + `hospital_mcp` | Stdio MCP 调用医院工具：值班预约、科室介绍、步行路线 |
+| 基础设施 | `infra` + `core/llm` | 外部 I/O：混合检索、持久化、模型调用 |
 | 数据 | OpenSearch + JSONL | 运行时查索引；开发态改 JSONL 后重新入库 |
 
 ---
@@ -179,7 +207,7 @@ uv pip install -r requirements.txt
 .\start-dev.ps1 -Action status     # 状态
 .\start-dev.ps1 -Action stop       # 停止
 
-.\scripts\start-api.ps1            # 另开终端：前台 API + 热重载
+.\scripts\start-api.ps1            # 另开终端：前台 API + 热重载后台
 .\.venv\Scripts\python.exe cli.py  # 另开终端：CLI
 ```
 
