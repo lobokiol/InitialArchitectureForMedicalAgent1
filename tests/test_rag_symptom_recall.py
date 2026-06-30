@@ -21,22 +21,22 @@ def test_alias_hit_ignores_threshold():
 
 def test_no_alias_clustered_scores_returns_none():
     hits = [
-        _cl("CL0007", 1.07),
-        _cl("CL0006", 1.06),
-        _cl("CL0008", 1.04),
+        _cl("CL0007", 0.56),
+        _cl("CL0006", 0.55),
+        _cl("CL0008", 0.53),
     ]
     assert _prefer_symptom_clarify(hits, "未知症状", "未知症状") is None
 
 
 def test_no_alias_high_score_wide_margin_returns_top():
-    hits = [_cl("CL0099", 3.0), _cl("CL0006", 0.5)]
+    hits = [_cl("CL0099", 0.85), _cl("CL0006", 0.40)]
     out = _prefer_symptom_clarify(hits, "未知症状", "未知症状")
     assert out is not None
     assert out["id"] == "CL0099"
 
 
 def test_no_alias_high_score_narrow_margin_returns_none():
-    hits = [_cl("CL0007", 3.0), _cl("CL0006", 2.95)]
+    hits = [_cl("CL0007", 0.85), _cl("CL0006", 0.82)]
     assert _prefer_symptom_clarify(hits, "未知症状", "未知症状") is None
 
 

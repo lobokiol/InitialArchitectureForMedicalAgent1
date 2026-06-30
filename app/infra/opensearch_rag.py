@@ -8,6 +8,12 @@ from opensearchpy import OpenSearch
 
 from app.core import config
 from app.core.logging import logger
+from app.infra.rag_hybrid_search import (
+    ensure_hybrid_pipeline,
+    hybrid_search_body,
+    hybrid_search_params,
+    keyword_search_body,
+)
 
 _client: OpenSearch | None = None
 _unavailable = False
@@ -43,28 +49,7 @@ def _embed_query(query: str) -> list[float]:
 
 
 def search_rag_knowledge_keyword(client: OpenSearch, query: str, k: int = 3) -> list[dict[str, Any]]:
-    body = {
-        "query": {
-            "bool": {
-                "should": [
-                    {
-                        "multi_match": {
-                            "query": query,
-                            "fields": [
-                                "canonical_symptom.keyword^5",
-                                "alliance^4",
-                                "search_text^2",
-                                "description",
-                            ],
-                            "type": "best_fields",
-                        }
-                    },
-                ],
-                "minimum_should_match": 1,
-            }
-        },
-        "size": k,
-    }
+    body = keyword_search_body(query, k)
     res = client.search(index=config.RAG_KB_INDEX, body=body)
     return [_hit_source(h) for h in res["hits"]["hits"]]
 
@@ -76,30 +61,14 @@ def search_rag_knowledge_hybrid(client: OpenSearch, query: str, k: int = 3) -> l
         logger.exception("embedding failed, fallback to keyword")
         return search_rag_knowledge_keyword(client, query, k=k)
 
-    body = {
-        "query": {
-            "hybrid": {
-                "queries": [
-                    {
-                        "bool": {
-                            "should": [
-                                {
-                                    "multi_match": {
-                                        "query": query,
-                                        "fields": ["alliance^4", "search_text^2", "description"],
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {"knn": {"embedding": {"vector": vec, "k": k}}},
-                ]
-            }
-        },
-        "size": k,
-    }
+    ensure_hybrid_pipeline(client)
+    body = hybrid_search_body(query, vec, k)
     try:
-        res = client.search(index=config.RAG_KB_INDEX, body=body)
+        res = client.search(
+            index=config.RAG_KB_INDEX,
+            body=body,
+            params=hybrid_search_params(),
+        )
         return [_hit_source(h) for h in res["hits"]["hits"]]
     except Exception:
         logger.exception("hybrid search failed, fallback to keyword")

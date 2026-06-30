@@ -36,9 +36,11 @@ LANGGRAPH_CHECKPOINT_DB: str = os.getenv("LANGGRAPH_CHECKPOINT_DB", "data/langgr
 
 # Index / collection defaults
 RAG_KB_INDEX: str = os.getenv("RAG_KB_INDEX", "rag_knowledge")
+RAG_KB_HYBRID_PIPELINE: str = os.getenv("RAG_KB_HYBRID_PIPELINE", "rag-knowledge-hybrid-pipeline")
 RAG_DEPT_RULES_INDEX: str = os.getenv("RAG_DEPT_RULES_INDEX", "rag_department_rules")
-RAG_CLARIFY_MIN_SCORE: float = float(os.getenv("RAG_CLARIFY_MIN_SCORE", "1.2"))
-RAG_CLARIFY_MIN_MARGIN: float = float(os.getenv("RAG_CLARIFY_MIN_MARGIN", "0.15"))
+# Thresholds for min-max normalized hybrid scores (~0–1); see rag-hybrid-pipeline-alignment spec
+RAG_CLARIFY_MIN_SCORE: float = float(os.getenv("RAG_CLARIFY_MIN_SCORE", "0.55"))
+RAG_CLARIFY_MIN_MARGIN: float = float(os.getenv("RAG_CLARIFY_MIN_MARGIN", "0.10"))
 DISEASE_KB_INDEX: str = os.getenv("DISEASE_KB_INDEX", "disease_kb")
 ES_INDEX_NAME: str = os.getenv("ES_INDEX_NAME", "hospital_procedures")
 MAX_REWRITE: int = int(os.getenv("MAX_REWRITE", "2"))

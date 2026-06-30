@@ -17,6 +17,17 @@ if str(_DEMO_DIR) not in sys.path:
 
 from opensearch_mappings import EMBEDDING_DIM, rag_knowledge_index_body
 
+_root = _DEMO_DIR.parent
+if str(_root) not in sys.path:
+    sys.path.insert(0, str(_root))
+
+from app.infra.rag_hybrid_search import (
+    ensure_hybrid_pipeline,
+    hybrid_search_body,
+    hybrid_search_params,
+    keyword_search_body,
+)
+
 load_dotenv()
 
 ES_URL = os.getenv("ES_URL", "http://127.0.0.1:9200")
@@ -81,25 +92,6 @@ def enrich_doc(doc: dict[str, Any], raw_line: str) -> dict[str, Any]:
     out["raw_json"] = raw_line
     out["search_text"] = " ".join(p for p in parts if p)
     return out
-
-
-def ensure_hybrid_pipeline(client: OpenSearch, pipeline_name: str = HYBRID_PIPELINE) -> None:
-    body = {
-        "description": "Normalize BM25 + kNN scores for rag_knowledge hybrid recall",
-        "phase_results_processors": [
-            {
-                "normalization-processor": {
-                    "normalization": {"technique": "min_max"},
-                    "combination": {
-                        "technique": "arithmetic_mean",
-                        "parameters": {"weights": [0.4, 0.6]},
-                    },
-                }
-            }
-        ],
-    }
-    client.transport.perform_request("PUT", f"/_search/pipeline/{pipeline_name}", body=body)
-    print(f"[OS] ensured search pipeline {pipeline_name!r}")
 
 
 def recreate_index(client: OpenSearch, index_name: str = INDEX_NAME) -> None:
@@ -176,7 +168,7 @@ def index_rag_knowledge(
 ) -> int:
     recreate_index(client, index_name)
     if with_embedding:
-        ensure_hybrid_pipeline(client)
+        ensure_hybrid_pipeline(client, HYBRID_PIPELINE)
 
     raw_rows = load_raw_lines(data_path)
     docs = [enrich_doc(doc, raw_line) for raw_line, doc in raw_rows]
@@ -194,36 +186,13 @@ def index_rag_knowledge(
     return len(actions)
 
 
-def _bm25_clause(query: str) -> dict[str, Any]:
-    return {
-        "bool": {
-            "should": [
-                {
-                    "multi_match": {
-                        "query": query,
-                        "fields": [
-                            "canonical_symptom^5",
-                            "alliance^4",
-                            "description^2",
-                            "search_text",
-                        ],
-                        "type": "best_fields",
-                    }
-                },
-                {"term": {"alliance": {"value": query, "boost": 8}}},
-            ],
-            "minimum_should_match": 1,
-        }
-    }
-
-
 def search_keyword(
     client: OpenSearch,
     query: str,
     k: int = 3,
     index_name: str = INDEX_NAME,
 ) -> list[dict[str, Any]]:
-    body = {"query": _bm25_clause(query), "size": k}
+    body = keyword_search_body(query, k)
     res = client.search(index=index_name, body=body)
     return [_hit_row(h) for h in res["hits"]["hits"]]
 
@@ -251,21 +220,12 @@ def search_hybrid(
     pipeline_name: str = HYBRID_PIPELINE,
 ) -> list[dict[str, Any]]:
     vec = embed_texts([query])[0]
-    body = {
-        "query": {
-            "hybrid": {
-                "queries": [
-                    _bm25_clause(query),
-                    {"knn": {"embedding": {"vector": vec, "k": k}}},
-                ]
-            }
-        },
-        "size": k,
-    }
+    body = hybrid_search_body(query, vec, k)
+    params = hybrid_search_params(pipeline_name)
     res = client.search(
         index=index_name,
         body=body,
-        params={"search_pipeline": pipeline_name},
+        params=params,
     )
     return [_hit_row(h) for h in res["hits"]["hits"]]
 
@@ -322,10 +282,6 @@ def main() -> int:
             print("usage: opensearch_rag_kb.py [--doc DOC_ID] [--no-embed] [--acceptance]")
             return 2
         doc_id = sys.argv[idx + 1]
-    _root = _DEMO_DIR.parent
-    if str(_root) not in sys.path:
-        sys.path.insert(0, str(_root))
-
     client = wait_for_opensearch()
     if doc_id:
         if not upsert_doc(client, doc_id, with_embedding=not skip_embed):
