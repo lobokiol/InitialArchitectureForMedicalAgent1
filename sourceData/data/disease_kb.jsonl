@@ -3,7 +3,7 @@
 {"id": "D0003", "type": "disease", "canonical_disease": "胃溃疡", "aliases": ["消化性溃疡", "胃溃疡"], "description": "胃黏膜缺损形成的溃疡，常见上腹痛、反酸、嗳气，空腹痛或餐后痛因类型而异。", "departments": ["消化内科"], "version": ["01"]}
 {"id": "D0004", "type": "disease", "canonical_disease": "十二指肠溃疡", "aliases": ["十二指肠球部溃疡"], "description": "十二指肠黏膜溃疡，常表现为饥饿痛、夜间痛，可伴反酸、黑便。", "departments": ["消化内科"], "version": ["01"]}
 {"id": "D0005", "type": "disease", "canonical_disease": "胃食管反流病", "aliases": ["反流性食管炎", "GERD", "烧心反酸"], "description": "胃内容物反流至食管引起症状，常见烧心、反酸、胸骨后不适。", "departments": ["消化内科"], "version": ["01"]}
-{"id": "D0006", "type": "disease", "canonical_disease": "慢性肝炎", "aliases": ["慢性乙肝", "病毒性肝炎"], "description": "肝脏慢性炎症，可由病毒、酒精、药物等引起，需评估肝功能与病毒指标。", "departments": ["消化内科", "肝病科"], "version": ["01"]}
+{"id": "D0006", "type": "disease", "canonical_disease": "慢性肝炎", "aliases": ["乙型肝炎e抗体阴性", "乙型肝炎大三阳", "乙肝大三阳", "病毒性肝炎", "慢性乙肝"], "description": "肝脏慢性炎症，可由病毒、酒精、药物等引起，需评估肝功能与病毒指标。", "departments": ["消化内科", "肝病科"], "version": ["01"]}
 {"id": "D0007", "type": "disease", "canonical_disease": "肝硬化", "aliases": ["肝硬变"], "description": "慢性肝病进展至肝纤维化和结构改变，可伴腹水、黄疸、脾大等。", "departments": ["消化内科", "肝病科"], "version": ["01"]}
 {"id": "D0008", "type": "disease", "canonical_disease": "脂肪肝", "aliases": ["非酒精性脂肪肝", "肝脂肪变性"], "description": "肝细胞内脂肪过度沉积，常与代谢异常、肥胖、饮酒有关。", "departments": ["消化内科", "内分泌科"], "version": ["01"]}
 {"id": "D0009", "type": "disease", "canonical_disease": "胆囊炎", "aliases": ["急性胆囊炎", "慢性胆囊炎"], "description": "胆囊炎症，常伴右上腹痛，急性者可发热、墨菲征阳性。", "departments": ["普外科", "消化内科"], "version": ["01"]}
@@ -28,7 +28,7 @@
 {"id": "D0028", "type": "disease", "canonical_disease": "甲状腺结节", "aliases": ["甲状腺肿物", "甲状腺包块"], "description": "甲状腺内结节性病变，多数良性，需超声及必要时穿刺评估。", "departments": ["内分泌科", "普外科"], "version": ["01"]}
 {"id": "D0029", "type": "disease", "canonical_disease": "甲亢", "aliases": ["甲状腺功能亢进", "甲状腺功能亢进症", "Graves病"], "description": "甲状腺激素分泌过多，可有心慌、手抖、消瘦、怕热多汗等。", "departments": ["内分泌科"], "version": ["01"]}
 {"id": "D0030", "type": "disease", "canonical_disease": "甲减", "aliases": ["甲状腺功能减退", "甲状腺功能减退症"], "description": "甲状腺激素不足，可致乏力、怕冷、体重增加、便秘等。", "departments": ["内分泌科"], "version": ["01"]}
-{"id": "D0031", "type": "disease", "canonical_disease": "糖尿病", "aliases": ["2型糖尿病", "1型糖尿病", "血糖高"], "description": "慢性代谢性疾病，以高血糖为特征，需长期血糖管理。", "departments": ["内分泌科"], "version": ["01"]}
+{"id": "D0031", "type": "disease", "canonical_disease": "糖尿病", "aliases": ["II型糖尿病", "二型糖尿病", "1型糖尿病", "2型糖尿病", "血糖高"], "description": "慢性代谢性疾病，以高血糖为特征，需长期血糖管理。", "departments": ["内分泌科"], "version": ["01"]}
 {"id": "D0032", "type": "disease", "canonical_disease": "糖尿病酮症酸中毒", "aliases": ["DKA"], "description": "糖尿病严重急性并发症，表现为高血糖、酮症、酸中毒，需急诊处理。", "departments": ["内分泌科", "急诊科"], "version": ["01"]}
 {"id": "D0033", "type": "disease", "canonical_disease": "高脂血症", "aliases": ["高血脂", "血脂高", "高胆固醇"], "description": "血脂水平异常升高，增加心脑血管风险。", "departments": ["内分泌科", "心内科"], "version": ["01"]}
 {"id": "D0034", "type": "disease", "canonical_disease": "痛风", "aliases": ["高尿酸血症", "尿酸高"], "description": "嘌呤代谢障碍致血尿酸升高，可急性关节炎发作及痛风石。", "departments": ["内分泌科", "风湿免疫科"], "version": ["01"]}
@@ -36,7 +36,7 @@
 {"id": "D0036", "type": "disease", "canonical_disease": "肥胖症", "aliases": ["肥胖", "体重超标"], "description": "体脂过度蓄积的慢性代谢问题，与多种慢病风险相关。", "departments": ["内分泌科", "营养科"], "version": ["01"]}
 {"id": "D0037", "type": "disease", "canonical_disease": "甲状腺癌", "aliases": ["甲状腺恶性肿瘤"], "description": "甲状腺恶性肿瘤，常通过结节评估发现，预后因类型而异。", "departments": ["普外科", "内分泌科", "肿瘤科"], "version": ["01"]}
 {"id": "D0038", "type": "disease", "canonical_disease": "高血压", "aliases": ["原发性高血压", "血压高", "高压"], "description": "动脉血压持续升高，是心脑血管病主要危险因素。", "departments": ["心内科"], "version": ["01"]}
-{"id": "D0039", "type": "disease", "canonical_disease": "冠心病", "aliases": ["冠状动脉粥样硬化性心脏病", "缺血性心脏病"], "description": "冠状动脉狭窄或阻塞致心肌缺血，可心绞痛或心肌梗死。", "departments": ["心内科"], "version": ["01"]}
+{"id": "D0039", "type": "disease", "canonical_disease": "冠心病", "aliases": ["冠状动脉粥样硬化性心脏病", "心肌超微结构", "缺血性心脏病", "心脏病"], "description": "冠状动脉狭窄或阻塞致心肌缺血，可心绞痛或心肌梗死。", "departments": ["心内科"], "version": ["01"]}
 {"id": "D0040", "type": "disease", "canonical_disease": "心绞痛", "aliases": ["稳定型心绞痛", "劳力性心绞痛"], "description": "冠状动脉供血不足引起的胸痛，常于活动后发作。", "departments": ["心内科"], "version": ["01"]}
 {"id": "D0041", "type": "disease", "canonical_disease": "心肌梗死", "aliases": ["急性心梗", "AMI", "急性心肌梗死"], "description": "冠状动脉急性闭塞致心肌坏死，属心血管急症。", "departments": ["心内科", "急诊科"], "version": ["01"]}
 {"id": "D0042", "type": "disease", "canonical_disease": "心律失常", "aliases": ["心律不齐", "心跳不齐"], "description": "心脏节律或频率异常，可表现为心悸、头晕、晕厥等。", "departments": ["心内科"], "version": ["01"]}
@@ -49,7 +49,7 @@
 {"id": "D0049", "type": "disease", "canonical_disease": "肺炎", "aliases": ["肺部感染", "细菌性肺炎", "社区获得性肺炎"], "description": "肺泡及肺间质炎症，常见咳嗽、咳痰、发热、气促。", "departments": ["呼吸内科"], "version": ["01"]}
 {"id": "D0050", "type": "disease", "canonical_disease": "支气管炎", "aliases": ["慢性支气管炎", "急性支气管炎"], "description": "支气管黏膜炎症，常见咳嗽、咳痰，慢性者可长期迁延。", "departments": ["呼吸内科"], "version": ["01"]}
 {"id": "D0051", "type": "disease", "canonical_disease": "慢性阻塞性肺疾病", "aliases": ["慢阻肺", "COPD", "肺气肿"], "description": "气流受限为特征的慢性呼吸病，多与吸烟相关。", "departments": ["呼吸内科"], "version": ["01"]}
-{"id": "D0052", "type": "disease", "canonical_disease": "支气管哮喘", "aliases": ["哮喘", "过敏性哮喘"], "description": "慢性气道炎症性疾病，可反复喘息、气促、胸闷、咳嗽。", "departments": ["呼吸内科"], "version": ["01"]}
+{"id": "D0052", "type": "disease", "canonical_disease": "支气管哮喘", "aliases": ["过敏性哮喘", "哮喘"], "description": "慢性气道炎症性疾病，可反复喘息、气促、胸闷、咳嗽。", "departments": ["呼吸内科"], "version": ["01"]}
 {"id": "D0053", "type": "disease", "canonical_disease": "肺结核", "aliases": ["结核病", "肺痨", "TB"], "description": "结核分枝杆菌感染，以肺结核最常见，可咳嗽、咯血、低热盗汗。", "departments": ["呼吸内科", "感染性疾病科"], "version": ["01"]}
 {"id": "D0054", "type": "disease", "canonical_disease": "肺结节", "aliases": ["肺部结节", "肺小结节"], "description": "影像学发现的肺部小病灶，需结合形态与随访判断性质。", "departments": ["呼吸内科", "胸外科"], "version": ["01"]}
 {"id": "D0055", "type": "disease", "canonical_disease": "肺癌", "aliases": ["原发性肺癌", "肺部恶性肿瘤"], "description": "起源于肺部的恶性肿瘤，可咳嗽、咯血、胸痛、消瘦。", "departments": ["呼吸内科", "胸外科", "肿瘤科"], "version": ["01"]}
@@ -65,19 +65,19 @@
 {"id": "D0065", "type": "disease", "canonical_disease": "帕金森病", "aliases": ["帕金森", "震颤麻痹"], "description": "神经退行性疾病，表现静止性震颤、动作迟缓、肌强直。", "departments": ["神经内科"], "version": ["01"]}
 {"id": "D0066", "type": "disease", "canonical_disease": "阿尔茨海默病", "aliases": ["老年痴呆", "AD", "老年性痴呆"], "description": "进行性认知功能减退，影响记忆、语言与日常生活能力。", "departments": ["神经内科"], "version": ["01"]}
 {"id": "D0067", "type": "disease", "canonical_disease": "面神经炎", "aliases": ["面瘫", "贝尔面瘫", "周围性面瘫"], "description": "面神经麻痹致口眼歪斜、鼓腮漏气，需及时评估。", "departments": ["神经内科", "耳鼻喉科"], "version": ["01"]}
-{"id": "D0068", "type": "disease", "canonical_disease": "周围神经病", "aliases": ["周围神经炎", "末梢神经炎"], "description": "周围神经损害，可致麻木、刺痛、无力等。", "departments": ["神经内科"], "version": ["01"]}
+{"id": "D0068", "type": "disease", "canonical_disease": "周围神经病", "aliases": ["多发性神经炎", "周围性神经炎", "周围神经炎", "末梢神经炎"], "description": "周围神经损害，可致麻木、刺痛、无力等。", "departments": ["神经内科"], "version": ["01"]}
 {"id": "D0069", "type": "disease", "canonical_disease": "重症肌无力", "aliases": ["肌无力"], "description": "神经肌肉接头传递障碍，表现为波动性肌无力，可累及眼肌、呼吸肌。", "departments": ["神经内科"], "version": ["01"]}
 {"id": "D0070", "type": "disease", "canonical_disease": "颈椎病", "aliases": ["颈椎间盘突出", "颈肩综合征"], "description": "颈椎退变或间盘突出，可颈肩痛、上肢麻木头晕。", "departments": ["骨科", "神经内科"], "version": ["01"]}
-{"id": "D0071", "type": "disease", "canonical_disease": "腰椎间盘突出症", "aliases": ["腰椎间盘突出", "腰突", "腰椎间盘脱出"], "description": "椎间盘突出压迫神经，可腰痛、下肢放射痛麻木。", "departments": ["骨科", "康复医学科"], "version": ["01"]}
+{"id": "D0071", "type": "disease", "canonical_disease": "腰椎间盘突出症", "aliases": ["腰椎间盘突出手术", "腰间盘穿丁手术", "腰间盘手术后", "腰椎间盘脱出", "腰椎间盘突出", "腰突"], "description": "椎间盘突出压迫神经，可腰痛、下肢放射痛麻木。", "departments": ["骨科", "康复医学科"], "version": ["01"]}
 {"id": "D0072", "type": "disease", "canonical_disease": "骨关节炎", "aliases": ["关节炎", "退行性关节病", "骨性关节炎"], "description": "关节软骨退变，常见膝、髋、手关节疼痛僵硬。", "departments": ["骨科", "风湿免疫科"], "version": ["01"]}
-{"id": "D0073", "type": "disease", "canonical_disease": "类风湿关节炎", "aliases": ["类风湿", "RA"], "description": "自身免疫性关节炎症，可致对称性小关节肿痛、晨僵。", "departments": ["风湿免疫科"], "version": ["01"]}
+{"id": "D0073", "type": "disease", "canonical_disease": "类风湿关节炎", "aliases": ["类风湿因子升高", "内风湿", "类风湿", "RA"], "description": "自身免疫性关节炎症，可致对称性小关节肿痛、晨僵。", "departments": ["风湿免疫科"], "version": ["01"]}
 {"id": "D0074", "type": "disease", "canonical_disease": "强直性脊柱炎", "aliases": ["AS"], "description": "主要累及骶髂关节和脊柱的慢性炎症，可腰背痛、晨僵。", "departments": ["风湿免疫科", "骨科"], "version": ["01"]}
 {"id": "D0075", "type": "disease", "canonical_disease": "系统性红斑狼疮", "aliases": ["红斑狼疮", "SLE", "狼疮"], "description": "多系统自身免疫病，可累及皮肤、关节、肾、血液等。", "departments": ["风湿免疫科"], "version": ["01"]}
 {"id": "D0076", "type": "disease", "canonical_disease": "痛风性关节炎", "aliases": ["急性痛风", "痛风发作"], "description": "尿酸结晶沉积关节引起急性红肿热痛，常见于第一跖趾关节。", "departments": ["风湿免疫科", "内分泌科"], "version": ["01"]}
 {"id": "D0077", "type": "disease", "canonical_disease": "骨折", "aliases": ["骨裂", "骨头断了"], "description": "骨骼连续性中断，需影像学确认并评估固定或手术方案。", "departments": ["骨科", "急诊科"], "version": ["01"]}
 {"id": "D0078", "type": "disease", "canonical_disease": "肩周炎", "aliases": ["冻结肩", "五十肩"], "description": "肩关节周围炎症及粘连，致肩部疼痛和活动受限。", "departments": ["骨科", "康复医学科"], "version": ["01"]}
 {"id": "D0079", "type": "disease", "canonical_disease": "腱鞘炎", "aliases": ["狭窄性腱鞘炎", "扳机指"], "description": "肌腱鞘炎症，常见手指或腕部疼痛、弹响、活动受限。", "departments": ["骨科", "手外科"], "version": ["01"]}
-{"id": "D0080", "type": "disease", "canonical_disease": "半月板损伤", "aliases": ["半月板撕裂"], "description": "膝关节半月板结构损伤，可关节痛、交锁、肿胀。", "departments": ["骨科", "运动医学科"], "version": ["01"]}
+{"id": "D0080", "type": "disease", "canonical_disease": "半月板损伤", "aliases": ["半月板二度损伤", "半月板二度", "半月板撕裂"], "description": "膝关节半月板结构损伤，可关节痛、交锁、肿胀。", "departments": ["骨科", "运动医学科"], "version": ["01"]}
 {"id": "D0081", "type": "disease", "canonical_disease": "前交叉韧带损伤", "aliases": ["ACL损伤", "前十字韧带损伤"], "description": "膝关节重要稳定结构损伤，多与运动扭伤相关。", "departments": ["骨科", "运动医学科"], "version": ["01"]}
 {"id": "D0082", "type": "disease", "canonical_disease": "尿路感染", "aliases": ["UTI", "泌尿系感染", "膀胱炎"], "description": "泌尿系统细菌感染，常见尿频、尿急、尿痛，可发热。", "departments": ["泌尿外科", "肾内科"], "version": ["01"]}
 {"id": "D0083", "type": "disease", "canonical_disease": "肾结石", "aliases": ["肾石", "泌尿系结石"], "description": "肾脏内结石形成，可腰痛、血尿，结石移动时可肾绞痛。", "departments": ["泌尿外科"], "version": ["01"]}
@@ -92,7 +92,7 @@
 {"id": "D0092", "type": "disease", "canonical_disease": "阴道炎", "aliases": ["霉菌性阴道炎", "细菌性阴道病", "滴虫性阴道炎"], "description": "阴道炎症，常见分泌物异常、瘙痒、异味。", "departments": ["妇科"], "version": ["01"]}
 {"id": "D0093", "type": "disease", "canonical_disease": "盆腔炎", "aliases": ["盆腔炎症", "PID"], "description": "女性上生殖道感染，可下腹痛、发热、分泌物增多。", "departments": ["妇科"], "version": ["01"]}
 {"id": "D0094", "type": "disease", "canonical_disease": "子宫肌瘤", "aliases": ["子宫平滑肌瘤", "子宫瘤"], "description": "子宫良性常见肿瘤，可月经量多、压迫症状或无症状。", "departments": ["妇科"], "version": ["01"]}
-{"id": "D0095", "type": "disease", "canonical_disease": "子宫内膜异位症", "aliases": ["内异症", "巧克力囊肿"], "description": "子宫内膜组织异位生长，可痛经、不孕、慢性盆腔痛。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0095", "type": "disease", "canonical_disease": "子宫内膜异位症", "aliases": ["卵巢巧克力囊肿", "巧克力囊肿", "内异症", "巧囊"], "description": "子宫内膜组织异位生长，可痛经、不孕、慢性盆腔痛。", "departments": ["妇科"], "version": ["01"]}
 {"id": "D0096", "type": "disease", "canonical_disease": "多囊卵巢综合征", "aliases": ["PCOS", "多囊卵巢", "多囊"], "description": "内分泌代谢异常，可月经稀发、多毛、不孕、胰岛素抵抗。", "departments": ["妇科", "内分泌科"], "version": ["01"]}
 {"id": "D0097", "type": "disease", "canonical_disease": "宫颈炎", "aliases": ["宫颈炎症"], "description": "宫颈黏膜炎症，可接触性出血、分泌物增多。", "departments": ["妇科"], "version": ["01"]}
 {"id": "D0098", "type": "disease", "canonical_disease": "宫颈癌", "aliases": ["宫颈恶性肿瘤"], "description": "宫颈上皮恶性肿瘤，需筛查与规范治疗。", "departments": ["妇科", "肿瘤科"], "version": ["01"]}
@@ -103,3 +103,38 @@
 {"id": "D0103", "type": "disease", "canonical_disease": "痛风性关节炎", "aliases": ["痛风", "脚痛风", "大脚趾痛风"], "description": "尿酸结晶沉积关节引起炎症，足部常见第一跖趾关节突发红肿剧痛。", "departments": ["风湿免疫科", "内分泌科"], "version": ["01"]}
 {"id": "D0104", "type": "disease", "canonical_disease": "跖疣", "aliases": ["脚底疣", "脚上长疣", "足部疣"], "description": "足底病毒感染所致疣状增生，受压时疼痛，表面可见小黑点。", "departments": ["皮肤科"], "version": ["01"]}
 {"id": "D0105", "type": "disease", "canonical_disease": "拇外翻", "aliases": ["大脚骨", "拇趾外翻", "脚骨突出"], "description": "第一跖趾关节向外偏斜畸形，可致足部疼痛、穿鞋困难及反复摩擦红肿。", "departments": ["骨科"], "version": ["01"]}
+{"id": "D0106", "type": "disease", "canonical_disease": "股癣", "aliases": ["股部癣", "腹股沟癣"], "description": "股部皮肤真菌感染，常见腹股沟内侧红斑、瘙痒、脱屑，边界清楚。", "departments": ["皮肤科"], "version": ["01"]}
+{"id": "D0107", "type": "disease", "canonical_disease": "子宫内膜增生", "aliases": ["内膜增生", "子宫内膜增厚"], "description": "子宫内膜异常增殖，可致月经紊乱、经量增多，需病理评估良恶性。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0108", "type": "disease", "canonical_disease": "眼睑带状疱疹", "aliases": ["眼部带状疱疹", "眼带状疱疹"], "description": "带状疱疹累及眼睑及周围，可伴疱疹、疼痛，需警惕角膜受累。", "departments": ["皮肤科", "眼科"], "version": ["01"]}
+{"id": "D0109", "type": "disease", "canonical_disease": "卵巢囊肿", "aliases": ["卵巢囊性肿物", "卵巢包块", "卵巢囊性", "卵巢囊性物", "左侧卵巢囊性", "右侧卵巢囊性"], "description": "卵巢内囊性病变，可无症状或腹胀、腹痛，需超声随访。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0110", "type": "disease", "canonical_disease": "自然流产", "aliases": ["流产", "早期流产", "胎停"], "description": "妊娠早期胚胎自然停止发育并排出，可伴阴道流血、腹痛。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0111", "type": "disease", "canonical_disease": "精神分裂症", "aliases": ["精神分裂", "精神病"], "description": "以思维、情感、行为不协调为特征的精神疾病，需长期规范治疗。", "departments": ["精神心理科"], "version": ["01"]}
+{"id": "D0112", "type": "disease", "canonical_disease": "迟发性运动障碍", "aliases": ["药物性运动障碍"], "description": "长期使用抗精神病药物后出现的异常不自主运动，可累及面部、肢体。", "departments": ["精神心理科", "神经内科"], "version": ["01"]}
+{"id": "D0113", "type": "disease", "canonical_disease": "尘肺病", "aliases": ["尘吸肺病", "尘肺", "矽肺", "职业性尘肺"], "description": "长期吸入粉尘致肺纤维化，常见于矿工、打磨工等职业暴露。", "departments": ["呼吸内科", "职业病科"], "version": ["01"]}
+{"id": "D0114", "type": "disease", "canonical_disease": "股骨颈骨折", "aliases": ["髋部骨折", "股骨颈断裂"], "description": "股骨颈部位骨折，多见于老年人跌倒，可致髋部疼痛、活动受限。", "departments": ["骨科"], "version": ["01"]}
+{"id": "D0115", "type": "disease", "canonical_disease": "鼻甲肥大", "aliases": ["下鼻甲肥大", "鼻甲增生"], "description": "鼻甲黏膜增生肥大，可致鼻塞、呼吸不畅，常伴鼻炎。", "departments": ["耳鼻喉科"], "version": ["01"]}
+{"id": "D0116", "type": "disease", "canonical_disease": "新生儿黄疸", "aliases": ["黄胆", "新生儿黄胆", "婴儿黄疸", "初生儿黄疸"], "description": "新生儿期胆红素升高致皮肤巩膜黄染，需评估生理性还是病理性。", "departments": ["儿科", "新生儿科"], "version": ["01"]}
+{"id": "D0117", "type": "disease", "canonical_disease": "子宫癌", "aliases": ["子宫内膜癌", "宫体癌"], "description": "子宫体或内膜恶性肿瘤，可异常出血、消瘦，需妇科肿瘤专科。", "departments": ["妇科", "肿瘤科"], "version": ["01"]}
+{"id": "D0118", "type": "disease", "canonical_disease": "肝门部胆管癌", "aliases": ["胆管癌", "肝门胆管癌"], "description": "肝门部胆管恶性肿瘤，可黄疸、腹痛、消瘦，预后与分期相关。", "departments": ["肝胆外科", "肿瘤科", "消化内科"], "version": ["01"]}
+{"id": "D0119", "type": "disease", "canonical_disease": "脑萎缩", "aliases": ["脑萎缩症", "老年性脑萎缩"], "description": "脑组织体积缩小，可伴记忆力下降、认知减退，需神经专科评估。", "departments": ["神经内科"], "version": ["01"]}
+{"id": "D0120", "type": "disease", "canonical_disease": "心脏病", "aliases": ["左胸有时候像有凉水流过一样", "心脏不适"], "description": "心脏疾病统称，可胸闷、心悸、胸痛等，需心内科进一步鉴别。", "departments": ["心内科"], "version": ["01"]}
+{"id": "D0121", "type": "disease", "canonical_disease": "急性脊髓炎", "aliases": ["脊髓炎"], "description": "脊髓急性炎症，可致肢体无力、感觉障碍、大小便功能障碍。", "departments": ["神经内科"], "version": ["01"]}
+{"id": "D0122", "type": "disease", "canonical_disease": "乳腺纤维瘤", "aliases": ["乳腺纤维腺瘤", "乳房纤维瘤"], "description": "乳腺良性纤维上皮肿瘤，可触及无痛肿块，需影像随访或手术。", "departments": ["乳腺外科", "妇科"], "version": ["01"]}
+{"id": "D0123", "type": "disease", "canonical_disease": "肌张力异常", "aliases": ["肌张力障碍", "肌张力过高", "肌张力过低"], "description": "肌肉张力调节异常，可僵硬或过低，见于神经肌肉疾病或发育问题。", "departments": ["神经内科", "儿科"], "version": ["01"]}
+{"id": "D0124", "type": "disease", "canonical_disease": "人工流产", "aliases": ["人流", "药流", "清宫术后"], "description": "终止妊娠的医疗操作，术后需随访出血、感染及子宫恢复。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0125", "type": "disease", "canonical_disease": "妊娠", "aliases": ["怀孕", "早孕", "孕期", "妊娠状态"], "description": "妊娠相关咨询与并发症评估，包括产检、流产、保胎等。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0126", "type": "disease", "canonical_disease": "宫颈糜烂", "aliases": ["宫颈轻度糜烂", "宫颈糜烂样改变"], "description": "宫颈柱状上皮外移所致糜烂样外观，常需宫颈筛查排除病变。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0127", "type": "disease", "canonical_disease": "宫颈水肿", "aliases": ["宫颈炎性水肿"], "description": "宫颈组织水肿，可伴分泌物增多、接触性出血，需妇科评估。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0128", "type": "disease", "canonical_disease": "近视", "aliases": ["520度近视", "高度近视", "视力下降"], "description": "屈光不正，远物模糊，青少年需规范验光与防控。", "departments": ["眼科"], "version": ["01"]}
+{"id": "D0129", "type": "disease", "canonical_disease": "更年期综合征", "aliases": ["更年期", "绝经期综合征", "围绝经期"], "description": "围绝经期激素波动所致心慌、失眠、潮热、情绪波动等。", "departments": ["妇科", "内分泌科"], "version": ["01"]}
+{"id": "D0130", "type": "disease", "canonical_disease": "感冒", "aliases": ["上呼吸道感染", "伤风"], "description": "病毒性上呼吸道感染，常见流涕、咳嗽、咽痛、发热。", "departments": ["呼吸内科", "全科医学科"], "version": ["01"]}
+{"id": "D0131", "type": "disease", "canonical_disease": "咳嗽", "aliases": ["久咳", "感冒咳嗽"], "description": "呼吸道刺激或感染引起的保护性反射，久咳需排查气道与肺部病因。", "departments": ["呼吸内科"], "version": ["01"]}
+{"id": "D0132", "type": "disease", "canonical_disease": "支原体感染", "aliases": ["支原休", "支原体肺炎", "肺炎支原体"], "description": "支原体引起的感染，可累及呼吸道或泌尿生殖道。", "departments": ["呼吸内科", "感染性疾病科", "泌尿外科"], "version": ["01"]}
+{"id": "D0133", "type": "disease", "canonical_disease": "艾滋病", "aliases": ["艾滋病毒", "HIV感染", "AIDS"], "description": "HIV感染所致免疫缺陷，需感染科规范抗病毒与随访。", "departments": ["感染性疾病科", "皮肤科"], "version": ["01"]}
+{"id": "D0134", "type": "disease", "canonical_disease": "包皮术后并发症", "aliases": ["包皮术后", "包皮环切术后", "包皮手术后"], "description": "包皮手术后创面愈合不良、感染或瘢痕等问题。", "departments": ["泌尿外科"], "version": ["01"]}
+{"id": "D0135", "type": "disease", "canonical_disease": "尿毒症", "aliases": ["尿毒炎症", "尿蛋白升高", "尿液中蛋白含量较多"], "description": "肾功能严重受损致代谢废物蓄积，常伴蛋白尿、水肿。", "departments": ["肾内科"], "version": ["01"]}
+{"id": "D0136", "type": "disease", "canonical_disease": "胎儿宫内死亡", "aliases": ["胎儿死在肚子里", "胎死宫内", "死胎"], "description": "妊娠中胎儿心跳消失，需及时引产并查明原因。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0137", "type": "disease", "canonical_disease": "输卵管复通术后", "aliases": ["输卵管复通手术", "输卵管复通"], "description": "输卵管再通术后备孕与妊娠时间咨询。", "departments": ["妇科"], "version": ["01"]}
+{"id": "D0138", "type": "disease", "canonical_disease": "流鼻血", "aliases": ["鼻出血", "衄血"], "description": "鼻腔出血，儿童与成人常见，反复需耳鼻喉科排查。", "departments": ["耳鼻喉科", "儿科"], "version": ["01"]}
+{"id": "D0139", "type": "disease", "canonical_disease": "鞘膜积液", "aliases": ["睾丸鞘膜积液", "精索鞘膜积液", "阴囊积液", "鞘膜积液"], "description": "鞘膜腔内液体积聚致阴囊肿胀，婴幼儿与成人均可发生，需泌尿外科评估。", "departments": ["泌尿外科"], "version": ["01"]}
+{"id": "D0140", "type": "disease", "canonical_disease": "外阴阴道假丝酵母菌病", "aliases": ["念珠菌性阴道炎", "霉菌性阴道炎", "豆腐渣白带", "白带豆腐渣", "白带呈豆腐渣样", "外阴阴道念珠菌病"], "description": "真菌感染所致阴道炎，常见豆腐渣样白带、外阴瘙痒灼痛。", "departments": ["妇科"], "version": ["01"]}

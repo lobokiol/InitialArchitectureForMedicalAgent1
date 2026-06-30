@@ -288,6 +288,8 @@ def main() -> int:
             return 1
     elif not acceptance_only:
         index_rag_knowledge(client, with_embedding=not skip_embed)
+    if "--skip-acceptance" in sys.argv:
+        return 0
     return run_acceptance(client)
 
 
