@@ -69,6 +69,14 @@ class RetrievedDoc(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
 
+class OnCallDoctor(BaseModel):
+    name: str
+    time: str
+    slots: int
+
+    model_config = ConfigDict(extra="ignore")
+
+
 class RelevanceResult(BaseModel):
     '''LLM 判断检索到的文档与用户问题的相关性结果'''
     can_answer_overall: bool = False
@@ -101,6 +109,8 @@ class AppState(BaseModel):
     clarify_state: Optional[Any] = None
     dept_confidence_result: Optional[Any] = None
     dept_confidence_passed: bool | None = None
+    oncall_appointments: list[OnCallDoctor] = Field(default_factory=list)
+    oncall_fetch_error: str | None = None
 
     @field_validator("medical_docs", mode="before")
     @classmethod

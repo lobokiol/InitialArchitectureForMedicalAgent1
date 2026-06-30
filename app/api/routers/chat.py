@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.core.logging import logger
 from app.domain.dept_disambiguation import DeptChoice
 from app.domain.symptom_clarify import ClarifyChoice
-from app.domain.models import IntentResult, RetrievedDoc
+from app.domain.models import IntentResult, RetrievedDoc, OnCallDoctor
 from app.services import chat_service
 
 
@@ -38,6 +38,8 @@ class ChatResponse(BaseModel):
     dept_confidence_passed: Optional[bool] = None
     dept_confidence_reason: Optional[str] = None
     locked_department: Optional[str] = None
+    oncall_appointments: List[OnCallDoctor] = []
+    oncall_fetch_error: Optional[str] = None
     node_trace: List[str] = []
     app_state: Optional[dict[str, Any]] = None
 

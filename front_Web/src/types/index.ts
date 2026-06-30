@@ -27,6 +27,12 @@ export interface DeptChoice {
   target_departments: string[];
 }
 
+export interface OnCallDoctor {
+  name: string;
+  time: string;
+  slots: number;
+}
+
 export interface ChatResponse {
   user_id: string;
   thread_id: string;
@@ -43,6 +49,8 @@ export interface ChatResponse {
   dept_confidence_passed?: boolean;
   dept_confidence_reason?: string;
   locked_department?: string;
+  oncall_appointments?: OnCallDoctor[];
+  oncall_fetch_error?: string;
   node_trace: string[];
   app_state?: Record<string, unknown>;
 }

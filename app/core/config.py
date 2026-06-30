@@ -48,7 +48,7 @@ MAX_HISTORY_MSGS: int = int(os.getenv("MAX_HISTORY_MSGS", "12"))
 TRIM_TRIGGER_MSGS: int = int(os.getenv("TRIM_TRIGGER_MSGS", "24"))
 
 # Model defaults
-CHAT_MODEL_NAME = os.getenv("CHAT_MODEL_NAME", "qwen3-max")
+CHAT_MODEL_NAME = os.getenv("CHAT_MODEL_NAME", "qwen-plus")
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "text-embedding-v2")
 CHAT_BASE_URL = os.getenv("CHAT_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
 EMBEDDING_BASE_URL = os.getenv("EMBEDDING_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
@@ -68,3 +68,7 @@ TRIAGE_SESSION_ENABLED: bool = os.getenv("TRIAGE_SESSION_ENABLED", "true").lower
     "true",
     "yes",
 )
+
+MCP_ENABLED: bool = os.getenv("MCP_ENABLED", "true").lower() in ("1", "true", "yes")
+MCP_SERVER_COMMAND: str = os.getenv("MCP_SERVER_COMMAND", "python mcp_server/server.py")
+MCP_TIMEOUT_SECONDS: float = float(os.getenv("MCP_TIMEOUT_SECONDS", "5.0"))

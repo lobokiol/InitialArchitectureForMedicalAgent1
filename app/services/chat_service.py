@@ -135,6 +135,8 @@ def chat_once(
         "dept_confidence_passed": state.dept_confidence_passed,
         "dept_confidence_reason": conf.reason if conf else None,
         "locked_department": state.locked_department,
+        "oncall_appointments": [d.model_dump() for d in state.oncall_appointments],
+        "oncall_fetch_error": state.oncall_fetch_error,
         "node_trace": node_trace,
         "app_state": dump_app_state(state),
     }

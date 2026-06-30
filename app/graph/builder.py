@@ -15,6 +15,7 @@ from app.graph.nodes.dept_confidence import dept_confidence_node, low_confidence
 from app.graph.nodes.dept_disambiguation import dept_disambiguation_node
 from app.graph.nodes.dept_rules_disambiguation import dept_rules_disambiguation_node
 from app.graph.nodes.disease_dept import disease_dept_node
+from app.graph.nodes.fetch_oncall import fetch_oncall_node
 from app.graph.nodes.reject import reject_node
 from app.graph.nodes.answer import answer_generate_node
 from app.graph.nodes.trim_history import trim_history_node
@@ -42,6 +43,7 @@ def build_graph() -> StateGraph:
     graph.add_node("dept_disambiguation", dept_disambiguation_node)
     graph.add_node("dept_confidence", dept_confidence_node)
     graph.add_node("low_confidence_reject", low_confidence_reject_node)
+    graph.add_node("fetch_oncall", fetch_oncall_node)
     graph.add_node("reject", reject_node)
     graph.add_node("rag_miss_reject", rag_miss_reject_node)
     graph.add_node("answer_generate", answer_generate_node)
@@ -70,7 +72,7 @@ def build_graph() -> StateGraph:
         },
     )
 
-    graph.add_edge("disease_dept", "answer_generate")
+    graph.add_edge("disease_dept", "fetch_oncall")
     graph.add_conditional_edges(
         "rag_symptom_recall",
         route_after_rag,
@@ -86,7 +88,7 @@ def build_graph() -> StateGraph:
         {
             "end_ask": END,
             "dept_rules_disambiguation": "dept_rules_disambiguation",
-            "answer_generate": "answer_generate",
+            "answer_generate": "fetch_oncall",
         },
     )
     graph.add_conditional_edges(
@@ -103,18 +105,19 @@ def build_graph() -> StateGraph:
         {
             "end_ask": END,
             "dept_confidence": "dept_confidence",
-            "answer_generate": "answer_generate",
+            "answer_generate": "fetch_oncall",
         },
     )
     graph.add_conditional_edges(
         "dept_confidence",
         route_after_confidence,
         {
-            "answer_generate": "answer_generate",
+            "answer_generate": "fetch_oncall",
             "low_confidence_reject": "low_confidence_reject",
         },
     )
 
+    graph.add_edge("fetch_oncall", "answer_generate")
     graph.add_edge("reject", END)
     graph.add_edge("rag_miss_reject", END)
     graph.add_edge("low_confidence_reject", END)

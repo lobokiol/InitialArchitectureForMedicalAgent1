@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { AppointmentCards } from './AppointmentCards';
 import { ClarifyChoices } from './ClarifyChoices';
 import { DeptChoices } from './DeptChoices';
 import { MessageBubble } from './MessageBubble';
@@ -68,6 +69,10 @@ export function ChatStage({
               loading={busy && !turn.assistantReply}
               onExpandFull={() => onExpandFull(turn.assistantReply)}
             />
+            {turn.chatSnapshot?.oncall_appointments &&
+              turn.chatSnapshot.oncall_appointments.length > 0 && (
+                <AppointmentCards doctors={turn.chatSnapshot.oncall_appointments} />
+              )}
             {isLatest && turn.choices?.type === 'clarify' && (
               <ClarifyChoices
                 phase={turn.choices.phase}
