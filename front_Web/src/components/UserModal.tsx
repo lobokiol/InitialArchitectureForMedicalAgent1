@@ -11,7 +11,7 @@ interface UserModalProps {
 }
 
 export function UserModal({ open, forced, loading, onSubmit, onClose }: UserModalProps) {
-  const [userId, setUserId] = useState('demo-user');
+  const [userId, setUserId] = useState('guest');
   const [name, setName] = useState('');
 
   if (!open) return null;
