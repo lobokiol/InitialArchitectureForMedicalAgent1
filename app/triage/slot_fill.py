@@ -9,7 +9,6 @@ from app.ner.models import EntityExtractResult
 
 _TRIGGER_RE = re.compile(r"扭|外伤|摔|撞|运动|久站|受凉|饭后|情绪激动|寒冷|冻")
 _DURATION_RE = re.compile(r"\d+[天周月年]|刚出现|首次|反复|很久|半年|几个月|昨天|今天")
-_EMERGENCY_RE = re.compile(r"不能动|发紫|剧烈|受不了|昏迷|大量出血|畸形|不能负重")
 
 
 def _parse_demographics(query: str, table: TriageSlotTable) -> None:
@@ -32,6 +31,4 @@ def fill_slot_table(ner: EntityExtractResult) -> TriageSlotTable:
         table.trigger = _TRIGGER_RE.search(q).group(0)  # type: ignore[union-attr]
     if _DURATION_RE.search(q):
         table.duration = _DURATION_RE.search(q).group(0)  # type: ignore[union-attr]
-    if _EMERGENCY_RE.search(q):
-        table.emergency = _EMERGENCY_RE.search(q).group(0)  # type: ignore[union-attr]
     return table

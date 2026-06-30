@@ -70,8 +70,6 @@ def rag_symptom_recall_node(state: AppState) -> dict:
         q = f"{q} {' '.join(table.companion_symptoms)}".strip()
     if table.trigger:
         q = f"{q} {table.trigger}".strip()
-    if table.emergency:
-        q = f"{q} {table.emergency}".strip()
 
     hits = search_rag_knowledge(q, k=5)
     if primary:

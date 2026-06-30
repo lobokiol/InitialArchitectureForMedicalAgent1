@@ -20,10 +20,8 @@ from app.triage.dept_scoring import (
     score_departments,
     try_lock_department,
 )
+from app.triage.emergency_rules import match_emergency
 from app.triage.turn_text import current_turn_text
-
-_EMERGENCY_KW = ("畸形", "不能负重", "发紫", "剧烈", "不能动", "皮肤发黑", "感觉丧失")
-
 
 def _last_human_message(state: AppState) -> str:
     for msg in reversed(state.messages):
@@ -33,15 +31,7 @@ def _last_human_message(state: AppState) -> str:
 
 
 def _is_emergency(chunk: dict, user_text: str) -> bool:
-    blob = user_text
-    for kw in _EMERGENCY_KW:
-        if kw in blob:
-            return True
-    cond = (chunk.get("emergency_flag") or {}).get("condition") or ""
-    for kw in _EMERGENCY_KW:
-        if kw in cond and kw in blob:
-            return True
-    return False
+    return match_emergency(user_text) is not None
 
 
 def _locked_patch(

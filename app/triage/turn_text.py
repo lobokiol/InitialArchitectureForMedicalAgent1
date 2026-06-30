@@ -19,6 +19,4 @@ def current_turn_text(state: AppState) -> str:
     if table:
         if table.trigger:
             parts.append(table.trigger)
-        if table.emergency:
-            parts.append(table.emergency)
     return " ".join(p for p in parts if p)

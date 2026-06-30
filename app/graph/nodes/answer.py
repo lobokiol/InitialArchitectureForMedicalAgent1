@@ -30,11 +30,11 @@ def answer_generate_node(state: AppState) -> dict:
         ds = state.dept_state
         status = getattr(ds, "status", None) if ds else None
         if dept == "急诊":
-            flag = chunk.get("emergency_flag") or {}
-            detail = flag.get("suggestion") or flag.get("condition") or "请尽快就医。"
-            full_content = (
-                f"{prefix}根据您描述的情况（{canonical}），建议尽快就诊：**急诊**。\n{detail}"
-            )
+            from app.triage.emergency_rules import DEFAULT_EMERGENCY_REPLY
+
+            detail = chunk.get("emergency_reply") or DEFAULT_EMERGENCY_REPLY
+            full_content = f"建议尽快就诊：**急诊**。\n{detail}"
+            return {"messages": [AIMessage(content=full_content)]}
         elif status == "fallback":
             full_content = (
                 f"{prefix}根据您描述的症状（{canonical}），建议首选就诊：**{dept}**。"
