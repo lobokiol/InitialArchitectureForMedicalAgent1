@@ -1,18 +1,19 @@
 from typing import Any, Optional, List
 
 import asyncio
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from app.core.logging import logger
 from app.domain.dept_disambiguation import DeptChoice
 from app.domain.symptom_clarify import ClarifyChoice
 from app.domain.models import IntentResult, RetrievedDoc, OnCallDoctor
+from app.gateway.deps import CurrentUser, get_current_user
 from app.services import chat_service
 
 
 class ChatRequest(BaseModel):
-    user_id: str
+    user_id: Optional[str] = None
     thread_id: Optional[str] = None
     message: str
 
@@ -49,14 +50,17 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("", response_model=ChatResponse)
-async def chat_endpoint(body: ChatRequest):
-    logger.info('POST /chat user_id=%s thread_id=%s message=%r', body.user_id, body.thread_id, body.message)
-    # Run sync chat_once in thread to avoid blocking event loop
+async def chat_endpoint(
+    body: ChatRequest,
+    user: CurrentUser = Depends(get_current_user),
+):
+    user_id = user.phone
+    logger.info('POST /chat user_id=%s thread_id=%s message=%r', user_id, body.thread_id, body.message)
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(
         None,
         chat_service.chat_once,
-        body.user_id,
+        user_id,
         body.thread_id,
         body.message,
     )

@@ -91,6 +91,13 @@ class SessionManager:
     def _thread_meta_key(self, thread_id: str) -> str:
         return THREAD_META_KEY.format(thread_id=thread_id)
 
+    def assert_thread_owner(self, thread_id: str, user_id: str) -> None:
+        meta = self.client.hgetall(self._thread_meta_key(thread_id))
+        if not meta:
+            raise ValueError("THREAD_NOT_FOUND")
+        if meta.get("user_id") != user_id:
+            raise ValueError("THREAD_NOT_OWNED")
+
     def get_current_thread(self, user_id: str) -> Optional[str]:
         return self.client.get(self._user_current_key(user_id))
 
