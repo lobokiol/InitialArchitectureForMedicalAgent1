@@ -1,4 +1,5 @@
 # pip install rich requests
+import argparse
 import json
 import os
 import sys
@@ -12,6 +13,8 @@ from rich.prompt import Prompt
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.theme import Theme
 
+from scripts.auth_helper import login
+
 custom_theme = Theme(
     {
         "info": "dim cyan",
@@ -23,13 +26,41 @@ custom_theme = Theme(
 console = Console(theme=custom_theme)
 
 
+def _get_token(
+    base_url: str,
+    session: requests.Session,
+    timeout: float,
+    args: argparse.Namespace,
+) -> str:
+    if args.token:
+        return args.token
+    phone = args.phone
+    password = args.password
+    if not phone:
+        phone = Prompt.ask("手机号", console=console).strip()
+    if not password:
+        password = Prompt.ask("密码", password=True, console=console).strip()
+    try:
+        return login(base_url, phone, password, timeout=timeout)
+    except requests.HTTPError as exc:
+        if exc.response is not None and exc.response.status_code == 401:
+            if Prompt.ask("登录失败，是否注册新账号？(y/n)", choices=["y", "n"], default="n", console=console) == "y":
+                display_name = Prompt.ask("昵称（可留空）", default="", console=console).strip() or None
+                payload: Dict[str, Any] = {"phone": phone, "password": password}
+                if display_name:
+                    payload["display_name"] = display_name
+                resp = session.post(f"{base_url}/auth/register", json=payload, timeout=timeout)
+                resp.raise_for_status()
+                return resp.json()["access_token"]
+        raise
+
+
 class ChatCLI:
-    def __init__(self) -> None:
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.args = args
         self.base_url = os.getenv("BACKEND_BASE_URL", "http://localhost:8000").rstrip("/")
-        # 默认等久一点（后台可能检索/推理较慢）；可通过 BACKEND_TIMEOUT 调整
         self.timeout = float(os.getenv("BACKEND_TIMEOUT", "120"))
         self.session = requests.Session()
-        # 本地后端不走系统代理，避免 SOCKS 代理缺 PySocks 导致请求失败
         self.session.trust_env = False
         self.user_id: Optional[str] = None
         self.user_name: Optional[str] = None
@@ -52,37 +83,29 @@ class ChatCLI:
             console.print(Panel(f"无法连接后端：{exc}", style="warning"))
 
     def _init_user(self) -> None:
-        self.user_id = Prompt.ask("请输入 user_id", default="demo-user", console=console).strip()
-        name = Prompt.ask("请输入昵称（可留空）", default="", console=console).strip()
-        self.user_name = name or None
-        payload = {"user_id": self.user_id}
-        if self.user_name:
-            payload["name"] = self.user_name
         try:
-            resp = self.session.post(
-                f"{self.base_url}/users", json=payload, timeout=self.timeout
-            )
+            token = _get_token(self.base_url, self.session, self.timeout, self.args)
+            self.session.headers["Authorization"] = f"Bearer {token}"
+            resp = self.session.get(f"{self.base_url}/auth/me", timeout=self.timeout)
             resp.raise_for_status()
             data = resp.json()
-            self.user_name = data.get("name")
+            self.user_id = data.get("phone")
+            self.user_name = data.get("display_name")
             console.print(
                 Panel(
-                    f"用户已就绪：{data.get('user_id')} {self.user_name or ''}".strip(),
+                    f"用户已就绪：{self.user_id} {self.user_name or ''}".strip(),
                     style="success",
                 )
             )
         except requests.RequestException as exc:
-            console.print(Panel(f"创建/更新用户失败：{exc}", style="warning"))
+            console.print(Panel(f"登录失败：{exc}", style="error"))
+            sys.exit(1)
 
     def _init_thread(self) -> None:
         if not self.user_id:
             return
         try:
-            resp = self.session.get(
-                f"{self.base_url}/threads/current",
-                params={"user_id": self.user_id},
-                timeout=self.timeout,
-            )
+            resp = self.session.get(f"{self.base_url}/threads/current", timeout=self.timeout)
             resp.raise_for_status()
             data = resp.json()
             self.thread_id = data.get("thread_id")
@@ -145,7 +168,7 @@ class ChatCLI:
                 "/new       创建新会话",
                 "/switch    切换会话",
                 "/delete    删除当前或指定会话",
-                "/user      查看或更新用户信息",
+                "/user      查看当前用户信息",
                 "/exit      退出",
             ]
         )
@@ -155,11 +178,7 @@ class ChatCLI:
         if not self.user_id:
             return []
         try:
-            resp = self.session.get(
-                f"{self.base_url}/threads",
-                params={"user_id": self.user_id},
-                timeout=self.timeout,
-            )
+            resp = self.session.get(f"{self.base_url}/threads", timeout=self.timeout)
             resp.raise_for_status()
             threads = resp.json()
             if not threads:
@@ -181,13 +200,11 @@ class ChatCLI:
         if not self.user_id:
             return
         title = Prompt.ask("新会话标题（可留空）", default="", console=console).strip() or None
-        payload = {"user_id": self.user_id}
+        payload: Dict[str, Any] = {}
         if title:
             payload["title"] = title
         try:
-            resp = self.session.post(
-                f"{self.base_url}/threads", json=payload, timeout=self.timeout
-            )
+            resp = self.session.post(f"{self.base_url}/threads", json=payload, timeout=self.timeout)
             resp.raise_for_status()
             data = resp.json()
             self.thread_id = data.get("thread_id")
@@ -210,7 +227,7 @@ class ChatCLI:
         if not target_id:
             console.print(Panel("未选择有效会话", style="warning"))
             return
-        payload = {"user_id": self.user_id, "thread_id": target_id}
+        payload = {"thread_id": target_id}
         try:
             resp = self.session.post(
                 f"{self.base_url}/threads/switch",
@@ -234,7 +251,6 @@ class ChatCLI:
         try:
             resp = self.session.delete(
                 f"{self.base_url}/threads/{target}",
-                params={"user_id": self.user_id},
                 timeout=self.timeout,
             )
             resp.raise_for_status()
@@ -252,33 +268,19 @@ class ChatCLI:
         if not self.user_id:
             return
         try:
-            resp = self.session.get(
-                f"{self.base_url}/users/{self.user_id}", timeout=self.timeout
-            )
+            resp = self.session.get(f"{self.base_url}/auth/me", timeout=self.timeout)
             resp.raise_for_status()
             data = resp.json()
-            self.user_name = data.get("name")
+            self.user_name = data.get("display_name")
             console.print(Panel(f"用户信息：{data}", style="info"))
         except requests.RequestException:
             console.print(Panel("获取用户信息失败", style="warning"))
-        if Prompt.ask("更新昵称？(y/n)", choices=["y", "n"], default="n", console=console) == "y":
-            new_name = Prompt.ask("输入新的昵称", default=self.user_name or "", console=console).strip()
-            payload = {"user_id": self.user_id, "name": new_name}
-            try:
-                resp = self.session.post(
-                    f"{self.base_url}/users", json=payload, timeout=self.timeout
-                )
-                resp.raise_for_status()
-                self.user_name = resp.json().get("name")
-                console.print(Panel("昵称已更新", style="success"))
-            except requests.RequestException as exc:
-                console.print(Panel(f"更新失败：{exc}", style="warning"))
 
     def _ask_chat(self, message: str) -> None:
         if not self.user_id:
-            console.print(Panel("请先初始化用户", style="warning"))
+            console.print(Panel("请先登录", style="warning"))
             return
-        payload = {"user_id": self.user_id, "message": message}
+        payload: Dict[str, Any] = {"message": message}
         if self.thread_id:
             payload["thread_id"] = self.thread_id
         console.print(Panel(message, title="你", style="info"))
@@ -311,7 +313,7 @@ class ChatCLI:
             phase = data.get("clarify_phase") or ""
             console.print(Panel(f"请回答：{phase}", style="info"))
             pick = Prompt.ask("您的选择", choices=labels, console=console)
-            payload = {"user_id": self.user_id, "message": pick}
+            payload = {"message": pick}
             if self.thread_id:
                 payload["thread_id"] = self.thread_id
             try:
@@ -337,7 +339,7 @@ class ChatCLI:
             else:
                 console.print(Panel("请选择症状（从下列选项中选择）", style="info"))
                 pick = Prompt.ask("您的选择", choices=labels, console=console)
-            payload = {"user_id": self.user_id, "message": pick}
+            payload = {"message": pick}
             if self.thread_id:
                 payload["thread_id"] = self.thread_id
             try:
@@ -396,7 +398,12 @@ class ChatCLI:
 
 
 def main() -> None:
-    cli = ChatCLI()
+    parser = argparse.ArgumentParser(description="医院导诊 Agentic 助手 CLI")
+    parser.add_argument("--phone", help="E.164 or CN mobile")
+    parser.add_argument("--password", help="account password")
+    parser.add_argument("--token", help="skip login, use access token directly")
+    args = parser.parse_args()
+    cli = ChatCLI(args)
     cli.run()
 
 

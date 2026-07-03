@@ -156,6 +156,65 @@ flowchart TB
 
 - `DASHSCOPE_API_KEY`：DashScope 兼容 OpenAI API 的密钥。
 
+### 鉴权相关（JWT / 微信 / 限流）
+
+`.env.example` 中已列出网关层变量，生产环境务必修改 `JWT_SECRET`：
+
+| 变量 | 说明 | 默认 |
+|------|------|------|
+| `JWT_SECRET` | HS256 签名密钥 | `dev-only-change-me` |
+| `JWT_ACCESS_EXPIRE_MINUTES` | Access Token 有效期（分钟） | `120` |
+| `JWT_REFRESH_EXPIRE_DAYS` | Refresh Token 有效期（天） | `7` |
+| `WECHAT_APP_ID` / `WECHAT_APP_SECRET` | 微信小程序 `code2session` / 手机号解密 | 空（未配置时微信端点返回 503） |
+| `CORS_ORIGINS` | 允许的跨域来源 | `http://localhost:5173,https://servicewechat.com` |
+| `RATE_LIMIT_CHAT` | `/chat` 限额 | `10/minute` |
+| `RATE_LIMIT_READ` | `/threads/*`、`/auth/me` 限额 | `60/minute` |
+| `RATE_LIMIT_AUTH_IP` | 公开 `/auth/*` 按 IP 限额 | `10/minute` |
+| `MAX_REFRESH_PER_PHONE` | 每手机号活跃 Refresh 数上限 | `3` |
+
+**Breaking change：** 自网关改造起，`/chat` 与 `/threads/*` 必须携带 `Authorization: Bearer <access_token>`。客户端传入的 `user_id` 不再作为身份依据（服务端从 JWT `sub` 注入，即 E.164 手机号）。旧 `POST|GET /users` 已废弃，请改用 `/auth/register` 与 `/auth/me`。
+
+**Web 登录：** `front_Web` 启动后使用手机号 + 密码注册/登录；Axios 拦截器自动附加 Bearer 并在 401 时尝试 `/auth/refresh`。
+
+**CLI：**
+
+```powershell
+# 交互式登录（会提示手机号与密码）
+.\.venv\Scripts\python.exe cli.py
+
+# 非交互
+.\.venv\Scripts\python.exe cli.py --phone 13800138000 --password yourpass123
+
+# 直接使用已有 token（跳过登录）
+.\.venv\Scripts\python.exe cli.py --token eyJ...
+```
+
+**curl 示例：**
+
+```bash
+# 注册
+curl -s -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"phone":"13800138000","password":"testpass123","display_name":"Demo"}'
+
+# 登录
+curl -s -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"phone":"13800138000","password":"testpass123"}'
+
+# 带 token 发消息（body 无需 user_id）
+TOKEN="<access_token>"
+curl -s -X POST http://localhost:8000/chat \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"message":"头痛三天了"}'
+
+# 当前用户
+curl -s http://localhost:8000/auth/me -H "Authorization: Bearer $TOKEN"
+```
+
+**微信小程序 API 契约**（`wx.login` → 手机号授权 → Bearer 请求）见设计文档 [§3.1](docs/superpowers/specs/2026-07-04-api-gateway-jwt-wechat-ratelimit-design.md#31-微信小程序)。评估脚本可复用 `scripts/auth_helper.py` 的 `login(base_url, phone, password)` 获取 token。
+
 ---
 
 ## 启动方式
