@@ -1,14 +1,16 @@
 from typing import Any, Optional, List
 
 import asyncio
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 
+from app.core import config
 from app.core.logging import logger
 from app.domain.dept_disambiguation import DeptChoice
 from app.domain.symptom_clarify import ClarifyChoice
 from app.domain.models import IntentResult, RetrievedDoc, OnCallDoctor
 from app.gateway.deps import CurrentUser, get_current_user
+from app.gateway.rate_limit import limiter
 from app.services import chat_service
 
 
@@ -50,7 +52,9 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("", response_model=ChatResponse)
+@limiter.limit(config.RATE_LIMIT_CHAT)
 async def chat_endpoint(
+    request: Request,
     body: ChatRequest,
     user: CurrentUser = Depends(get_current_user),
 ):

@@ -1,9 +1,11 @@
 from typing import Optional, List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 
+from app.core import config
 from app.gateway.deps import CurrentUser, get_current_user
+from app.gateway.rate_limit import limiter
 from app.services.chat_service import get_session_manager
 
 
@@ -61,12 +63,15 @@ def _raise_thread_error(exc: ValueError) -> None:
 
 
 @router.get("", response_model=List[ThreadInfo])
-async def list_threads(user: CurrentUser = Depends(get_current_user)):
+@limiter.limit(config.RATE_LIMIT_READ)
+async def list_threads(request: Request, user: CurrentUser = Depends(get_current_user)):
     return session_manager.list_threads(user.phone)
 
 
 @router.post("", response_model=CreateThreadResponse)
+@limiter.limit(config.RATE_LIMIT_READ)
 async def create_thread(
+    request: Request,
     body: CreateThreadRequest,
     user: CurrentUser = Depends(get_current_user),
 ):
@@ -77,7 +82,9 @@ async def create_thread(
 
 
 @router.delete("/{thread_id}", response_model=DeleteThreadResponse)
+@limiter.limit(config.RATE_LIMIT_READ)
 async def delete_thread(
+    request: Request,
     thread_id: str,
     user: CurrentUser = Depends(get_current_user),
 ):
@@ -94,7 +101,8 @@ async def delete_thread(
 
 
 @router.get("/current", response_model=ThreadInfo)
-async def get_current_thread(user: CurrentUser = Depends(get_current_user)):
+@limiter.limit(config.RATE_LIMIT_READ)
+async def get_current_thread(request: Request, user: CurrentUser = Depends(get_current_user)):
     """
     获取当前用户的当前会话，如果没有则创建一个默认会话。
     """
@@ -120,7 +128,9 @@ async def get_current_thread(user: CurrentUser = Depends(get_current_user)):
 
 
 @router.post("/switch", response_model=SwitchThreadResponse)
+@limiter.limit(config.RATE_LIMIT_READ)
 async def switch_thread(
+    request: Request,
     body: SwitchThreadRequest,
     user: CurrentUser = Depends(get_current_user),
 ):

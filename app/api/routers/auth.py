@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import jwt as pyjwt
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from passlib.hash import bcrypt
 from pydantic import BaseModel, Field
 
@@ -10,6 +10,7 @@ from app.gateway.deps import CurrentUser, get_current_user
 from app.gateway.errors import auth_error
 from app.gateway.jwt import decode_token, issue_token_pair
 from app.gateway.phone import normalize_phone
+from app.gateway.rate_limit import limiter
 from app.infra.token_store import get_token_store
 from app.infra.user_store import get_user_store
 
@@ -69,7 +70,8 @@ def _normalize_or_400(raw: str) -> str:
 
 
 @router.post("/register", response_model=TokenResponse)
-async def register(body: RegisterRequest) -> TokenResponse:
+@limiter.limit(config.RATE_LIMIT_AUTH_IP)
+async def register(request: Request, body: RegisterRequest) -> TokenResponse:
     phone = _normalize_or_400(body.phone)
     pw_hash = bcrypt.hash(body.password)
     try:
@@ -85,7 +87,8 @@ async def register(body: RegisterRequest) -> TokenResponse:
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(body: LoginRequest) -> TokenResponse:
+@limiter.limit(config.RATE_LIMIT_AUTH_IP)
+async def login(request: Request, body: LoginRequest) -> TokenResponse:
     phone = _normalize_or_400(body.phone)
     if not get_user_store().verify_password(phone, body.password):
         raise auth_error("AUTH_INVALID", "invalid credentials")
@@ -93,7 +96,8 @@ async def login(body: LoginRequest) -> TokenResponse:
 
 
 @router.post("/refresh", response_model=TokenResponse)
-async def refresh(body: RefreshRequest) -> TokenResponse:
+@limiter.limit("20/minute")
+async def refresh(request: Request, body: RefreshRequest) -> TokenResponse:
     try:
         claims = decode_token(body.refresh_token, "refresh")
     except pyjwt.ExpiredSignatureError:
@@ -117,7 +121,8 @@ async def logout(user: CurrentUser = Depends(get_current_user)) -> dict[str, boo
 
 
 @router.get("/me", response_model=MeResponse)
-async def me(user: CurrentUser = Depends(get_current_user)) -> MeResponse:
+@limiter.limit(config.RATE_LIMIT_READ)
+async def me(request: Request, user: CurrentUser = Depends(get_current_user)) -> MeResponse:
     record = get_user_store().get_user(user.phone)
     if record is None:
         raise auth_error("AUTH_INVALID", "user not found")
