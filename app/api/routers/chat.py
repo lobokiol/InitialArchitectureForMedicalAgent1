@@ -1,6 +1,5 @@
 from typing import Any, Optional, List
 
-import asyncio
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 
@@ -46,6 +45,7 @@ class ChatResponse(BaseModel):
     oncall_fetch_error: Optional[str] = None
     node_trace: List[str] = []
     app_state: Optional[dict[str, Any]] = None
+    timed_out: bool = False
 
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -60,10 +60,7 @@ async def chat_endpoint(
 ):
     user_id = user.phone
     logger.info('POST /chat user_id=%s thread_id=%s message=%r', user_id, body.thread_id, body.message)
-    loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(
-        None,
-        chat_service.chat_once,
+    result = await chat_service.chat_once_async(
         user_id,
         body.thread_id,
         body.message,
