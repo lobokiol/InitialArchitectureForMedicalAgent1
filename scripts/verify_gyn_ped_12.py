@@ -2,16 +2,16 @@
 """Verify 12 gyn/ped symptom+unmatched cases after RAG kb update."""
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
-
-import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.auth_helper import DEFAULT_EVAL_PASSWORD, DEFAULT_EVAL_PHONE, authed_session
 from scripts.batch_clarify_persona import pick_clarify_reply
 
 SRC = ROOT / "sourceData" / "data" / "小医疗数据.json"
@@ -42,18 +42,16 @@ def load_queries() -> list[str]:
     ]
 
 
-def run_case(sess: requests.Session, idx: int, query: str, want_dept: str) -> dict:
-    uid = f"gyn-ped-test-{idx}"
-    sess.post(f"{BASE}/users", json={"user_id": uid}, proxies=PROXIES, timeout=10)
+def run_case(sess, base: str, idx: int, query: str, want_dept: str) -> dict:
     tid = sess.post(
-        f"{BASE}/threads", json={"user_id": uid, "title": query[:20]}, proxies=PROXIES, timeout=30
+        f"{base}/threads", json={"title": query[:20]}, proxies=PROXIES, timeout=30
     ).json()["thread_id"]
     msg = query
     last: dict = {}
     for _ in range(15):
         last = sess.post(
-            f"{BASE}/chat",
-            json={"user_id": uid, "thread_id": tid, "message": msg},
+            f"{base}/chat",
+            json={"thread_id": tid, "message": msg},
             proxies=PROXIES,
             timeout=120,
         ).json()
@@ -76,15 +74,21 @@ def run_case(sess: requests.Session, idx: int, query: str, want_dept: str) -> di
 
 
 def main() -> int:
+    p = argparse.ArgumentParser()
+    p.add_argument("--base-url", default=BASE)
+    p.add_argument("--phone", default=DEFAULT_EVAL_PHONE)
+    p.add_argument("--password", default=DEFAULT_EVAL_PASSWORD)
+    args = p.parse_args()
+    base = args.base_url.rstrip("/")
+
     queries = load_queries()
-    sess = requests.Session()
-    sess.trust_env = False
-    sess.get(f"{BASE}/healthz", proxies=PROXIES, timeout=10).raise_for_status()
+    sess, _, _ = authed_session(base, args.phone, args.password, proxies=PROXIES)
+    sess.get(f"{base}/healthz", proxies=PROXIES, timeout=10).raise_for_status()
 
     results = []
     for idx, want_dept in WANT_DEPT.items():
         query = queries[idx - 1]
-        r = run_case(sess, idx, query, want_dept)
+        r = run_case(sess, base, idx, query, want_dept)
         results.append(r)
         status = "PASS" if r["ok"] else "FAIL"
         print(

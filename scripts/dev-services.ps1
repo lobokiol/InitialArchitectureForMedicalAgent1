@@ -386,10 +386,20 @@ print(n)
     if ($Cfg.Verify.ChatSmoke -and $Cfg.Api.Enabled) {
         Write-Step 'Chat smoke (calls LLM)'
         try {
-            $chatUrl = 'http://{0}:{1}/chat' -f $Cfg.Api.Host, $Cfg.Api.Port
-            $payload = @{ user_id = 'dev-smoke'; message = 'headache' } | ConvertTo-Json -Compress
+            $base = 'http://{0}:{1}' -f $Cfg.Api.Host, $Cfg.Api.Port
+            $authBody = @{ phone = '13900000099'; password = 'dev-smoke-pass' } | ConvertTo-Json -Compress
+            $token = $null
+            try {
+                $login = Invoke-RestMethod -Uri "$base/auth/login" -Method POST -Body $authBody -ContentType 'application/json; charset=utf-8' -TimeoutSec 30
+                $token = $login.access_token
+            } catch {
+                $reg = Invoke-RestMethod -Uri "$base/auth/register" -Method POST -Body $authBody -ContentType 'application/json; charset=utf-8' -TimeoutSec 30
+                $token = $reg.access_token
+            }
+            $headers = @{ Authorization = "Bearer $token" }
+            $payload = @{ message = 'headache' } | ConvertTo-Json -Compress
             $bytes = [System.Text.Encoding]::UTF8.GetBytes($payload)
-            $resp = Invoke-RestMethod -Uri $chatUrl -Method POST -Body $bytes -ContentType 'application/json; charset=utf-8' -TimeoutSec 120
+            $resp = Invoke-RestMethod -Uri "$base/chat" -Method POST -Body $bytes -ContentType 'application/json; charset=utf-8' -Headers $headers -TimeoutSec 120
             $route = $resp.intent_result.triage_route
             Write-Ok "Chat smoke OK route=$route reply_len=$($resp.reply.Length)"
         } catch {

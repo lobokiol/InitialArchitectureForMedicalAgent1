@@ -132,19 +132,29 @@ try {
 if ($Demo) {
     Write-Step "运行演示测试"
     
+    $base = "http://localhost:8000"
+    $authBody = @{ phone = "13900000098"; password = "demo-pass-123" } | ConvertTo-Json -Compress
+    try {
+        $token = (Invoke-RestMethod -Uri "$base/auth/login" -Method Post -ContentType "application/json" -Body $authBody -TimeoutSec 30).access_token
+    } catch {
+        $token = (Invoke-RestMethod -Uri "$base/auth/register" -Method Post -ContentType "application/json" -Body $authBody -TimeoutSec 30).access_token
+    }
+    $headers = @{ Authorization = "Bearer $token" }
+
     $testCases = @(
-        @{ user_id = "demo1"; message = "我脚扭伤了，该挂什么科" },
-        @{ user_id = "demo2"; message = "肚子疼，一阵一阵的绞痛" },
-        @{ user_id = "demo3"; message = "你好" }  # 测试拒答
+        @{ message = "我脚扭伤了，该挂什么科" },
+        @{ message = "肚子疼，一阵一阵的绞痛" },
+        @{ message = "你好" }
     )
     
     foreach ($case in $testCases) {
         $json = $case | ConvertTo-Json -Compress
         Write-Host "   测试: $($case.message)" -ForegroundColor Gray
         try {
-            $response = Invoke-RestMethod -Uri "http://localhost:8000/chat" `
+            $response = Invoke-RestMethod -Uri "$base/chat" `
                 -Method Post `
                 -ContentType "application/json" `
+                -Headers $headers `
                 -Body $json `
                 -TimeoutSec 30
             $reply = $response.reply.Substring(0, [Math]::Min(50, $response.reply.Length))

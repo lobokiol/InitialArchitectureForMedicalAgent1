@@ -5,34 +5,48 @@ import urllib.error
 import urllib.request
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8000"
-UID = "demo-verify2"
+PHONE = "13900000088"
+PASSWORD = "eval-pass-123"
 SYMPTOM = "肚子疼"
 
 
-def req(method: str, path: str, body=None):
+def req(method: str, path: str, body=None, headers=None):
+    hdrs = {"Content-Type": "application/json"}
+    if headers:
+        hdrs.update(headers)
     data = json.dumps(body).encode() if body is not None else None
-    r = urllib.request.Request(
-        BASE + path,
-        data=data,
-        method=method,
-        headers={"Content-Type": "application/json"},
-    )
+    r = urllib.request.Request(BASE + path, data=data, method=method, headers=hdrs)
     try:
         with urllib.request.urlopen(r, timeout=120) as resp:
             return resp.status, json.loads(resp.read())
     except urllib.error.HTTPError as e:
-        return e.code, e.read().decode()
+        body_text = e.read().decode()
+        try:
+            return e.code, json.loads(body_text)
+        except json.JSONDecodeError:
+            return e.code, body_text
+
+
+def auth_token() -> str:
+    st, data = req("POST", "/auth/login", {"phone": PHONE, "password": PASSWORD})
+    if st == 200:
+        return data["access_token"]
+    st, data = req("POST", "/auth/register", {"phone": PHONE, "password": PASSWORD, "display_name": "e2e"})
+    if st != 200:
+        raise RuntimeError(f"auth failed: {st} {data}")
+    return data["access_token"]
 
 
 def main():
-    st, _ = req("POST", "/users", {"user_id": UID, "name": "e2e"})
-    print("users", st)
-    _, cur = req("GET", f"/threads/current?user_id={UID}")
+    token = auth_token()
+    headers = {"Authorization": f"Bearer {token}"}
+
+    _, cur = req("GET", "/threads/current", headers=headers)
     tid = cur["thread_id"]
     msg = SYMPTOM
 
     for step in range(12):
-        st, data = req("POST", "/chat", {"user_id": UID, "thread_id": tid, "message": msg})
+        st, data = req("POST", "/chat", {"thread_id": tid, "message": msg}, headers=headers)
         if st != 200:
             print("FAIL", st, data)
             return 1
@@ -50,7 +64,7 @@ def main():
             continue
         if data.get("awaiting_dept_choice") and data.get("dept_choices"):
             if data.get("multi_select"):
-                msg = "5"  # 都没有
+                msg = "5"
             else:
                 msg = data["dept_choices"][0]["label"]
             print("  pick dept:", msg)

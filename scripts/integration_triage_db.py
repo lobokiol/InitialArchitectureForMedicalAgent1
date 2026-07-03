@@ -8,13 +8,12 @@ import sys
 import uuid
 from pathlib import Path
 
-import requests
-
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.core import config
+from scripts.auth_helper import DEFAULT_EVAL_PASSWORD, authed_session
 
 BASE = "http://127.0.0.1:8000"
 DB = config.TRIAGE_SESSION_DB_PATH
@@ -22,29 +21,37 @@ PROXIES = {"http": None, "https": None}
 REPORT = ROOT / "exports" / "integration_triage_report.json"
 
 
-def chat(user_id: str, message: str, thread_id: str | None = None) -> dict:
-    payload: dict = {"user_id": user_id, "message": message}
+def _eval_phone() -> str:
+    suffix = format(int(uuid.uuid4().hex[:8], 16) % 100_000_000, "08d")
+    return f"139{suffix}"
+
+
+def chat(sess, message: str, thread_id: str | None = None) -> dict:
+    payload: dict = {"message": message}
     if thread_id:
         payload["thread_id"] = thread_id
-    r = requests.post(f"{BASE}/chat", json=payload, timeout=120, proxies=PROXIES)
+    r = sess.post(f"{BASE}/chat", json=payload, timeout=120, proxies=PROXIES)
     r.raise_for_status()
     return r.json()
 
 
 def main() -> int:
+    import requests
+
     requests.get(f"{BASE}/healthz", timeout=10, proxies=PROXIES).raise_for_status()
 
-    user_id = f"live-{uuid.uuid4().hex[:8]}"
-    requests.post(f"{BASE}/users", json={"user_id": user_id}, timeout=10, proxies=PROXIES)
+    phone = _eval_phone()
+    password = DEFAULT_EVAL_PASSWORD
+    sess, _, user_id = authed_session(
+        BASE, phone, password, proxies=PROXIES, display_name="integration"
+    )
 
-    report: dict = {"user_id": user_id, "chats": [], "sql": {}}
+    report: dict = {"user_id": user_id, "phone": phone, "chats": [], "sql": {}}
 
-    # 1) reject
-    r1 = chat(user_id, "你好")
+    r1 = chat(sess, "你好")
     report["chats"].append({"case": "reject", "message": "你好", "reply": r1["reply"], "thread_id": r1["thread_id"]})
 
-    # 2) disease
-    r2 = chat(user_id, "我有胃炎")
+    r2 = chat(sess, "我有胃炎")
     report["chats"].append(
         {
             "case": "disease",
@@ -55,8 +62,7 @@ def main() -> int:
         }
     )
 
-    # 3) emergency
-    r3 = chat(user_id, "脚脖子肿，不能动，皮发紫")
+    r3 = chat(sess, "脚脖子肿，不能动，皮发紫")
     report["chats"].append(
         {
             "case": "emergency",
@@ -66,8 +72,7 @@ def main() -> int:
         }
     )
 
-    # 4) multi-turn disambiguation (foot)
-    r4 = chat(user_id, "脚后跟疼")
+    r4 = chat(sess, "脚后跟疼")
     thread = r4["thread_id"]
     report["chats"].append(
         {
@@ -79,9 +84,14 @@ def main() -> int:
             "thread_id": thread,
         }
     )
+
+    conn = sqlite3.connect(DB)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+
     if r4.get("awaiting_dept_choice") and r4.get("dept_choices"):
         label = r4["dept_choices"][0]["label"]
-        r5 = chat(user_id, label, thread_id=thread)
+        r5 = chat(sess, label, thread_id=thread)
         report["chats"].append(
             {
                 "case": "symptom_turn2",
@@ -107,10 +117,6 @@ def main() -> int:
             print(f"FAIL: foot multi-turn should be one row with turn_count>=2, got {foot_sessions}")
             print(f"Report: {REPORT}")
             return 1
-
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
     cur.execute(
         """

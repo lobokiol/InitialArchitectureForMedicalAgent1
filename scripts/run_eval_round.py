@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from app.gateway.phone import normalize_phone
+
 from scripts.eval_round_common import SKIP_INDICES
 
 SKIP_STR = ",".join(str(i) for i in sorted(SKIP_INDICES))
@@ -41,7 +43,8 @@ def main() -> int:
     if ver < 3 or ver > 7:
         print("round must be 3..7")
         return 2
-    user_id = f"batch-med-small-100-r{ver}"
+    phone = f"1390000{ver:04d}"
+    export_user_id = normalize_phone(phone)
 
     if not args.skip_reindex:
         run([sys.executable, "sourceData/opensearch_rag_kb.py", "--skip-acceptance"], "reindex rag_knowledge")
@@ -52,8 +55,8 @@ def main() -> int:
             [
                 sys.executable,
                 "scripts/run_medical_data_batch.py",
-                "--user-id",
-                user_id,
+                "--phone",
+                phone,
                 "--skip-indices",
                 SKIP_STR,
                 "--base-url",
@@ -72,7 +75,7 @@ def main() -> int:
             "--version",
             str(ver),
             "--user-id",
-            user_id,
+            export_user_id,
             "--changelog",
             changelog,
         ],

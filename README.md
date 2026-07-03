@@ -213,7 +213,7 @@ curl -s -X POST http://localhost:8000/chat \
 curl -s http://localhost:8000/auth/me -H "Authorization: Bearer $TOKEN"
 ```
 
-**微信小程序 API 契约**（`wx.login` → 手机号授权 → Bearer 请求）见设计文档 [§3.1](docs/superpowers/specs/2026-07-04-api-gateway-jwt-wechat-ratelimit-design.md#31-微信小程序)。评估脚本可复用 `scripts/auth_helper.py` 的 `login(base_url, phone, password)` 获取 token。
+**微信小程序 API 契约**（`wx.login` → 手机号授权 → Bearer 请求）见设计文档 [§3.1](docs/superpowers/specs/2026-07-04-api-gateway-jwt-wechat-ratelimit-design.md#31-微信小程序)。评估脚本使用 `scripts/auth_helper.py`：`register_or_login()` / `authed_session()`；默认 eval 账号 `13900000001` / `eval-pass-123`（首次运行自动注册）。
 
 ---
 

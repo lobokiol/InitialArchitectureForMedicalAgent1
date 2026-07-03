@@ -17,6 +17,7 @@ PROXIES = {"http": None, "https": None}
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.auth_helper import DEFAULT_EVAL_PASSWORD, DEFAULT_EVAL_PHONE, authed_session
 from scripts.batch_clarify_persona import pick_clarify_reply
 
 
@@ -39,9 +40,9 @@ def pick_reply(data: dict, query: str) -> str | None:
     return pick_clarify_reply(data, query)
 
 
-def run_case(sess: requests.Session, base: str, user_id: str, query: str, max_steps: int) -> dict:
+def run_case(sess: requests.Session, base: str, query: str, max_steps: int) -> dict:
     r = sess.post(
-        f"{base}/threads", json={"user_id": user_id, "title": query[:30]}, timeout=30, proxies=PROXIES
+        f"{base}/threads", json={"title": query[:30]}, timeout=30, proxies=PROXIES
     )
     r.raise_for_status()
     thread_id = r.json()["thread_id"]
@@ -51,7 +52,7 @@ def run_case(sess: requests.Session, base: str, user_id: str, query: str, max_st
     for step in range(max_steps):
         r = sess.post(
             f"{base}/chat",
-            json={"user_id": user_id, "thread_id": thread_id, "message": msg},
+            json={"thread_id": thread_id, "message": msg},
             timeout=120,
             proxies=PROXIES,
         )
@@ -68,13 +69,24 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     p.add_argument("--base-url", default="http://127.0.0.1:8000")
-    p.add_argument("--user-id", default="batch-med-small-100")
+    p.add_argument(
+        "--phone",
+        default=DEFAULT_EVAL_PHONE,
+        help="Eval account phone (E.164 after login; used for triage_sessions export filter)",
+    )
+    p.add_argument("--password", default=DEFAULT_EVAL_PASSWORD)
+    p.add_argument(
+        "--user-id",
+        default=None,
+        help="Deprecated alias for --phone (batch-med-small-100 style labels without +86)",
+    )
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--max-steps", type=int, default=15)
     p.add_argument("--skip-indices", default="", help="Comma-separated 1-based indices to skip")
     p.add_argument("--dry-run", action="store_true")
     args = p.parse_args()
     base = args.base_url.rstrip("/")
+    phone = args.phone or args.user_id or DEFAULT_EVAL_PHONE
     skip = {int(x) for x in args.skip_indices.split(",") if x.strip()}
 
     questions = load_questions(args.input, args.limit)
@@ -86,10 +98,10 @@ def main() -> int:
             print(f"  ... and {len(questions) - 5} more")
         return 0
 
-    sess = requests.Session()
-    sess.trust_env = False
+    sess, _, export_user_id = authed_session(
+        base, phone, args.password, proxies=PROXIES, display_name="eval-batch"
+    )
     sess.get(f"{base}/healthz", timeout=10, proxies=PROXIES).raise_for_status()
-    sess.post(f"{base}/users", json={"user_id": args.user_id}, timeout=10, proxies=PROXIES)
 
     t0 = time.time()
     errors: list[dict] = []
@@ -99,7 +111,7 @@ def main() -> int:
             print(f"[{i}/{len(questions)}] SKIP (excluded)")
             continue
         try:
-            result = run_case(sess, base, args.user_id, query, args.max_steps)
+            result = run_case(sess, base, query, args.max_steps)
             if not result["ok"]:
                 errors.append({"index": i, "query": query, **result})
                 print(f"[{i}/{len(questions)}] TIMEOUT {query[:40]}...")
@@ -122,7 +134,10 @@ def main() -> int:
             for e in errors:
                 f.write(json.dumps(e, ensure_ascii=False) + "\n")
         print(f"Errors written to {err_path}")
-    print(f"Export: python scripts/export_triage_sessions.py --user-id {args.user_id} --out exports/medical_small_100_sessions.jsonl")
+    print(
+        f"Export: python scripts/export_triage_sessions.py "
+        f"--user-id {export_user_id} --out exports/medical_small_100_sessions.jsonl"
+    )
     return 1 if errors else 0
 
 
