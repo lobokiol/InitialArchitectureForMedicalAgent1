@@ -1,7 +1,9 @@
+import asyncio
 from typing import Optional, Dict, Any
 
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 
+from app.core import config
 from app.core.logging import logger
 from app.domain.models import AppState, IntentResult, RetrievedDoc
 from app.domain.state_debug import dump_app_state
@@ -11,6 +13,11 @@ from app.mcp.followup import resolve_recommended_department
 from app.infra.redis_client import checkpointer
 from app.services.triage_recorder import TriageSessionRecorder
 from app.sessions.manager import SessionManager
+
+
+CHAT_TIMEOUT_MESSAGE = (
+    "处理时间较长，暂无法完成导诊。请稍后重试，或到医院分诊台咨询。"
+)
 
 
 _app = build_app(checkpointer)
@@ -46,6 +53,56 @@ def _read_checkpoint_state(thread_id: str, user_id: str) -> AppState | None:
     except Exception:
         logger.debug("checkpoint read failed thread_id=%s", thread_id, exc_info=True)
     return None
+
+
+def _timeout_fallback(user_id: str, thread_id: str) -> Dict[str, Any]:
+    return {
+        "user_id": user_id,
+        "thread_id": thread_id,
+        "reply": CHAT_TIMEOUT_MESSAGE,
+        "timed_out": True,
+        "intent_result": None,
+        "used_docs": {"medical": [], "process": []},
+        "awaiting_dept_choice": False,
+        "dept_choices": [],
+        "awaiting_clarify": False,
+        "clarify_phase": None,
+        "clarify_choices": [],
+        "multi_select": False,
+        "dept_confidence": None,
+        "dept_confidence_passed": None,
+        "dept_confidence_reason": None,
+        "locked_department": None,
+        "recommended_department": None,
+        "oncall_appointments": [],
+        "oncall_fetch_error": None,
+        "node_trace": [],
+        "app_state": None,
+    }
+
+
+async def chat_once_async(
+    user_id: str,
+    thread_id: Optional[str],
+    message: str,
+) -> Dict[str, Any]:
+    thread_id = _ensure_thread(user_id, thread_id)
+    loop = asyncio.get_running_loop()
+    try:
+        result = await asyncio.wait_for(
+            loop.run_in_executor(None, chat_once, user_id, thread_id, message),
+            timeout=config.CHAT_TIMEOUT_SECONDS,
+        )
+        result["timed_out"] = False
+        return result
+    except asyncio.TimeoutError:
+        logger.warning(
+            "chat_once timed out (user_id=%s, thread_id=%s, timeout=%ss)",
+            user_id,
+            thread_id,
+            config.CHAT_TIMEOUT_SECONDS,
+        )
+        return _timeout_fallback(user_id, thread_id)
 
 
 def chat_once(
