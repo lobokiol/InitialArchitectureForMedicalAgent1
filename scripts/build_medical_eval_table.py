@@ -13,6 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from app.gateway.phone import normalize_phone  # noqa: E402
+from scripts.auth_helper import DEFAULT_EVAL_PHONE  # noqa: E402
 from scripts.eval_medical_batch import (  # noqa: E402
     judge_chunk_score,
     judge_dept_relevance,
@@ -23,7 +25,7 @@ SRC = ROOT / "sourceData" / "data" / "小医疗数据.json"
 DB = ROOT / "data" / "triage_sessions.db"
 RAG = ROOT / "sourceData" / "data" / "rag_knowledge.jsonl"
 EXPORTS = ROOT / "exports"
-USER_ID = "batch-med-small-100"
+USER_ID = normalize_phone(DEFAULT_EVAL_PHONE)
 
 
 def load_chunk_map() -> dict:

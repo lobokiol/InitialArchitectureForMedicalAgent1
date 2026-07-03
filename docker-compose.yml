@@ -25,7 +25,8 @@ services:
       - ES_URL=http://opensearch:9200
       # 从宿主机的 .env 文件读取密钥（需要在 .env 中设置）
       - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
-      - CHAT_MODEL_NAME=${CHAT_MODEL_NAME:-qwen-plus}
+      - CHAT_MODEL_NAME=${CHAT_MODEL_NAME:-qwen3.6-flash}
+      - CHAT_FALLBACK_MODEL_NAME=${CHAT_FALLBACK_MODEL_NAME:-deepseek-v4-flash}
       - EMBEDDING_MODEL_NAME=${EMBEDDING_MODEL_NAME:-text-embedding-v2}
       # 开发模式配置
       - PYTHONPATH=/app

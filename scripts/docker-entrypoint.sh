@@ -36,7 +36,7 @@ fi
 echo ""
 echo "🔧 环境检查："
 echo "   - DASHSCOPE_API_KEY: $([ -n "$DASHSCOPE_API_KEY" ] && echo '✓ 已设置' || echo '⚠ 未设置（某些功能将不可用）')"
-echo "   - MODEL: ${CHAT_MODEL_NAME:-qwen-plus}"
+echo "   - MODEL: ${CHAT_MODEL_NAME:-qwen3.6-flash} (fallback: ${CHAT_FALLBACK_MODEL_NAME:-deepseek-v4-flash})"
 echo ""
 
 echo "🚀 启动服务..."

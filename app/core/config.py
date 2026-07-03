@@ -94,7 +94,7 @@ CORS_ORIGINS: list[str] = [
     ).split(",")
     if o.strip()
 ]
-RATE_LIMIT_CHAT: str = os.getenv("RATE_LIMIT_CHAT", "10/minute")
+RATE_LIMIT_CHAT: str = os.getenv("RATE_LIMIT_CHAT", "")
 RATE_LIMIT_READ: str = os.getenv("RATE_LIMIT_READ", "60/minute")
 RATE_LIMIT_AUTH_IP: str = os.getenv("RATE_LIMIT_AUTH_IP", "10/minute")
 MAX_REFRESH_PER_PHONE: int = int(os.getenv("MAX_REFRESH_PER_PHONE", "3"))

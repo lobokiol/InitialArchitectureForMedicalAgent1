@@ -23,3 +23,14 @@ def rate_limit_key(request: Request) -> str:
 
 _storage = config.REDIS_URI if redis_client is not None else "memory://"
 limiter = Limiter(key_func=rate_limit_key, storage_uri=_storage, default_limits=[])
+
+
+def limit_if_configured(limit: str):
+    """Apply slowapi limit when *limit* is non-empty; no-op otherwise."""
+    if limit:
+        return limiter.limit(limit)
+
+    def _noop(func):
+        return func
+
+    return _noop
