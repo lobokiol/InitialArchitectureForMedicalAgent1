@@ -1,52 +1,51 @@
-import { useCallback, useState } from 'react';
-import { getErrorDetail, getUser, upsertUser } from '../lib/api';
-
-const LS_USER = 'triage_demo_user_id';
-const LS_NAME = 'triage_demo_user_name';
+import { useCallback, useEffect, useState } from 'react';
+import { clearTokens, getAccessToken } from '../lib/auth';
+import { fetchMe, getErrorDetail } from '../lib/api';
 
 export function useUser() {
-  const [userId, setUserId] = useState(() => localStorage.getItem(LS_USER) ?? '');
-  const [userName, setUserName] = useState(() => localStorage.getItem(LS_NAME) ?? '');
-  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(() => !!getAccessToken());
+  const [needsOnboarding, setNeedsOnboarding] = useState(() => !getAccessToken());
 
-  const initUser = useCallback(async (id: string, name?: string) => {
+  const refreshFromMe = useCallback(async () => {
+    if (!getAccessToken()) {
+      setUserId('');
+      setUserName('');
+      setNeedsOnboarding(true);
+      return { userId: '', degraded: true as const, error: '未登录' };
+    }
+
     setLoading(true);
     try {
-      const u = await upsertUser(id, name);
-      setUserId(u.user_id);
-      const displayName = u.name ?? name ?? '';
-      setUserName(displayName);
-      localStorage.setItem(LS_USER, u.user_id);
-      localStorage.setItem(LS_NAME, displayName);
-      return { userId: u.user_id, degraded: false as const };
+      const me = await fetchMe();
+      setUserId(me.phone);
+      setUserName(me.display_name ?? '');
+      setNeedsOnboarding(false);
+      return { userId: me.phone, degraded: false as const };
     } catch (err) {
-      // /users 后端异常时仍允许本地 Demo 继续（会话 API 不依赖 user 记录）
-      setUserId(id);
-      const displayName = name ?? '';
-      setUserName(displayName);
-      localStorage.setItem(LS_USER, id);
-      localStorage.setItem(LS_NAME, displayName);
-      return {
-        userId: id,
-        degraded: true as const,
-        error: getErrorDetail(err),
-      };
+      clearTokens();
+      setUserId('');
+      setUserName('');
+      setNeedsOnboarding(true);
+      return { userId: '', degraded: true as const, error: getErrorDetail(err) };
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const loadUser = useCallback(async (id: string) => {
-    try {
-      const u = await getUser(id);
-      setUserName(u.name ?? '');
-      return u;
-    } catch {
-      return null;
+  useEffect(() => {
+    if (getAccessToken()) {
+      void refreshFromMe();
     }
+  }, [refreshFromMe]);
+
+  const logout = useCallback(() => {
+    clearTokens();
+    setUserId('');
+    setUserName('');
+    setNeedsOnboarding(true);
   }, []);
 
-  const needsOnboarding = !userId;
-
-  return { userId, userName, initUser, loadUser, loading, needsOnboarding };
+  return { userId, userName, loading, needsOnboarding, refreshFromMe, logout };
 }

@@ -9,7 +9,7 @@ interface SettingsPanelProps {
   userId: string;
   userName: string;
   onClose: () => void;
-  onEditUser: () => void;
+  onLogout: () => void;
 }
 
 export function SettingsPanel({
@@ -19,7 +19,7 @@ export function SettingsPanel({
   userId,
   userName,
   onClose,
-  onEditUser,
+  onLogout,
 }: SettingsPanelProps) {
   const apiBase = import.meta.env.VITE_API_BASE || '/api';
   const apiHint =
@@ -48,11 +48,11 @@ export function SettingsPanel({
               <dd className="font-mono text-xs mt-0.5">{apiHint}</dd>
             </div>
             <div>
-              <dt className="text-gray-500">用户</dt>
+              <dt className="text-gray-500">账号</dt>
               <dd className="mt-0.5">
                 {userId} {userName && `(${userName})`}
-                <button type="button" onClick={onEditUser} className="ml-2 text-brand-600 text-xs hover:underline">
-                  编辑
+                <button type="button" onClick={onLogout} className="ml-2 text-brand-600 text-xs hover:underline">
+                  退出登录
                 </button>
               </dd>
             </div>

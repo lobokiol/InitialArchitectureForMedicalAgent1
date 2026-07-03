@@ -25,96 +25,89 @@ export function useThreads(userId: string) {
     if (list) setThreads(list.filter((t) => !t.is_deleted));
   }, []);
 
-  const refresh = useCallback(
-    async (overrideUserId?: string) => {
-      const uid = overrideUserId ?? userId;
-      if (!uid) return;
-      setLoading(true);
-      setError(null);
+  const refresh = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    setError(null);
+    try {
       try {
-        try {
-          const [list, current] = await Promise.all([
-            getThreads(uid),
-            getCurrentThread(uid),
-          ]);
-          applyCurrent(current.thread_id, current.title, list);
-          return;
-        } catch {
-          // getCurrentThread 偶发 500 时降级
-        }
-
-        try {
-          const list = (await getThreads(uid)).filter((t) => !t.is_deleted);
-          setThreads(list);
-          const cached = localStorage.getItem(LS_THREAD);
-          const pick = list.find((t) => t.thread_id === cached) ?? list[0];
-          if (pick) {
-            try {
-              await switchThread(uid, pick.thread_id);
-            } catch {
-              // switch 失败仍用该 thread 发消息
-            }
-            applyCurrent(pick.thread_id, pick.title);
-            return;
-          }
-        } catch (err) {
-          setError(getErrorDetail(err));
-        }
-
-        try {
-          const created = await createThread(uid);
-          applyCurrent(created.thread_id, created.title);
-          const list = await getThreads(uid);
-          setThreads(list.filter((t) => !t.is_deleted));
-          return;
-        } catch (err) {
-          const detail = getErrorDetail(err);
-          const cached = localStorage.getItem(LS_THREAD);
-          if (cached) {
-            applyCurrent(cached, '缓存会话');
-            setError(`会话服务异常，使用缓存 thread（${detail}）`);
-            return;
-          }
-          setError(detail);
-          setCurrentThreadId('');
-          setCurrentTitle('默认对话');
-        }
-      } finally {
-        setLoading(false);
+        const [list, current] = await Promise.all([getThreads(), getCurrentThread()]);
+        applyCurrent(current.thread_id, current.title, list);
+        return;
+      } catch {
+        // getCurrentThread 偶发 500 时降级
       }
-    },
-    [userId, applyCurrent],
-  );
+
+      try {
+        const list = (await getThreads()).filter((t) => !t.is_deleted);
+        setThreads(list);
+        const cached = localStorage.getItem(LS_THREAD);
+        const pick = list.find((t) => t.thread_id === cached) ?? list[0];
+        if (pick) {
+          try {
+            await switchThread(pick.thread_id);
+          } catch {
+            // switch 失败仍用该 thread 发消息
+          }
+          applyCurrent(pick.thread_id, pick.title);
+          return;
+        }
+      } catch (err) {
+        setError(getErrorDetail(err));
+      }
+
+      try {
+        const created = await createThread();
+        applyCurrent(created.thread_id, created.title);
+        const list = await getThreads();
+        setThreads(list.filter((t) => !t.is_deleted));
+        return;
+      } catch (err) {
+        const detail = getErrorDetail(err);
+        const cached = localStorage.getItem(LS_THREAD);
+        if (cached) {
+          applyCurrent(cached, '缓存会话');
+          setError(`会话服务异常，使用缓存 thread（${detail}）`);
+          return;
+        }
+        setError(detail);
+        setCurrentThreadId('');
+        setCurrentTitle('默认对话');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, applyCurrent]);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
 
   const createNew = useCallback(async () => {
-    const t = await createThread(userId);
-    await switchThread(userId, t.thread_id);
+    const t = await createThread();
+    await switchThread(t.thread_id);
     await refresh();
     return t.thread_id;
-  }, [userId, refresh]);
+  }, [refresh]);
 
   const switchTo = useCallback(
     async (threadId: string) => {
-      await switchThread(userId, threadId);
+      await switchThread(threadId);
       const found = threads.find((t) => t.thread_id === threadId);
       applyCurrent(threadId, found?.title ?? '对话');
     },
-    [userId, threads, applyCurrent],
+    [threads, applyCurrent],
   );
 
   const remove = useCallback(
     async (threadId: string) => {
-      const res = await deleteThread(userId, threadId);
+      const res = await deleteThread(threadId);
       if (res.new_current_thread_id) {
         applyCurrent(res.new_current_thread_id, '默认对话');
       }
       await refresh();
     },
-    [userId, refresh, applyCurrent],
+    [refresh, applyCurrent],
   );
 
   return {

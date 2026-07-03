@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AppShell } from './components/AppShell';
+import { AuthPage } from './components/AuthPage';
 import { ChatInput } from './components/ChatInput';
 import { ChatStage } from './components/ChatStage';
 import { CommandHelp } from './components/CommandHelp';
@@ -10,7 +11,6 @@ import { SettingsPanel } from './components/SettingsPanel';
 import { ThreadSidebar } from './components/ThreadSidebar';
 import { Toast } from './components/Toast';
 import { TopBar } from './components/TopBar';
-import { UserModal } from './components/UserModal';
 import { useChat } from './hooks/useChat';
 import { useReadiness } from './hooks/useReadiness';
 import { useThreads } from './hooks/useThreads';
@@ -27,7 +27,6 @@ export default function App() {
   const [helpOpen, setHelpOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commandHelpOpen, setCommandHelpOpen] = useState(false);
-  const [userModalOpen, setUserModalOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [fullText, setFullText] = useState<string | undefined>();
   const [toast, setToast] = useState<string | null>(null);
@@ -45,13 +44,20 @@ export default function App() {
     if (threads.error) showToast(threads.error);
   }, [threads.error, showToast]);
 
-  const handleUserSubmit = async (userId: string, name: string) => {
-    const result = await user.initUser(userId, name || undefined);
-    setUserModalOpen(false);
-    await threads.refresh(result.userId);
-    if (result.degraded) {
-      showToast(`用户已本地保存（/users 异常: ${result.error}）`);
+  const handleAuthed = async () => {
+    const result = await user.refreshFromMe();
+    if (result.userId) {
+      await threads.refresh();
     }
+    if (result.degraded && result.error) {
+      showToast(result.error);
+    }
+  };
+
+  const handleLogout = () => {
+    user.logout();
+    chat.clearTurns();
+    setSettingsOpen(false);
   };
 
   const handleSelectThread = async (threadId: string) => {
@@ -93,7 +99,7 @@ export default function App() {
           if (threads.currentThreadId) await handleDeleteThread(threads.currentThreadId);
           break;
         case 'user':
-          setUserModalOpen(true);
+          setSettingsOpen(true);
           break;
         case 'exit':
           setSettingsOpen(false);
@@ -117,6 +123,10 @@ export default function App() {
     await chat.pickChoice(message);
   };
 
+  if (user.needsOnboarding) {
+    return <AuthPage onAuthed={handleAuthed} />;
+  }
+
   const sidebarProps = {
     threads: threads.threads,
     currentThreadId: threads.currentThreadId,
@@ -130,14 +140,6 @@ export default function App() {
 
   return (
     <>
-      <UserModal
-        open={user.needsOnboarding || userModalOpen}
-        forced={user.needsOnboarding}
-        loading={user.loading}
-        onSubmit={handleUserSubmit}
-        onClose={() => setUserModalOpen(false)}
-      />
-
       <AppShell
         drawerOpen={drawerOpen}
         onCloseDrawer={() => setDrawerOpen(false)}
@@ -198,10 +200,7 @@ export default function App() {
         userId={user.userId}
         userName={user.userName}
         onClose={() => setSettingsOpen(false)}
-        onEditUser={() => {
-          setSettingsOpen(false);
-          setUserModalOpen(true);
-        }}
+        onLogout={handleLogout}
       />
       <CommandHelp open={commandHelpOpen} onClose={() => setCommandHelpOpen(false)} />
       <Toast message={toast} onDismiss={() => setToast(null)} />

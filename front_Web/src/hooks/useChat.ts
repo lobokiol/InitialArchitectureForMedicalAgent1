@@ -97,7 +97,6 @@ export function useChat(userId: string, threadId: string) {
       dispatch({ type: 'START_LOADING' });
       try {
         const data = await postChat({
-          user_id: userId,
           ...(tid ? { thread_id: tid } : {}),
           message,
         });
