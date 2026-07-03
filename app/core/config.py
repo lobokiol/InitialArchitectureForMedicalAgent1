@@ -79,3 +79,20 @@ MCP_FOLLOWUP_ENABLED: bool = os.getenv("MCP_FOLLOWUP_ENABLED", "true").lower() i
     "true",
     "yes",
 )
+
+JWT_SECRET: str = os.getenv("JWT_SECRET", "dev-only-change-me")
+JWT_ACCESS_EXPIRE_MINUTES: int = int(os.getenv("JWT_ACCESS_EXPIRE_MINUTES", "120"))
+JWT_REFRESH_EXPIRE_DAYS: int = int(os.getenv("JWT_REFRESH_EXPIRE_DAYS", "7"))
+WECHAT_APP_ID: str = os.getenv("WECHAT_APP_ID", "")
+WECHAT_APP_SECRET: str = os.getenv("WECHAT_APP_SECRET", "")
+CORS_ORIGINS: list[str] = [
+    o.strip() for o in os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:5173,https://servicewechat.com",
+    ).split(",")
+    if o.strip()
+]
+RATE_LIMIT_CHAT: str = os.getenv("RATE_LIMIT_CHAT", "10/minute")
+RATE_LIMIT_READ: str = os.getenv("RATE_LIMIT_READ", "60/minute")
+RATE_LIMIT_AUTH_IP: str = os.getenv("RATE_LIMIT_AUTH_IP", "10/minute")
+MAX_REFRESH_PER_PHONE: int = int(os.getenv("MAX_REFRESH_PER_PHONE", "3"))
