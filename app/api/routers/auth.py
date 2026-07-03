@@ -11,6 +11,7 @@ from app.gateway.errors import auth_error
 from app.gateway.jwt import decode_token, issue_token_pair
 from app.gateway.phone import normalize_phone
 from app.gateway.rate_limit import limiter
+from app.infra import wechat_client
 from app.infra.token_store import get_token_store
 from app.infra.user_store import get_user_store
 
@@ -43,6 +44,20 @@ class MeResponse(BaseModel):
     phone: str
     display_name: str | None
     created_at: str
+
+
+class WechatLoginRequest(BaseModel):
+    code: str
+
+
+class WechatBindPhoneRequest(BaseModel):
+    phone_code: str
+    openid: str
+
+
+class WechatLoginNeedPhoneResponse(BaseModel):
+    need_phone: bool = True
+    openid: str
 
 
 def _issue_and_persist(phone: str) -> TokenResponse:
@@ -118,6 +133,29 @@ async def refresh(request: Request, body: RefreshRequest) -> TokenResponse:
 async def logout(user: CurrentUser = Depends(get_current_user)) -> dict[str, bool]:
     get_token_store().revoke_all_for_phone(user.phone)
     return {"ok": True}
+
+
+@router.post("/wechat/login")
+@limiter.limit(config.RATE_LIMIT_AUTH_IP)
+async def wechat_login(
+    request: Request, body: WechatLoginRequest
+) -> TokenResponse | WechatLoginNeedPhoneResponse:
+    session = await wechat_client.code2session(body.code)
+    openid = session["openid"]
+    phone = get_user_store().get_phone_by_openid(openid)
+    if phone:
+        return _issue_and_persist(phone)
+    return WechatLoginNeedPhoneResponse(openid=openid)
+
+
+@router.post("/wechat/bind-phone", response_model=TokenResponse)
+@limiter.limit(config.RATE_LIMIT_AUTH_IP)
+async def wechat_bind_phone(
+    request: Request, body: WechatBindPhoneRequest
+) -> TokenResponse:
+    phone = await wechat_client.get_phone_number(body.phone_code)
+    get_user_store().upsert_wechat_user(phone, body.openid)
+    return _issue_and_persist(phone)
 
 
 @router.get("/me", response_model=MeResponse)
