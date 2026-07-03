@@ -46,3 +46,4 @@ def test_auth_register_rate_limit_by_ip(client):
         "password": "longpass1",
     })
     assert r.status_code == 429
+    assert r.json()["detail"]["code"] == "RATE_LIMITED"
