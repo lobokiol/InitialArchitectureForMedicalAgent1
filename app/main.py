@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 
 from app.core import config  # noqa: F401 — load project-root .env before LangChain/LangGraph
-from app.api.routers import chat, threads
+from app.api.routers import auth, chat, threads
 from app.api.routers import users
 from app.core.logging import logger  # ensure logging configured
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Medical RAG Assistant")
+    app.include_router(auth.router)
     app.include_router(chat.router)
     app.include_router(threads.router)
     app.include_router(users.router)

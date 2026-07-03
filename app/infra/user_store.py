@@ -154,4 +154,5 @@ def get_user_store() -> UserStore:
     global _user_store
     if _user_store is None:
         _user_store = UserStore()
+        _user_store.init_schema()
     return _user_store
