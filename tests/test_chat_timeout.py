@@ -1,13 +1,12 @@
+import asyncio
 import time
-
-import pytest
 
 from app.core import config
 from app.services import chat_service
 
 
 def _slow_chat_once(user_id, thread_id, message):
-    time.sleep(999)
+    time.sleep(0.5)
     return {"user_id": user_id, "thread_id": thread_id, "reply": "never"}
 
 
@@ -21,12 +20,11 @@ def _fast_chat_once(user_id, thread_id, message):
     }
 
 
-@pytest.mark.asyncio
-async def test_chat_once_async_times_out(monkeypatch):
+def test_chat_once_async_times_out(monkeypatch):
     monkeypatch.setattr(config, "CHAT_TIMEOUT_SECONDS", 0.1)
     monkeypatch.setattr(chat_service, "chat_once", _slow_chat_once)
 
-    result = await chat_service.chat_once_async("u1", "t1", "头痛")
+    result = asyncio.run(chat_service.chat_once_async("u1", "t1", "头痛"))
 
     assert result["timed_out"] is True
     assert result["reply"] == chat_service.CHAT_TIMEOUT_MESSAGE
@@ -36,24 +34,22 @@ async def test_chat_once_async_times_out(monkeypatch):
     assert result["node_trace"] == []
 
 
-@pytest.mark.asyncio
-async def test_chat_once_async_success_sets_timed_out_false(monkeypatch):
+def test_chat_once_async_success_sets_timed_out_false(monkeypatch):
     monkeypatch.setattr(config, "CHAT_TIMEOUT_SECONDS", 5.0)
     monkeypatch.setattr(chat_service, "chat_once", _fast_chat_once)
 
-    result = await chat_service.chat_once_async("u1", "t1", "头痛")
+    result = asyncio.run(chat_service.chat_once_async("u1", "t1", "头痛"))
 
     assert result["timed_out"] is False
     assert result["reply"] == "ok"
     assert result["node_trace"] == ["decision"]
 
 
-@pytest.mark.asyncio
-async def test_chat_once_async_timeout_ensures_thread_id(monkeypatch):
+def test_chat_once_async_timeout_ensures_thread_id(monkeypatch):
     monkeypatch.setattr(config, "CHAT_TIMEOUT_SECONDS", 0.1)
     monkeypatch.setattr(chat_service, "chat_once", _slow_chat_once)
 
-    result = await chat_service.chat_once_async("u1", None, "头痛")
+    result = asyncio.run(chat_service.chat_once_async("u1", None, "头痛"))
 
     assert result["timed_out"] is True
     assert isinstance(result["thread_id"], str)
