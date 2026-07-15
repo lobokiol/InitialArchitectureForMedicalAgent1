@@ -43,7 +43,7 @@
 - Consumes: user sentence / short copy
 - Produces: either safe one-liner, or dangerous-tag list + one example rewrite (exact templates below)
 
-- [ ] **Step 1: Create the skill directory**
+- [x] **Step 1: Create the skill directory**
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills\x-risk-tags"
@@ -51,7 +51,7 @@ New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills\x-ris
 
 Expected: directory exists at `C:\Users\Admin\.agents\skills\x-risk-tags`.
 
-- [ ] **Step 2: Write the full SKILL.md**
+- [x] **Step 2: Write the full SKILL.md**
 
 Write exactly this file content to `C:\Users\Admin\.agents\skills\x-risk-tags\SKILL.md`:
 
@@ -159,7 +159,7 @@ Rules for dangerous output:
 | Discussing that platforms ban VPN ads | Safe (critique, not sales) |
 ````
 
-- [ ] **Step 3: Verify the file exists and frontmatter parses**
+- [x] **Step 3: Verify the file exists and frontmatter parses**
 
 ```powershell
 Get-Item "$env:USERPROFILE\.agents\skills\x-risk-tags\SKILL.md" | Select-Object FullName, Length
@@ -172,7 +172,7 @@ Expected:
 - `Length` > 0
 - First lines include `---` then `name: x-risk-tags` then `description:`
 
-- [ ] **Step 4: Confirm key constraints are present in the file**
+- [x] **Step 4: Confirm key constraints are present in the file**
 
 ```powershell
 Select-String -Path "$env:USERPROFILE\.agents\skills\x-risk-tags\SKILL.md" -Pattern "低风险 / 未触及危险阈值","⚠️ 危险","Score > 6|> 6|＞ 6","机场翻墙","示例改写"
@@ -180,7 +180,7 @@ Select-String -Path "$env:USERPROFILE\.agents\skills\x-risk-tags\SKILL.md" -Patt
 
 Expected: matches for safe line, dangerous marker, threshold language, at least one tag (`机场翻墙`), and `示例改写`.
 
-- [ ] **Step 5: Commit note**
+- [x] **Step 5: Commit note**
 
 This skill lives **outside** the medical-agent git repo. Do **not** add it under the project tree.
 
@@ -200,7 +200,7 @@ Optional local backup (only if the user explicitly asks to version skills elsewh
 - Consumes: Task 1 skill
 - Produces: pass/fail notes against the four smoke cases
 
-- [ ] **Step 1: Load the skill and run four prompts in a Cursor agent chat**
+- [x] **Step 1: Load the skill and run four prompts in a Cursor agent chat**
 
 Invoke `@x-risk-tags` (or ask for `x-risk-tags`) once per case:
 
@@ -209,7 +209,7 @@ Invoke `@x-risk-tags` (or ask for `x-risk-tags`) once per case:
 3. `机场月费打折，稳定翻墙，联系下单。`
 4. `平台最近在打机场广告，违规售卖会被砍收益。`
 
-- [ ] **Step 2: Assert expected shapes**
+- [x] **Step 2: Assert expected shapes**
 
 | # | Pass if |
 |---|---------|
@@ -218,11 +218,11 @@ Invoke `@x-risk-tags` (or ask for `x-risk-tags`) once per case:
 | 3 | Contains `机场翻墙`, `⚠️ 危险`, and `示例改写:` |
 | 4 | Safe one-liner (critique of policy, not sales) — not marked 危险 for 机场翻墙 |
 
-- [ ] **Step 3: Fix deviations if any**
+- [x] **Step 3: Fix deviations if any**
 
 If a case fails (e.g. case 4 wrongly flagged sales), tighten the corresponding rubric or signal wording **in** `SKILL.md` (clarify “sales vs discussing bans”), re-run the failed case only, then stop.
 
-- [ ] **Step 4: Mark plan tasks complete**
+- [x] **Step 4: Mark plan tasks complete**
 
 Check off Task 1–2 boxes in `docs/superpowers/plans/2026-07-15-x-risk-tags.md` when smoke checks pass.
 
