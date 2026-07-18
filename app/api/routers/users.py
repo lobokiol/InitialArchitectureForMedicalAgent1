@@ -1,8 +1,11 @@
-from datetime import datetime
+"""Deprecated user routes (not mounted). Prefer /auth/register and /auth/me."""
+
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, status
 from pydantic import BaseModel
+
+from app.gateway.errors import api_error
 
 
 class UserCreate(BaseModel):
@@ -21,15 +24,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.post("", response_model=UserInfo, deprecated=True)
 async def create_user(body: UserCreate):
-    raise HTTPException(
-        status_code=410,
-        detail={"detail": "use POST /auth/register", "code": "DEPRECATED"},
-    )
+    raise api_error("DEPRECATED", "use POST /auth/register", status.HTTP_410_GONE)
 
 
 @router.get("/{user_id}", response_model=UserInfo, deprecated=True)
 async def get_user(user_id: str):
-    raise HTTPException(
-        status_code=410,
-        detail={"detail": "use GET /auth/me", "code": "DEPRECATED"},
-    )
+    raise api_error("DEPRECATED", "use GET /auth/me", status.HTTP_410_GONE)
