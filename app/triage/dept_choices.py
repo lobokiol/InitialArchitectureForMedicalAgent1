@@ -154,3 +154,30 @@ def lock_department_for_explicit_choice(
     if choice.id == NONE_CHOICE_ID or not choice.target_departments:
         return None
     return max(choice.target_departments, key=lambda d: scores.get(d, 0.0))
+
+
+def build_differential_choices(rule_chunk: dict) -> list[DeptChoice]:
+    """Build multi-select differential choices from a dept-rule chunk."""
+    choices: list[DeptChoice] = []
+    for i, q in enumerate(rule_chunk.get("differential_questions") or [], 1):
+        choices.append(
+            DeptChoice(
+                id=f"c{i}",
+                label=q["text"],
+                target_departments=list((q.get("scores") or {}).keys()),
+            )
+        )
+    choices.append(DeptChoice(id=NONE_CHOICE_ID, label=NONE_CHOICE_LABEL, target_departments=[]))
+    return choices
+
+
+def differential_selection_dicts(rule_chunk: dict, picked: list[DeptChoice]) -> list[dict]:
+    """Map selected choices back to differential_questions entries."""
+    questions = rule_chunk.get("differential_questions") or []
+    out: list[dict] = []
+    for c in picked:
+        if c.id.startswith("c") and c.id[1:].isdigit():
+            idx = int(c.id[1:]) - 1
+            if 0 <= idx < len(questions):
+                out.append(questions[idx])
+    return out
