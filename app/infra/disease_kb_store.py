@@ -9,21 +9,13 @@ from typing import Any
 
 from app.core import config
 
-_REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_DISEASE_KB_PATH = _REPO_ROOT / config.SOURCE_DATA_DIR / "data" / "disease_kb.jsonl"
+_REPO_ROOT = config.PROJECT_ROOT
 DEFAULT_TRIAGE_TEMPLATES_PATH = _REPO_ROOT / config.SOURCE_DATA_DIR / "data" / "triage_templates.jsonl"
-
-
-def _disease_kb_path() -> Path:
-    import os
-
-    custom = os.getenv("DISEASE_KB_PATH")
-    return Path(custom) if custom else DEFAULT_DISEASE_KB_PATH
 
 
 @lru_cache(maxsize=1)
 def load_disease_kb_rows() -> list[dict[str, Any]]:
-    path = _disease_kb_path()
+    path = Path(config.DISEASE_KB_PATH)
     rows: list[dict[str, Any]] = []
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()

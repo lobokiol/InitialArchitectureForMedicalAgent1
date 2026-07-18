@@ -1,3 +1,0 @@
-# Pinned for reproducibility. Update with: pip install <pkg>==<new> && update this file.
-aiohttp==3.13.3
-ddgs==9.11.3

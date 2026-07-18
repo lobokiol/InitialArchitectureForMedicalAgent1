@@ -1,10 +1,11 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Request, status
 from pydantic import BaseModel
 
 from app.core import config
 from app.gateway.deps import CurrentUser, get_current_user
+from app.gateway.errors import api_error
 from app.gateway.rate_limit import limiter
 from app.services.chat_service import get_session_manager
 
@@ -50,15 +51,9 @@ session_manager = get_session_manager()
 def _raise_thread_error(exc: ValueError) -> None:
     code = str(exc)
     if code == "THREAD_NOT_OWNED":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={"detail": "thread not owned", "code": "THREAD_NOT_OWNED"},
-        ) from None
+        raise api_error("THREAD_NOT_OWNED", "thread not owned", status.HTTP_403_FORBIDDEN) from None
     if code == "THREAD_NOT_FOUND":
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"detail": "thread not found", "code": "THREAD_NOT_FOUND"},
-        ) from None
+        raise api_error("THREAD_NOT_FOUND", "thread not found", status.HTTP_404_NOT_FOUND) from None
     raise exc
 
 
@@ -76,8 +71,8 @@ async def create_thread(
     user: CurrentUser = Depends(get_current_user),
 ):
     thread_id = session_manager.create_thread(user.phone, title=body.title)
-    meta = session_manager.client.hgetall(f"thread:{thread_id}:meta")
-    title = meta.get("title", thread_id) if meta else thread_id
+    info = session_manager.get_thread_info(thread_id)
+    title = info["title"] if info else thread_id
     return CreateThreadResponse(thread_id=thread_id, title=title)
 
 
@@ -115,16 +110,14 @@ async def get_current_thread(request: Request, user: CurrentUser = Depends(get_c
         except ValueError as exc:
             _raise_thread_error(exc)
 
-    meta = session_manager.client.hgetall(f"thread:{cur}:meta")
-    if not meta:
-        raise ValueError("current thread meta missing")
-    return ThreadInfo(
-        thread_id=cur,
-        title=meta.get("title", cur),
-        created_at=meta.get("created_at", ""),
-        last_active_at=meta.get("last_active_at", ""),
-        is_deleted=meta.get("is_deleted") == "1",
-    )
+    info = session_manager.get_thread_info(cur)
+    if not info:
+        raise api_error(
+            "THREAD_META_MISSING",
+            "current thread meta missing",
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    return ThreadInfo(**info)
 
 
 @router.post("/switch", response_model=SwitchThreadResponse)
@@ -143,8 +136,6 @@ async def switch_thread(
         _raise_thread_error(exc)
 
     session_manager.set_current_thread(user.phone, body.thread_id)
-    meta = session_manager.client.hgetall(f"thread:{body.thread_id}:meta")
-    return SwitchThreadResponse(
-        thread_id=body.thread_id,
-        title=meta.get("title", body.thread_id),
-    )
+    info = session_manager.get_thread_info(body.thread_id)
+    title = info["title"] if info else body.thread_id
+    return SwitchThreadResponse(thread_id=body.thread_id, title=title)

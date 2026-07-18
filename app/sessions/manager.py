@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from app.infra.redis_compat import hset_mapping
@@ -76,11 +76,11 @@ class SessionManager:
 
     @staticmethod
     def _now_ts() -> float:
-        return datetime.utcnow().timestamp()
+        return datetime.now(timezone.utc).timestamp()
 
     @staticmethod
     def _now_iso() -> str:
-        return datetime.utcnow().isoformat()
+        return datetime.now(timezone.utc).isoformat()
 
     def _user_current_key(self, user_id: str) -> str:
         return USER_CURRENT_KEY.format(user_id=user_id)
@@ -97,6 +97,23 @@ class SessionManager:
             raise ValueError("THREAD_NOT_FOUND")
         if meta.get("user_id") != user_id:
             raise ValueError("THREAD_NOT_OWNED")
+
+    def get_thread_meta(self, thread_id: str) -> dict[str, str]:
+        """Return raw Redis/hash meta for a thread (empty if missing)."""
+        return self.client.hgetall(self._thread_meta_key(thread_id)) or {}
+
+    def get_thread_info(self, thread_id: str) -> Optional[dict]:
+        """Return API-shaped thread info, or None if meta is missing."""
+        meta = self.get_thread_meta(thread_id)
+        if not meta:
+            return None
+        return {
+            "thread_id": thread_id,
+            "title": meta.get("title", thread_id),
+            "created_at": meta.get("created_at", ""),
+            "last_active_at": meta.get("last_active_at", ""),
+            "is_deleted": meta.get("is_deleted") == "1",
+        }
 
     def get_current_thread(self, user_id: str) -> Optional[str]:
         return self.client.get(self._user_current_key(user_id))

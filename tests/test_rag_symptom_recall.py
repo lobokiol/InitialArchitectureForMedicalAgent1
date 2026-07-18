@@ -1,6 +1,6 @@
 from app.domain.models import AppState
 from app.domain.routing import route_after_rag
-from app.graph.nodes.rag_symptom_recall import _prefer_symptom_clarify
+from app.triage.rag_clarify_select import prefer_symptom_clarify as _prefer_symptom_clarify
 
 
 def _cl(id_: str, score: float, aliases: list[str] | None = None) -> dict:

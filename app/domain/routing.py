@@ -2,6 +2,7 @@ from langchain_core.messages import HumanMessage
 
 from app.core.logging import logger
 from app.domain.models import AppState
+from app.triage.turn_text import last_human_text
 
 
 def is_awaiting_triage_followup(state: AppState) -> bool:
@@ -20,16 +21,20 @@ def is_dept_followup_reply(state: AppState) -> bool:
     return _is_dept_followup_reply(state) or _is_dept_rules_followup(state) or _is_clarify_followup(state)
 
 
+def _has_human_tail(state: AppState, *, min_messages: int = 2) -> bool:
+    msgs = state.messages or []
+    if len(msgs) < min_messages:
+        return False
+    return isinstance(msgs[-1], HumanMessage)
+
+
 def _is_clarify_followup(state: AppState) -> bool:
     cs = state.clarify_state
     if not cs or getattr(cs, "status", None) != "asking":
         return False
     if not cs.last_choices:
         return False
-    msgs = state.messages or []
-    if len(msgs) < 2:
-        return False
-    return isinstance(msgs[-1], HumanMessage)
+    return _has_human_tail(state)
 
 
 def _is_dept_rules_followup(state: AppState) -> bool:
@@ -40,10 +45,7 @@ def _is_dept_rules_followup(state: AppState) -> bool:
         return False
     if not ds.last_choices:
         return False
-    msgs = state.messages or []
-    if len(msgs) < 2:
-        return False
-    return isinstance(msgs[-1], HumanMessage)
+    return _has_human_tail(state)
 
 
 def _is_dept_followup_reply(state: AppState) -> bool:
@@ -55,19 +57,7 @@ def _is_dept_followup_reply(state: AppState) -> bool:
         return False
     if not ds.last_choices:
         return False
-    msgs = state.messages or []
-    if len(msgs) < 2:
-        return False
-    last = msgs[-1]
-    return isinstance(last, HumanMessage)
-
-
-def _last_human_text(state: AppState) -> str:
-    msgs = state.messages or []
-    for msg in reversed(msgs):
-        if isinstance(msg, HumanMessage) and isinstance(msg.content, str):
-            return msg.content.strip()
-    return ""
+    return _has_human_tail(state)
 
 
 def is_mcp_followup_reply(state: AppState) -> bool:
@@ -82,7 +72,7 @@ def is_mcp_followup_reply(state: AppState) -> bool:
         return False
     if is_dept_followup_reply(state):
         return False
-    text = _last_human_text(state)
+    text = last_human_text(state)
     if not text:
         return False
     if looks_like_new_triage(text) and not looks_like_dept_info_query(text):
@@ -163,40 +153,28 @@ def route_after_clarify(state: AppState) -> str:
     return "end_ask"
 
 
-def route_after_dept_rules(state: AppState) -> str:
+def _route_after_dept_status(state: AppState, *, unlocked_fallback: str) -> str:
     ds = state.dept_state
     status = getattr(ds, "status", None) if ds else None
     if status == "asking":
         return "end_ask"
     if state.locked_department:
         return "dept_confidence"
-    return "end_ask"
+    return unlocked_fallback
+
+
+def route_after_dept_rules(state: AppState) -> str:
+    return _route_after_dept_status(state, unlocked_fallback="end_ask")
 
 
 def route_after_dept(state: AppState) -> str:
     ds = state.dept_state
     status = getattr(ds, "status", None) if ds else None
     logger.info(">>> route_after_dept: status=%s locked=%s", status, state.locked_department)
-    if status == "asking":
-        return "end_ask"
-    if state.locked_department:
-        return "dept_confidence"
-    return "answer_generate"
+    return _route_after_dept_status(state, unlocked_fallback="answer_generate")
 
 
 def route_after_confidence(state: AppState) -> str:
     if not state.dept_confidence_passed:
         return "low_confidence_reject"
     return "answer_generate"
-
-
-def route_after_decision(state: AppState) -> str:
-    """Legacy: kept for tests; production uses route_after_slot_gate."""
-    ir = state.intent_result
-    route = ir.triage_route if ir else None
-    logger.info(">>> route_after_decision: %s", route)
-    if route == "disease":
-        return "disease_dept"
-    if route == "symptom":
-        return "rag_symptom_recall"
-    return "reject"

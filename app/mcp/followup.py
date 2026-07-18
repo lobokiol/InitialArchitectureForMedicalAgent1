@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Literal
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import BaseModel, ConfigDict
 
 from app.core import config
@@ -16,8 +15,8 @@ from app.mcp.client import (
     get_mcp_client,
 )
 from app.ner.catalog_scan import load_entity_catalog, scan_catalog_substrings
+from app.triage.turn_text import last_human_text
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _DEPT_INFO_KEYWORDS = (
     "怎么走",
     "怎么去",
@@ -31,7 +30,6 @@ _DEPT_INFO_KEYWORDS = (
     "什么科",
     "楼层",
     "电话",
-    "怎么去",
     "如何走",
 )
 
@@ -48,17 +46,9 @@ class FollowupToolPick(BaseModel):
 
 
 def known_departments() -> list[str]:
-    path = _PROJECT_ROOT / "hospital_mcp" / "mock" / "departments.json"
+    path = config.PROJECT_ROOT / "hospital_mcp" / "mock" / "departments.json"
     with path.open(encoding="utf-8") as f:
         return list(json.load(f).keys())
-
-
-def _last_human_text(state: AppState) -> str:
-    msgs = state.messages or []
-    for msg in reversed(msgs):
-        if isinstance(msg, HumanMessage) and isinstance(msg.content, str):
-            return msg.content.strip()
-    return ""
 
 
 def looks_like_new_triage(text: str) -> bool:
@@ -80,7 +70,7 @@ def match_department_in_text(text: str) -> str | None:
 
 def resolve_followup_department(state: AppState) -> str | None:
     """用户句中明确科室优先，否则用上一轮推荐科室。"""
-    text = _last_human_text(state)
+    text = last_human_text(state)
     explicit = match_department_in_text(text)
     if explicit:
         return explicit
@@ -89,12 +79,16 @@ def resolve_followup_department(state: AppState) -> str | None:
 
 def resolve_recommended_department(state: AppState) -> str | None:
     """API/前端展示用：当前轮用户指定科室 > 导诊锁定科室 > last_recommended。"""
-    explicit = match_department_in_text(_last_human_text(state))
+    explicit = match_department_in_text(last_human_text(state))
     if explicit:
         return explicit
     from app.graph.nodes.fetch_oncall import resolve_department
 
     return resolve_department(state) or state.last_recommended_department
+
+
+def _ai_reply_patch(content: str, **extra) -> dict:
+    return {"messages": [AIMessage(content=content)], **extra}
 
 
 def _llm_pick_tool(user_text: str, department: str, *, user_specified_dept: bool) -> FollowupToolPick:
@@ -154,18 +148,14 @@ def run_mcp_followup(state: AppState) -> dict:
 
     dept = resolve_followup_department(state)
     if not dept:
-        from langchain_core.messages import AIMessage
+        return _ai_reply_patch(NO_DEPT_CLARIFY)
 
-        return {"messages": [AIMessage(content=NO_DEPT_CLARIFY)]}
-
-    user_text = _last_human_text(state)
+    user_text = last_human_text(state)
     explicit_dept = match_department_in_text(user_text)
     try:
         pick = _llm_pick_tool(user_text, dept, user_specified_dept=bool(explicit_dept))
         if pick.tool_name == "none":
-            from langchain_core.messages import AIMessage
-
-            return {"messages": [AIMessage(content=ASK_INTRO_OR_ROUTE)]}
+            return _ai_reply_patch(ASK_INTRO_OR_ROUTE)
 
         if pick.tool_name == "get_department_intro":
             data = fetch_department_intro_sync(dept)
@@ -174,16 +164,11 @@ def run_mcp_followup(state: AppState) -> dict:
 
         payload = data.model_dump() if hasattr(data, "model_dump") else dict(data)
         reply = _llm_format_reply(user_text, pick.tool_name, payload)
-        from langchain_core.messages import AIMessage
-
-        patch = {
-            "messages": [AIMessage(content=reply)],
-            "tool_call_result": {"tool": pick.tool_name, "department": dept, "data": payload},
-            "last_recommended_department": dept,
-        }
-        return patch
+        return _ai_reply_patch(
+            reply,
+            tool_call_result={"tool": pick.tool_name, "department": dept, "data": payload},
+            last_recommended_department=dept,
+        )
     except Exception:
         logger.exception("mcp_followup failed dept=%s", dept)
-        from langchain_core.messages import AIMessage
-
-        return {"messages": [AIMessage(content=MCP_UNAVAILABLE)]}
+        return _ai_reply_patch(MCP_UNAVAILABLE)

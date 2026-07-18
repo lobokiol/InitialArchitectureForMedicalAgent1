@@ -4,8 +4,10 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+from app.core import config
+
 _DEFAULT_PATH = (
-    Path(__file__).resolve().parents[2] / "sourceData" / "data" / "rag_knowledge.jsonl"
+    config.PROJECT_ROOT / config.SOURCE_DATA_DIR / "data" / "rag_knowledge.jsonl"
 )
 DEFAULT_EMERGENCY_REPLY = (
     "您描述的情况可能存在急危重症风险，请立即前往急诊或拨打 120。"

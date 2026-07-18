@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import httpx
-from fastapi import HTTPException, status
+from fastapi import status
 
 from app.core import config
+from app.gateway.errors import api_error
 from app.gateway.phone import normalize_phone
 
 _WECHAT_BASE = "https://api.weixin.qq.com"
@@ -11,9 +12,10 @@ _WECHAT_BASE = "https://api.weixin.qq.com"
 
 def _require_credentials() -> None:
     if not config.WECHAT_APP_ID or not config.WECHAT_APP_SECRET:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={"detail": "WeChat API not configured", "code": "WECHAT_API_ERROR"},
+        raise api_error(
+            "WECHAT_API_ERROR",
+            "WeChat API not configured",
+            status.HTTP_503_SERVICE_UNAVAILABLE,
         )
 
 
@@ -32,9 +34,10 @@ async def code2session(code: str) -> dict:
         data = resp.json()
 
     if data.get("errcode", 0) != 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"detail": data.get("errmsg", "invalid code"), "code": "WECHAT_CODE_INVALID"},
+        raise api_error(
+            "WECHAT_CODE_INVALID",
+            data.get("errmsg", "invalid code"),
+            status.HTTP_400_BAD_REQUEST,
         )
 
     result: dict = {
@@ -58,9 +61,10 @@ async def _get_access_token() -> str:
         data = resp.json()
 
     if data.get("errcode", 0) != 0:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={"detail": data.get("errmsg", "token error"), "code": "WECHAT_API_ERROR"},
+        raise api_error(
+            "WECHAT_API_ERROR",
+            data.get("errmsg", "token error"),
+            status.HTTP_503_SERVICE_UNAVAILABLE,
         )
     return data["access_token"]
 
@@ -79,16 +83,18 @@ async def get_phone_number(phone_code: str) -> str:
         data = resp.json()
 
     if data.get("errcode", 0) != 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"detail": data.get("errmsg", "invalid phone code"), "code": "WECHAT_CODE_INVALID"},
+        raise api_error(
+            "WECHAT_CODE_INVALID",
+            data.get("errmsg", "invalid phone code"),
+            status.HTTP_400_BAD_REQUEST,
         )
 
     phone_info = data.get("phone_info") or {}
     raw = phone_info.get("purePhoneNumber") or phone_info.get("phoneNumber") or ""
     if not raw:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail={"detail": "missing phone in WeChat response", "code": "WECHAT_API_ERROR"},
+        raise api_error(
+            "WECHAT_API_ERROR",
+            "missing phone in WeChat response",
+            status.HTTP_503_SERVICE_UNAVAILABLE,
         )
     return normalize_phone(raw)
