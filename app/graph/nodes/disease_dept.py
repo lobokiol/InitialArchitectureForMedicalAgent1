@@ -1,6 +1,6 @@
 from app.core.logging import logger
 from app.domain.models import AppState, DiseaseDeptResult
-from app.ner.disease_dept import lookup_departments
+from app.infra.opensearch_disease_kb import lookup_departments
 
 
 def disease_dept_node(state: AppState) -> dict:

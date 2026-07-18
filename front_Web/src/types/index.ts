@@ -64,11 +64,6 @@ export interface ThreadInfo {
   is_deleted: boolean;
 }
 
-export interface UserInfo {
-  user_id: string;
-  name?: string;
-}
-
 export interface ReadyResponse {
   status: 'ok' | 'degraded';
   checks?: Record<string, { ok: boolean; detail?: string }>;

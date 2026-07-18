@@ -3,9 +3,6 @@ from app.domain.models import AppState
 from app.infra.opensearch_rag import rerank_by_alliance, search_rag_knowledge
 from app.triage.rag_clarify_select import prefer_symptom_clarify
 
-# Backward-compatible re-export for existing tests
-_prefer_symptom_clarify = prefer_symptom_clarify
-
 
 def rag_symptom_recall_node(state: AppState) -> dict:
     logger.info(">>> Enter node: rag_symptom_recall")

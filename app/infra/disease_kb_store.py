@@ -10,7 +10,6 @@ from typing import Any
 from app.core import config
 
 _REPO_ROOT = config.PROJECT_ROOT
-DEFAULT_DISEASE_KB_PATH = Path(config.DISEASE_KB_PATH)
 DEFAULT_TRIAGE_TEMPLATES_PATH = _REPO_ROOT / config.SOURCE_DATA_DIR / "data" / "triage_templates.jsonl"
 
 

@@ -54,8 +54,6 @@ RAG_DEPT_RULES_INDEX: str = os.getenv("RAG_DEPT_RULES_INDEX", "rag_department_ru
 RAG_CLARIFY_MIN_SCORE: float = _env_float("RAG_CLARIFY_MIN_SCORE", "0.55")
 RAG_CLARIFY_MIN_MARGIN: float = _env_float("RAG_CLARIFY_MIN_MARGIN", "0.10")
 DISEASE_KB_INDEX: str = os.getenv("DISEASE_KB_INDEX", "disease_kb")
-ES_INDEX_NAME: str = os.getenv("ES_INDEX_NAME", "hospital_procedures")
-MAX_REWRITE: int = _env_int("MAX_REWRITE", "2")
 
 # Short-term history control
 MAX_HISTORY_MSGS: int = _env_int("MAX_HISTORY_MSGS", "12")

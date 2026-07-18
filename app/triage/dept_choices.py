@@ -3,13 +3,26 @@
 from __future__ import annotations
 
 from app.domain.dept_disambiguation import DeptChoice
-from app.triage.dept_llm import _pick_pair_by_round
 
 CHOICE_QUESTION_TEMPLATE = "为更准确推荐科室，请选择您是否有以下情况："
 INVALID_CHOICE_REPLY = "请从下列选项中选择（输入选项文字或编号）。"
 CHOICE_BOOST = 2.0
 NONE_CHOICE_ID = "none"
 NONE_CHOICE_LABEL = "都没有"
+
+
+def _pick_pair_by_round(depts: list[dict], round_num: int) -> tuple[dict, dict | None]:
+    """Select top-2 department pair for the given disambiguation round."""
+    ordered = sorted(depts, key=lambda d: int(d.get("priority") or 99))
+    if not ordered:
+        return {}, None
+    if len(ordered) == 1:
+        return ordered[0], None
+    if round_num <= 1:
+        return ordered[0], ordered[1]
+    if len(ordered) >= 3:
+        return ordered[1], ordered[2]
+    return ordered[0], ordered[1]
 
 _DISEASE_DENY_FRAGMENTS = (
     "炎",
