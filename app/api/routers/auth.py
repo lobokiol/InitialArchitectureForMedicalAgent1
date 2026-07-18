@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import jwt as pyjwt
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Request, status
 from passlib.hash import bcrypt
 from pydantic import BaseModel, Field
 
 from app.core import config
 from app.gateway.deps import CurrentUser, get_current_user
-from app.gateway.errors import auth_error
+from app.gateway.errors import api_error, auth_error
 from app.gateway.jwt import decode_token, issue_token_pair
 from app.gateway.phone import normalize_phone
 from app.gateway.rate_limit import limiter
@@ -78,10 +78,7 @@ def _normalize_or_400(raw: str) -> str:
     try:
         return normalize_phone(raw)
     except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"detail": "invalid phone", "code": "PHONE_INVALID"},
-        )
+        raise api_error("PHONE_INVALID", "invalid phone", status.HTTP_400_BAD_REQUEST)
 
 
 @router.post("/register", response_model=TokenResponse)
@@ -93,9 +90,10 @@ async def register(request: Request, body: RegisterRequest) -> TokenResponse:
         get_user_store().create_user(phone, pw_hash, body.display_name or "")
     except ValueError as exc:
         if str(exc) == "PHONE_EXISTS":
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail={"detail": "phone already registered", "code": "PHONE_EXISTS"},
+            raise api_error(
+                "PHONE_EXISTS",
+                "phone already registered",
+                status.HTTP_400_BAD_REQUEST,
             ) from None
         raise
     return _issue_and_persist(phone)
