@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from app.infra.redis_compat import hset_mapping
@@ -76,11 +76,11 @@ class SessionManager:
 
     @staticmethod
     def _now_ts() -> float:
-        return datetime.utcnow().timestamp()
+        return datetime.now(timezone.utc).timestamp()
 
     @staticmethod
     def _now_iso() -> str:
-        return datetime.utcnow().isoformat()
+        return datetime.now(timezone.utc).isoformat()
 
     def _user_current_key(self, user_id: str) -> str:
         return USER_CURRENT_KEY.format(user_id=user_id)
