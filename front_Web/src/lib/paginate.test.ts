@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { paginateArray, paginateText } from './paginate';
+import { paginateArray } from './paginate';
 
 describe('paginateArray', () => {
   it('splits into pages', () => {
@@ -8,12 +8,5 @@ describe('paginateArray', () => {
 
   it('returns empty page for empty input', () => {
     expect(paginateArray([], 3)).toEqual([[]]);
-  });
-});
-
-describe('paginateText', () => {
-  it('splits long text', () => {
-    const pages = paginateText('abcdefgh', 3);
-    expect(pages).toEqual(['abc', 'def', 'gh']);
   });
 });

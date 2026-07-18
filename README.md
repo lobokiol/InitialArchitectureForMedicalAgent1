@@ -82,7 +82,7 @@ flowchart TB
 
     subgraph L2["② API 层 app/api"]
         CHAT["POST /chat"]
-        THREADS["/threads · /users"]
+        THREADS["/threads · /auth"]
         HEALTH["GET /healthz · /ready"]
     end
 
