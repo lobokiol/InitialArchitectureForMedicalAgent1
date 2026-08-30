@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Medical Triage Agent · Runtime Architecture",
+    "locale": "zh-CN",
+    "output": "medical-agent.runtime.architecture.html",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "request-path", "label": "主请求链路", "focus": ["client", "gateway", "chat", "graph"], "note": "从客户端进入 API，经过 LangGraph 导诊编排并返回结果。" },
+      { "id": "knowledge-path", "label": "知识检索链路", "focus": ["graph", "rag", "llm", "opensearch", "knowledge"], "note": "查看规则、RAG 与大模型如何共同参与导诊。" },
+      { "id": "persistence-path", "label": "状态与记录", "focus": ["chat", "redis", "sqlite", "session"], "note": "查看 Checkpoint、会话管理和导诊记录的持久化。" }
+    ]
+  },
+  "components": [
+    { "id": "client", "type": "frontend", "label": "React Web / Rich CLI", "pos": [40, 300], "size": [170, 70] },
+    { "id": "gateway", "type": "security", "label": "FastAPI API Gateway", "tag": "HTTP :8000", "pos": [270, 300], "size": [180, 70] },
+    { "id": "chat", "type": "backend", "label": "Chat Service", "pos": [510, 300], "size": [170, 70] },
+    { "id": "graph", "type": "backend", "label": "LangGraph Orchestrator", "tag": "主流程", "pos": [740, 300], "size": [190, 70] },
+    { "id": "rules", "type": "backend", "label": "NER + Triage Rules", "pos": [990, 150], "size": [180, 70] },
+    { "id": "rag", "type": "backend", "label": "OpenSearch Hybrid RAG", "pos": [990, 300], "size": [180, 70] },
+    { "id": "llm", "type": "cloud", "label": "DashScope LLM + Fallback", "pos": [990, 450], "size": [180, 70] },
+    { "id": "mcp", "type": "external", "label": "Hospital MCP", "pos": [1230, 100], "size": [170, 70] },
+    { "id": "redis", "type": "database", "label": "Redis", "tag": "Session / Checkpoint", "pos": [510, 500], "size": [170, 70] },
+    { "id": "sqlite", "type": "database", "label": "SQLite", "tag": "Users / Triage Records", "pos": [740, 500], "size": [170, 70] },
+    { "id": "opensearch", "type": "database", "label": "OpenSearch Indexes", "tag": "rag · disease · dept rules", "pos": [1230, 500], "size": [190, 70] },
+    { "id": "knowledge", "type": "external", "label": "JSONL Knowledge Base", "tag": "sourceData/data", "pos": [1230, 650], "size": [190, 70] },
+    { "id": "session", "type": "backend", "label": "Session Manager", "tag": "thread 元数据", "pos": [270, 500], "size": [180, 70] }
+  ],
+  "boundaries": [],
+  "connections": [
+    { "id": "client-gateway", "from": "client", "to": "gateway", "variant": "emphasis" },
+    { "id": "gateway-chat", "from": "gateway", "to": "chat" },
+    { "id": "chat-graph", "from": "chat", "to": "graph", "variant": "emphasis" },
+    { "id": "graph-rules", "from": "graph", "to": "rules" },
+    { "id": "graph-rag", "from": "graph", "to": "rag" },
+    { "id": "graph-llm", "from": "graph", "to": "llm", "label": "classify + generate" },
+    { "id": "graph-mcp", "from": "graph", "to": "mcp" },
+    
+    { "id": "chat-redis", "from": "chat", "to": "redis", "variant": "dashed" },
+    { "id": "chat-sqlite", "from": "chat", "to": "sqlite", "variant": "dashed" },
+    { "id": "chat-session", "from": "chat", "to": "session", "variant": "dashed" },
+    
+    { "id": "knowledge-index", "from": "knowledge", "to": "opensearch", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "主链路", "items": ["客户端携带 JWT 调用 /chat", "Chat Service 驱动 LangGraph 多轮状态机", "最终返回结构化导诊结果"] },
+    { "dot": "emerald", "title": "智能决策", "items": ["NER、槽位和急诊规则提供确定性门禁", "OpenSearch 提供医疗知识与科室规则检索", "DashScope 主模型失败时自动 fallback"] },
+    { "dot": "amber", "title": "状态与外部能力", "items": ["Redis 保存会话与 LangGraph Checkpoint", "SQLite 记录用户和完整导诊周期", "Hospital MCP 对接值班、预约和路线能力"] }
+  ]
+}
