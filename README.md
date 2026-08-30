@@ -82,81 +82,9 @@ data/triage_sessions.db        # 导诊会话记录（运行时生成）
 
 ### 系统分层
 
-```mermaid
-flowchart TB
-    subgraph L1["① 客户端"]
-        CLI["cli.py<br/>Rich · 斜杠命令 · 多轮选项"]
-        WEB["front_Web<br/>React · Vite · /api 代理"]
-    end
+![Medical Triage Agent runtime architecture](docs/architecture/medical-agent.runtime.architecture.visual-check.1440x900.light.png)
 
-    subgraph L2["② API 层 app/api + gateway"]
-        AUTH["/auth/*<br/>register · login · refresh · wechat"]
-        CHAT["POST /chat"]
-        THREADS["/threads · /auth/me"]
-        HEALTH["GET /healthz · /ready"]
-        GW["gateway<br/>JWT · 限流 · 异常处理"]
-    end
-
-    subgraph L3["③ 应用服务"]
-        CS["chat_service<br/>chat_once_async · 超时兜底 · stream"]
-        TR["triage_recorder<br/>完整导诊周期"]
-        SM["SessionManager<br/>会话列表 / 当前 thread"]
-    end
-
-    subgraph L4["④ 编排与领域"]
-        LG["LangGraph<br/>17 节点 · AppState"]
-        NER["app/ner<br/>实体 · 三分类路由"]
-        TRI["app/triage<br/>槽位 · 打分 · 急诊"]
-        RT["app/domain/routing<br/>条件边"]
-    end
-
-    subgraph L5["⑤ MCP 集成"]
-        MCP_CLIENT["app/mcp<br/>client · followup"]
-        HOSP_MCP["hospital_mcp<br/>值班 · 介绍 · 路线"]
-    end
-
-    subgraph L6["⑥ 基础设施 app/infra · core/llm"]
-        OS["OpenSearch 客户端"]
-        RD["Redis Checkpointer<br/>或 MemorySaver"]
-        SQ["SQLite triage_sessions"]
-        LLM["DashScope Chat / Embedding<br/>主备 fallback"]
-    end
-
-    subgraph L7["⑦ 数据"]
-        IDX[("索引<br/>rag_knowledge · disease_kb · rag_department_rules")]
-        JSONL[("sourceData/data<br/>JSONL 源文件")]
-    end
-
-    CLI & WEB --> AUTH & CHAT & THREADS
-    AUTH & CHAT & THREADS --> GW
-    GW --> CS
-    THREADS --> SM
-    CS --> LG
-    CS --> TR
-    LG --> NER & TRI & RT
-    LG --> OS & LLM
-    LG --> MCP_CLIENT
-    MCP_CLIENT <-->|stdio| HOSP_MCP
-    LG <-->|Checkpoint| RD
-    SM --> RD
-    TR --> SQ
-    OS --> IDX
-    JSONL -.->|opensearch 入库脚本| IDX
-    HEALTH --> OS & RD & SQ & LG
-```
-
-| 层级 | 目录 / 模块 | 职责 |
-|------|-------------|------|
-| 客户端 | `cli.py` · `front_Web` | 登录获取 JWT；调用 REST API；渲染 Markdown / 组件；处理 `awaiting_clarify` / `awaiting_dept_choice` 多轮选项 |
-| API + 网关 | `app/api/routers` · `app/gateway` | JWT 鉴权、微信登录、slowapi 限流、422/429/500 结构化错误；`/ready` 聚合 OpenSearch、Redis、SQLite、LangGraph 状态 |
-| 应用服务 | `chat_service` | 唯一对话入口：`chat_once_async` 整体超时兜底、读 Checkpoint 判追问、stream 主图、提取回复（`timed_out` 字段） |
-| 应用服务 | `triage_recorder` | 非阻塞记录导诊周期（`turns_json`、outcome、state 快照） |
-| 应用服务 | `SessionManager` | `user_id` ↔ 多 `thread_id` 元数据（标题、活跃时间） |
-| 编排 | `app/graph` | 编译 StateGraph；17 节点见 `builder.py`（含 `emergency_gate`、`fetch_oncall`、`mcp_followup`） |
-| 领域 | `ner` / `triage` / `domain` | 与图节点解耦的业务规则：NER、槽位、科室打分、急诊门禁、路由谓词 |
-| MCP | `app/mcp` + `hospital_mcp` | Stdio MCP 调用医院工具：值班预约、科室介绍、步行路线 |
-| 基础设施 | `infra` + `core/llm` | 外部 I/O：混合检索、持久化、模型调用（`CHAT_MODEL_NAME` 主模型 + `CHAT_FALLBACK_MODEL_NAME` 备模型） |
-| 数据 | OpenSearch + JSONL | 运行时查索引；开发态改 JSONL 后重新入库 |
+这张图由 Archify 从本地项目结构生成，展示客户端、FastAPI 网关、Chat Service、LangGraph、RAG/LLM、Hospital MCP 以及 Redis/SQLite/OpenSearch 的运行时关系。查看 [交互式架构图](docs/architecture/medical-agent.runtime.architecture.html) 或 [Archify JSON 定义](docs/architecture/medical-agent.runtime.architecture.json)。
 
 ---
 
